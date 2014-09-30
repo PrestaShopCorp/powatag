@@ -69,21 +69,60 @@ class PowaTagPayment extends PowaTagAbstract
 		$orderState = Configuration::get('PS_OS_PAYMENT');
 
 		if (!$this->cartEnabled())
-			return false;
+		{
+			$orderState = Configuration::get('PS_OS_ERROR');
+		}
 
-		if (!$this->compareCustomer());
-			return false;
+		$this->customer = PowaTagPayment::getCustomerByEmail($this->datas->customer->emailAddress);;
+		$addresses = $this->customer->getAddresses((int)$this->context->language->id);
 
-		if (!$this->ifCarrierDeliveryZone(Configuration::get('POWATAG_SHIPPING'), false, $this->datas->customer->shippingAddress->country->alpha2Code))
-			return false;
+		$address = false;
+
+		foreach ($addresses as $addr)
+		{
+			if ($addr['alias'] == $this->datas->paymentRequest->paymentCard->billingAddress->friendlyName)
+			{
+				$address = new Address((int)$addr['id_address']);
+				break;
+			}
+		}
+
+		if (!$this->error)
+		{
+			if (!Validate::isLoadedObject($address) && (!$address = !$this->createAddress($this->datas->paymentRequest->paymentCard->billingAddress)))
+				$orderState = Configuration::get('PS_OS_ERROR');
+		}
+
+		if (Validate::isLoadedObject($address))
+		{
+			$this->cart->id_address_invoice = $address->id;
+			$this->cart->save();
+		}
+
+		if (!$this->error)
+		{
+			if (!$this->compareCustomer())
+				$orderState = Configuration::get('PS_OS_ERROR');
+		}
+
+		if (!$this->error)
+		{
+			if (!$this->ifCarrierDeliveryZone(Configuration::get('POWATAG_SHIPPING'), false, $this->datas->customer->shippingAddress->country->alpha2Code))
+				$orderState = Configuration::get('PS_OS_ERROR');
+		}
 
 		if (!$idTransaction = $this->transactionExists())
-			return false;
+		{
+			$orderState = Configuration::get('PS_OS_ERROR');
+		}
 
 		$amountPaid = $this->datas->paymentRequest->amountTotal->amount;
 
-		if (!$this->checkTotalToPaid($amountPaid, $this->datas->paymentRequest->amountTotal->currency))
-			$orderState = (int)Configuration::get('PS_OS_ERROR');
+		if (!$this->error)
+		{
+			if (!$this->checkTotalToPaid($amountPaid, $this->datas->paymentRequest->amountTotal->currency))
+				$orderState = (int)Configuration::get('PS_OS_ERROR');
+		}
 
 		$this->setBantAuthorizationCode($this->datas->paymentRequest->bankAuthorizationCode);
 		
@@ -132,9 +171,9 @@ class PowaTagPayment extends PowaTagAbstract
 
 		$cartCustomer = new Customer((int)$this->cart->id_customer);
 
-		if ($customerDatas !== $cartCustomer)
+		if ($customerDatas->id != $cartCustomer->id)
 		{
-			$this->error = "The information sent in the request are not identical to the one saved : ".$this->datas->customer->emailAddress;
+			$this->error = "The information sent in the request are not identical to the one saved : $customerDatas->id != $cartCustomer->id";
 			return false;
 		}
 
@@ -173,13 +212,13 @@ class PowaTagPayment extends PowaTagAbstract
 				$currency = PowaTagPayment::getCurrencyByIsoCode($currency);
 		}
 
-		if (PowaTagValidate::currencyEnable($currency))
+		if (!PowaTagValidate::currencyEnable($currency))
 		{
-			$this->error = "Currency is not enable";
+			$this->error = "Currency is not enable : ".(isset($currency->iso_code) ? $currency->iso_code : $currency);
 			return false;
 		}
 
-		if ($this->cart->getOrderTotal() != $amountPaid)
+		if ($this->cart->getOrderTotal(true, Cart::BOTH, null, Configuration::get('POWATAG_SHIPPING')) != $amountPaid)
 		{
 			$this->error = "Amount paid is not same as the cart";
 			return false;

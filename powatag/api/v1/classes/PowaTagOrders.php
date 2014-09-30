@@ -94,7 +94,7 @@ class PowaTagOrders extends PowaTagAbstract
 		}
 
 		if (!$find)
-			$address = $this->createAddress();
+			$address = $this->createAddress($this->customerDatas->shippingAddress);
 
 		if (Validate::isLoadedObject($address))
 			$this->address = $address;
@@ -115,12 +115,35 @@ class PowaTagOrders extends PowaTagAbstract
 			if (!$createCart)
 				$orderState = (int)Configuration::get('PS_OS_ERROR');
 
+			$addresses = $this->customer->getAddresses((int)$this->context->language->id);
+
+			$find = $address = false;
+
+			foreach ($addresses as $addr)
+			{
+				if ($addr['alias'] == $this->paymentResultDatas->paymentCart->billingAddress->friendlyName)
+				{
+					$find = true;
+					$address = new Address((int)$addr['id_address']);
+					break;
+				}
+			}
+
+			if ($address || ($address = !$this->createAddress($this->paymentResultDatas->paymentCart->billingAddress)))
+			{
+				$this->cart->id_address_invoice = $address->id;
+				$this->cart->save();
+			}
+			else
+				$orderState = (int)Configuration::get('PS_OS_ERROR');
+
 			$payment = new PowaTagPayment();
 			$payment->setBantAuthorizationCode($this->paymentResultDatas->bankAuthorizationCode);
 			$idOrder = $payment->validateOrder($orderState, (int)$this->cart->id, $this->paymentResultDatas->amountTotal->amount, $this->error);
 		}
 
-		if ($createCart) {
+		if ($createCart)
+		{
 			$transaction              = new PowaTagTransaction();
 			$transaction->id_cart     = (int)$this->cart->id;
 			$transaction->id_order    = (int)$idOrder;
@@ -176,10 +199,14 @@ class PowaTagOrders extends PowaTagAbstract
 			return false;
 		}
 		
-		$this->shippingCost = $this->getShippingCost($this->productsDatas, $currency, (int)$this->address->id_country);
+		$this->shippingCost = $this->getShippingCost($this->productsDatas, $currency, (int)$this->address->id_country, false);
+		$this->shippingCostWt = $this->getShippingCost($this->productsDatas, $currency, (int)$this->address->id_country, true);
 
-		if (!$this->shippingCost && !Validate::isFloat($this->shippingCost))
+		if (!$this->shippingCost || !Validate::isFloat($this->shippingCost))
+		{
+			$this->error = "Error with shippingCost : $this->shippingCost";
 			return false;
+		}
 
 		if ($totalShippingCost != $this->shippingCost)
 		{
@@ -193,7 +220,7 @@ class PowaTagOrders extends PowaTagAbstract
 			return false;
 		}
 
-		$totalWithShipping = $this->formatNumber($this->subTotalWt + $this->shippingCost, 2);
+		$totalWithShipping = $this->formatNumber($this->subTotalWt + $this->shippingCost + ($this->shippingCostWt - $this->shippingCost), 2);
 
 		if ($totalAmount != $totalWithShipping)
 		{
@@ -202,11 +229,12 @@ class PowaTagOrders extends PowaTagAbstract
 		}
 
 		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->customerDatas->shippingAddress->lastName . ' ' . $this->customerDatas->shippingAddress->firstName);
+			PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->customerDatas->shippingAddress->lastName.' '.$this->customerDatas->shippingAddress->firstName);
 
 
 		$cart = new Cart();
 		$cart->id_carrier          = (int)Configuration::get('POWATAG_SHIPPING');
+		$cart->delivery_option     = serialize(array($this->address->id => $cart->id_carrier.','));
 		$cart->id_lang             = (int)$this->context->language->id;
 		$cart->id_address_delivery = (int)$this->address->id;
 		$cart->id_address_invoice  = (int)$this->address->id;
@@ -234,54 +262,6 @@ class PowaTagOrders extends PowaTagAbstract
 			return false;
 
 		return $this->cart->id;
-	}
-
-	/**
-	 * Create Prestashop address
-	 * @return Address Address object
-	 */
-	private function createAddress()
-	{
-
-		$country = $this->getCountryByCode($this->customerDatas->shippingAddress->country->alpha2Code);
-
-		if (!$country->active)
-		{
-			$this->error = "This country is not active : ".$this->customerDatas->shippingAddress->country->alpha2Code;
-			return false;
-		}
-
-		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create address', PowaTagLogs::IN_PROGRESS, $this->customerDatas->shippingAddress->lastName . ' ' . $this->customerDatas->shippingAddress->firstName);
-
-		$address = Address::initialize();
-		$address->id_customer = (int)$this->customer->id;
-		$address->id_country  = (int)$country->id;
-		$address->alias       = $this->customerDatas->shippingAddress->friendlyName;
-		$address->lastname    = $this->customerDatas->shippingAddress->lastName;
-		$address->firstname   = $this->customerDatas->shippingAddress->firstName;
-		$address->address1    = $this->customerDatas->shippingAddress->line1;
-		$address->address2    = $this->customerDatas->shippingAddress->line2;
-		$address->postcode    = $this->customerDatas->shippingAddress->postCode;
-		$address->city        = $this->customerDatas->shippingAddress->city;
-		$address->phone       = $this->customerDatas->phone;
-		$address->id_state    = (int)State::getIdByIso($this->customerDatas->shippingAddress->state, (int)$country->id);
-
-		if (!$address->save())
-		{
-
-			$this->error = "Impossible to save address";
-
-			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error);
-
-			return false;
-		}
-
-		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create address', PowaTagLogs::SUCCESS, 'Address ID : '. $address->id);
-
-		return $address;
 	}
 
 	/**

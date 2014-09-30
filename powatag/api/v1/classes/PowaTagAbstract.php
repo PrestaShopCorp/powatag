@@ -204,10 +204,10 @@ abstract class PowaTagAbstract
 	 * Calculate shipping costs without tax
 	 * @return float Shipping costs
 	 */
-	protected function getShippingCost($products, Currency $currency, $country)
+	protected function getShippingCost($products, Currency $currency, $country, $useTax = true)
 	{
 
-		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
+		$idCarrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
 		{
@@ -223,7 +223,7 @@ abstract class PowaTagAbstract
 			return false;
 		}
 
-		$shippingCost = $this->getShippingCostByCarrier($products, $currency, $id_carrier, $country);
+		$shippingCost = $this->getShippingCostByCarrier($products, $currency, $idCarrier, $country, $useTax);
 
 		if (Validate::isFloat($shippingCost))
 			return $shippingCost;
@@ -233,13 +233,13 @@ abstract class PowaTagAbstract
 
 	/**
 	 * Get Shipping By barrier
-	 * @param  int     $id_carrier ID Carrier
+	 * @param  int     $idCarrier ID Carrier
 	 * @param  Country $country    Country
 	 * @param  float   $subTotal   Total Products
-	 * @param  boolean $use_tax    If use tax
+	 * @param  boolean $useTax    If use tax
 	 * @return float               Shipping Costs
 	 */
-	private function getShippingCostByCarrier($products, Currency $currency, $id_carrier, Country $country, $use_tax = false)
+	private function getShippingCostByCarrier($products, Currency $currency, $idCarrier, Country $country, $useTax = false)
 	{
 		$productLists = $products;
 
@@ -247,9 +247,9 @@ abstract class PowaTagAbstract
 
 		$idZone = (int)$country->id_zone;
 
-		$carrier = new Carrier($id_carrier, (int)$this->context->language->id);
+		$carrier = new Carrier($idCarrier, (int)$this->context->language->id);
 
-		if ($this->ifCarrierDeliveryZone($carrier, $idZone))
+		if (!$this->ifCarrierDeliveryZone($carrier, $idZone))
 			return false;
 
 		$address = new Address();
@@ -257,7 +257,7 @@ abstract class PowaTagAbstract
 		$address->id_state = 0;
 		$address->postcode = 0;
 
-		if ($use_tax && !Tax::excludeTaxeOption())
+		if ($useTax && !Tax::excludeTaxeOption())
 			$carrier_tax = $carrier->getTaxesRate($address);
 
 		$configuration = Configuration::getMultiple(array(
@@ -266,6 +266,8 @@ abstract class PowaTagAbstract
 			'PS_SHIPPING_METHOD',
 			'PS_SHIPPING_FREE_WEIGHT'
 		));
+
+		$shippingMethod = $carrier->getShippingMethod();
 
 		// Get shipping cost using correct method
 		if ($carrier->range_behavior)
@@ -301,7 +303,7 @@ abstract class PowaTagAbstract
 		}
 
 		// Apply tax
-		if ($use_tax && isset($carrier_tax))
+		if ($useTax && isset($carrier_tax))
 			$shippingCost *= 1 + ($carrier_tax / 100);
 
 		$shippingCost = (float)Tools::ps_round((float)$shippingCost, 2);
@@ -321,7 +323,7 @@ abstract class PowaTagAbstract
 			return true;
 
 		$check_delivery_price_by_weight = Carrier::checkDeliveryPriceByWeight(
-			(int)$id_carrier,
+			(int)$idCarrier,
 			null,
 			$idZone
 		);
@@ -330,7 +332,7 @@ abstract class PowaTagAbstract
 			return true;
 
 		$check_delivery_price_by_price = Carrier::checkDeliveryPriceByPrice(
-			(int)$id_carrier,
+			(int)$idCarrier,
 			$this->subTotal,
 			$idZone,
 			(int)$this->id_currency
@@ -349,13 +351,13 @@ abstract class PowaTagAbstract
 	protected function getTax($products, Currency $currency, $country)
 	{
 
-		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
+		$idCarrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
 			$country = new Country($country);
 
 		$tax = $this->subTax;
-		$shippingCostWt = $this->getShippingCostByCarrier($products,  $currency, $id_carrier, $country, $this->subTotal, true);
+		$shippingCostWt = $this->getShippingCostByCarrier($products,  $currency, $idCarrier, $country, $this->subTotal, true);
 		$tax += ($shippingCostWt - $this->shippingCost);
 
 		return (float)Tools::ps_round($tax, 2);
@@ -493,7 +495,7 @@ abstract class PowaTagAbstract
 		if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && $carrier->getMaxDeliveryPriceByWeight($idZone) === false)
 			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && $carrier->getMaxDeliveryPriceByPrice($idZone) === false))
 		{
-			$this->error = "Carrier not delivery for this shipping method in : ".$country->name;
+			$this->error = "Carrier not delivery for this shipping method in ID Zone : ".$idZone;
 			return false;
 		}
 
@@ -504,6 +506,54 @@ abstract class PowaTagAbstract
 	{
 		if ($currency->iso_code != $this->context->currency->iso_code)
 			$amount = Tools::convertPrice($amount, $variantCurrency, $toCurrency);	
+	}
+
+	/**
+	 * Create Prestashop address
+	 * @return Address Address object
+	 */
+	protected function createAddress($addressInformations)
+	{
+
+		$country = $this->getCountryByCode($addressInformations->country->alpha2Code);
+
+		if (!$country->active)
+		{
+			$this->error = "This country is not active : ".$addressInformations->country->alpha2Code;
+			return false;
+		}
+
+		if (PowaTagAPI::apiLog())
+			PowaTagLogs::initAPILog('Create address', PowaTagLogs::IN_PROGRESS, $addressInformations->lastName.' '.$addressInformations->firstName.' : '.$addressInformations->friendlyName);
+
+		$address = Address::initialize();
+		$address->id_customer = (int)$this->customer->id;
+		$address->id_country  = (int)$country->id;
+		$address->alias       = $addressInformations->friendlyName;
+		$address->lastname    = $addressInformations->lastName;
+		$address->firstname   = $addressInformations->firstName;
+		$address->address1    = $addressInformations->line1;
+		$address->address2    = $addressInformations->line2;
+		$address->postcode    = $addressInformations->postCode;
+		$address->city        = $addressInformations->city;
+		$address->phone       = isset($this->customerDatas->phone) ? $this->customerDatas->phone : '0000000000' ;
+		$address->id_state    = (int)State::getIdByIso($addressInformations->state, (int)$country->id);
+
+		if (!$address->save())
+		{
+
+			$this->error = "Impossible to save address";
+
+			if (PowaTagAPI::apiLog())
+				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error);
+
+			return false;
+		}
+
+		if (PowaTagAPI::apiLog())
+			PowaTagLogs::initAPILog('Create address', PowaTagLogs::SUCCESS, 'Address ID : '. $address->id);
+
+		return $address;
 	}
 
 }
