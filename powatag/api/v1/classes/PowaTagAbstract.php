@@ -16,6 +16,12 @@ abstract class PowaTagAbstract
 	protected $context;
 
 	/**
+	 * Module
+	 * @var Module
+	 */
+	protected $module;
+
+	/**
 	 * Errors
 	 * @var array
 	 */
@@ -43,6 +49,7 @@ abstract class PowaTagAbstract
 	{
 		$this->datas = $datas;
 		$this->context = Context::getContext();
+		$this->module = Module::getInstanceByName('powatag');
 	}
 	
 	/**
@@ -67,7 +74,7 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::currencyEnable($currency))
 		{
-			$this->error = "Currency not found : ".$iso_code;
+			$this->error = sprintf($this->module->l('Currency not found : %s'), $iso_code);
 			return false;
 		}
 
@@ -124,7 +131,7 @@ abstract class PowaTagAbstract
 
 				if (!Validate::isLoadedObject($product))
 				{
-					$this->error = "This product does not exists : ".$p->product->code;
+					$this->error = sprintf($this->module->l('This product does not exists : %s'), $p->product->code);
 					return false;
 				}
 
@@ -138,7 +145,7 @@ abstract class PowaTagAbstract
 
 					if (!PowaTagValidate::currencyEnable($variantCurrency))
 					{
-						$this->error = "Currency not found, ".$variant->code." ".$variant->code;
+						$this->error = sprintf($this->module->l('Currency not found : %s'), $variantCurrency);
 						return false;
 					}
 
@@ -156,7 +163,7 @@ abstract class PowaTagAbstract
 					}
 					else
 					{
-						$this->error = "This variant does not exist, ".$variant->code." ".$variant->code;
+						$this->error = sprintf($this->module->l('This variant does not exist : %s'), $variant->code);
 						return false;
 					}
 
@@ -173,13 +180,13 @@ abstract class PowaTagAbstract
 
 					if ($priceAttribute != $variantAmount)
 					{
-						$this->error = "Price variant is different with the price shop, ".$variant->code." ".$priceAttribute." != ".$variantAmount;
+						$this->error = sprintf($this->module->l('Price variant is different with the price shop : %s %s != %s'), $variant->code, $priceAttribute, $variantAmount);
 						return false;
 					}
 
 					if ($qtyInStock < $p->quantity)
 					{
-						$this->error = "Quantity > Stock Count : ".$variant->code;
+						$this->error = sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code);
 						return false;
 					}
 
@@ -219,7 +226,7 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::countryEnable($country))
 		{
-			$this->error = "Country is does not exists or does not enable for this shop : ".$countryIso;
+			$this->error = sprintf($this->module->l('Country is does not exists or does not enable for this shop : %s'), $countryIso);
 			return false;
 		}
 
@@ -399,7 +406,7 @@ abstract class PowaTagAbstract
 
 			if (!$customer->save())
 			{
-				$this->error = "Impossible to save customer";
+				$this->error = $this->module->l("Impossible to save customer");
 
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Create customer', PowaTagLogs::ERROR, $this->error);
@@ -445,14 +452,14 @@ abstract class PowaTagAbstract
 				$carrier = new Carrier((int)$carrier);
 			else
 			{
-				$this->error = "Error since load carrier";
+				$this->error = $this->module->l("Error since load carrier");
 				return false;
 			}
 		}
 
 		if (!$idZone && !$country)
 		{
-			$this->error = "Thanks to fill country or id zone";
+			$this->error = $this->module->l("Thanks to fill country or id zone");
 			return false;
 		}
 		else if (!$idZone && $country)
@@ -467,7 +474,7 @@ abstract class PowaTagAbstract
 
 			if (!PowaTagValidate::countryEnable($country))
 			{
-				$this->error = "Country does not exists or not active";
+				$this->error = $this->module->l("Country does not exists or not active");
 				return false;
 			}
 
@@ -476,13 +483,13 @@ abstract class PowaTagAbstract
 
 		if (!$this->isCarrierInRange($carrier, $idZone))
 		{
-			$this->error = "Carrier not delivery in : ".$country->name;
+			$this->error = sprintf($this->module->l('Carrier not delivery in : %s'), $country->name);
 			return false;
 		}
 
 		if (!$carrier->active)
 		{
-			$this->error = "Carrier is not active : ".$carrier->name;
+			$this->error = sprintf($this->module->l('Carrier is not active : %s'), $carrier->name);
 			return false;
 		}
 
@@ -495,7 +502,7 @@ abstract class PowaTagAbstract
 		if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && $carrier->getMaxDeliveryPriceByWeight($idZone) === false)
 			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && $carrier->getMaxDeliveryPriceByPrice($idZone) === false))
 		{
-			$this->error = "Carrier not delivery for this shipping method in ID Zone : ".$idZone;
+			$this->error = sprintf($this->module->l('Carrier not delivery for this shipping method in ID Zone : %s'), $idZone);
 			return false;
 		}
 
@@ -519,7 +526,7 @@ abstract class PowaTagAbstract
 
 		if (!$country->active)
 		{
-			$this->error = "This country is not active : ".$addressInformations->country->alpha2Code;
+			$this->error = sprintf($this->module->l('This country is not active : %s'), $addressInformations->country->alpha2Code);
 			return false;
 		}
 
@@ -542,7 +549,7 @@ abstract class PowaTagAbstract
 		if (!$address->save())
 		{
 
-			$this->error = "Impossible to save address";
+			$this->error = $this->module->l("Impossible to save address");
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error);

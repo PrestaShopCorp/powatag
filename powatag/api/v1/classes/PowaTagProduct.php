@@ -32,7 +32,7 @@ class PowaTagProduct extends PowaTagAbstract
 		}
 		else
 		{
-			$this->error = "Product not found";
+			$this->error = $this->module->l("Product not found");
 			return false;
 		}
 	}

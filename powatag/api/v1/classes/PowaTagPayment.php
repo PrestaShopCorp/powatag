@@ -142,7 +142,7 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if (!Validate::isLoadedObject($this->cart))
 		{
-			$msg = 'Cart not exists : '.$this->idCart;
+			$msg = sprintf($this->module->l('Cart not exists : %s'), $this->idCart);
 			$this->error = $msg;
 
 			return false;
@@ -150,7 +150,7 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if ($this->cart->orderExists())
 		{
-			$msg = 'Cart has already associated with order : '.$this->idCart;
+			$msg = sprintf($this->module->l('Cart has already associated with order : %s'), $this->idCart);
 
 			$this->error = $msg;
 			return false;
@@ -165,7 +165,7 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if (!Validate::isLoadedObject($customerDatas))
 		{
-			$this->error = "The customer does not exists : ".$this->datas->customer->emailAddress;
+			$this->error = sprintf($this->module->l('The customer does not exists : %s'), $this->datas->customer->emailAddress);
 			return false;
 		}
 
@@ -173,7 +173,7 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if ($customerDatas->id != $cartCustomer->id)
 		{
-			$this->error = "The information sent in the request are not identical to the one saved : $customerDatas->id != $cartCustomer->id";
+			$this->error = sprintf($this->module->l('The information sent in the request are not identical to the one saved : %s != %s'), $customerDatas->id, $cartCustomer->id);
 			return false;
 		}
 
@@ -186,13 +186,13 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if (!$transactions || !count($transactions))
 		{
-			$this->error = "No transaction found for, Cart ID : ".$this->idCart.", Device ID : ".$this->datas->device->deviceID." & IP : ".$this->datas->device->ipAddress;
+			$this->error = sprintf($this->module->l('No transaction found for, Cart ID : %s, Device ID : %s & IP : %s'), $this->idCart, $this->datas->device->deviceID, $this->datas->device->ipAddress);
 			return false;
 		}
 
 		if (count($transactions) > 1)
 		{
-			$this->error = "Too many transactions for, Cart ID : ".$this->idCart.", Device ID : ".$this->datas->device->deviceID." & IP : ".$this->datas->device->ipAddress;
+			$this->error = sprintf($this->module->l('Too many transaction for, Cart ID : %s, Device ID : %s & IP : %s'), $this->idCart, $this->datas->device->deviceID, $this->datas->device->ipAddress);
 			return false;
 		}
 
@@ -214,13 +214,13 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if (!PowaTagValidate::currencyEnable($currency))
 		{
-			$this->error = "Currency is not enable : ".(isset($currency->iso_code) ? $currency->iso_code : $currency);
+			$this->error = sprintf($this->module->l('Currency is not enable : %s'), (isset($currency->iso_code) ? $currency->iso_code : $currency));
 			return false;
 		}
 
 		if ($this->cart->getOrderTotal(true, Cart::BOTH, null, Configuration::get('POWATAG_SHIPPING')) != $amountPaid)
 		{
-			$this->error = "Amount paid is not same as the cart";
+			$this->error = $this->module->l("Amount paid is not same as the cart");
 			return false;
 		}
 
