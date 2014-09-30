@@ -11,6 +11,8 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 		$this->_join = null; //Join the databases here
 
 		parent::__construct();
+
+		$this->bootstrap = true;
 						
 		$this->fields_options = array(
 			'api_settings' => array(
@@ -46,7 +48,7 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'required' => true
 					),
 				),
-				'submit' => array()
+				'submit' => array('title' => $this->l('Save'))
 			),
 			'other_settings' => array(
 				'title'  =>	$this->l('Other Settings'),
@@ -92,6 +94,7 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'required'   => true
 					),
 				),
+				'submit' => array('title' => $this->l('Save'))
 			),
 			'product_settings' => array(
 				'title'  =>	$this->l('Product Settings'),
@@ -116,7 +119,8 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						),
 						'visibility' => Shop::CONTEXT_SHOP
 					)
-				)
+				),
+				'submit' => array('title' => $this->l('Save'))
 			),
 			'logs' => array(
 				'title'  =>	$this->l('Logs'),
@@ -136,7 +140,8 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'type'       => 'bool',
 						'visibility' => Shop::CONTEXT_SHOP
 					),
-				)
+				),
+				'submit' => array('title' => $this->l('Save'))
 			)
 		);
 

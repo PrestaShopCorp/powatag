@@ -10,6 +10,8 @@ class AdminPowaTagLogsController extends ModuleAdminController
 
 		$this->_select = null; //If needed you can add informations to select issued from other databases
 		$this->_join = null; //Join the databases here
+
+		parent::__construct();
 						
 		$this->fields_list = array(
 			
@@ -36,7 +38,7 @@ class AdminPowaTagLogsController extends ModuleAdminController
 			
 		);
 
-		parent::__construct();
+		$this->bootstrap = true;
 
 		$this->fieldImageSettings = array(
 		);

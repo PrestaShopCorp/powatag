@@ -1,6 +1,6 @@
 $(function() {
 
-	generatePowaTag('https://live.powatag.com/generator/powatag', 'xxxx-xxxx-xxxx-xxxx', 'item-sku');
+	generatePowaTag(urlToPowaTag, apiPowaTag, productSku);
 
 	jQuery("#powatagPopupLink[rel]").overlay(
 		{

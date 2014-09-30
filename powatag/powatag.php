@@ -31,18 +31,15 @@ class PowaTag extends PaymentModule {
 		$this->displayName = $this->l('PowaTag Payment');
 		$this->description = $this->l('PowaTag payment');
 
-		// Check upgrade if enabled and installed
 		if (self::isInstalled($this->name) && self::isEnabled($this->name))
-		{
 			$this->upgrade();
-		}
 
 	}
 
 	private function includeFiles()
 	{
 		$path = $this->getLocalPath().'classes/';
-		/* Import models */
+
 		foreach (scandir($path) as $class)
 		{
 			if(is_file($path.$class))
@@ -56,7 +53,6 @@ class PowaTag extends PaymentModule {
 
 		$path .= 'helper/';
 
-		/* Import helpers */
 		foreach (scandir($path) as $class)
 		{
 			if(is_file($path.$class))
@@ -77,27 +73,19 @@ class PowaTag extends PaymentModule {
 	{
 		// Install default
 		if (!parent::install())
-		{
 			return false;
-		}
 
 		// Uninstall DataBase
 		if (!$this->installSQL())
-		{
 			return false;
-		}
 
 		// Install tabs
 		if(!$this->installTabs())
-		{
 			return false;
-		}
 
 		// Registration hook
 		if (!$this->registrationHook())
-		{
 			return false;
-		}
 
 
 		return true;
@@ -108,15 +96,12 @@ class PowaTag extends PaymentModule {
 	 */
 	public function upgrade()
 	{
-		// Configuration name
 		$cfgName = Tools::strtoupper($this->name . '_version');
-		// Get latest version upgraded
 		$version = Configuration::get($cfgName);
-		// If the first time OR the latest version upgrade is older than this one
+
 		if ($version === false || version_compare($version, $this->version, '<'))
 		{
-			// Upgrade in DataBase the new version
-			Configuration::set($cfgName, $this->version);
+			Configuration::updateValue($cfgName, $this->version);
 		}
 	}
 
@@ -129,21 +114,15 @@ class PowaTag extends PaymentModule {
 
 		// Uninstall DataBase
 		if (!$this->uninstallSQL())
-		{
 			return false;
-		}
 
 		// Delete tabs
 		if(!$this->uninstallTabs())
-		{
 			return false;
-		}
 
 		// Uninstall default
 		if (!parent::uninstall())
-		{
 			return false;
-		}
 
 		return true;
 	}
@@ -164,9 +143,6 @@ class PowaTag extends PaymentModule {
 			'module' => $this->name,
 		));
 
-		/*
-		 * Install All Tabs directly via controller's install function
-		 */
 		$controllers = scandir(dirname(__FILE__).'/controllers/admin');
 		foreach ($controllers as $controller)
 		{
@@ -174,7 +150,6 @@ class PowaTag extends PaymentModule {
 			{
 				require_once(dirname(__FILE__).'/controllers/admin/'.$controller);
 				$controller_name = substr($controller, 0, -4);
-				//Check if class_name is an existing Class or not
 				if(class_exists($controller_name))
 				{
 					if(method_exists($controller_name, 'install'))
@@ -186,8 +161,6 @@ class PowaTag extends PaymentModule {
 		return true;
 
 	}
-
-
 
 	/**
 	 * Delete tab
@@ -205,16 +178,12 @@ class PowaTag extends PaymentModule {
 	 */
 	private function installSQL()
 	{
-		/*
-		 * Install All Object Model SQL via install function
-		 */
 		$classes = scandir(dirname(__FILE__).'/classes');
 		foreach ($classes as $class)
 		{
 			if(is_file(dirname(__FILE__).'/classes/'.$class))
 			{
 				$class_name = substr($class, 0, -4);
-				//Check if class_name is an existing Class or not
 				if(class_exists($class_name))
 				{
 					if(method_exists($class_name, 'install'))
@@ -222,24 +191,6 @@ class PowaTag extends PaymentModule {
 				}
 			}
 		}
-		
-		// Example :
-		
-		// $sql = array();
-		// $sql[] = "CREATE TABLE IF NOT EXISTS `" . _DB_PREFIX_ . "table` (   
-		// 		`id_table` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,    
-		// 		`name` VARCHAR(255) NOT NULL
-		// ) ENGINE = " . _MYSQL_ENGINE_ . " ";
-		
-		// foreach ($sql as $q)
-		// {
-		// 	if (!DB::getInstance()->execute($q))
-		// {
-		// 		return false;
-		// 	}
-		
-		// }
-		
 	
 		return true;
 	}
@@ -250,16 +201,12 @@ class PowaTag extends PaymentModule {
 	 */
 	private function uninstallSQL()
 	{
-		/*
-		 * Uninstall All Object Model SQL via install function
-		 */
 		$classes = scandir(dirname(__FILE__).'/classes');
 		foreach ($classes as $class)
 		{
 			if(is_file(dirname(__FILE__).'/classes/'.$class))
 			{
 				$class_name = substr($class, 0, -4);
-				//Check if class_name is an existing Class or not
 				if(class_exists($class_name))
 				{
 					if(method_exists($class_name, 'uninstall'))
@@ -268,12 +215,6 @@ class PowaTag extends PaymentModule {
 			}
 		}
 		
-		
-		// Example :
-		// $sql = "DROP TABLE IF EXISTS `" . _DB_PREFIX_ . "table`";
-		// if (!DB::getInstance()->execute($sql))
-		// 	return false;
-	
 		return true;
 	}
 
@@ -297,10 +238,15 @@ class PowaTag extends PaymentModule {
 
 	public function hookDisplayHeader()
 	{
-		if ($this->context->smarty->getTemplateVars('page_name') == 'product') {
-			$this->context->controller->addCSS('https://live.powatag.com/static/css/powatag.css');
+		if ($this->context->smarty->getTemplateVars('page_name') == 'product')
+		{
+
+			$live = (bool) Configuration::get('POWATAG_SANDBOX');
+
+			$this->context->controller->addCSS('https://'.($live ? 'live' : 'sandbox').'.powatag.com/static/css/powatag.css');
+			$this->context->controller->addJS('https://'.($live ? 'live' : 'sandbox').'.powatag.com/static/js/powatag.js');
+
 			$this->context->controller->addJS('http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js');
-			$this->context->controller->addJS('https://live.powatag.com/static/js/powatag.js');
 			$this->context->controller->addJS($this->getPathUri().'views/js/powatag.js');
 		}
 	}
@@ -344,9 +290,12 @@ class PowaTag extends PaymentModule {
 		$product = new Product((int)Tools::getValue('id_product'), true, (int)$this->context->language->id);
 
 		$datas = array(
-			'powatag-api' => Configuration::get('POWATAG_API_KEY'),
-			'product-sku' => $product->ean13,
+			'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
+			'productSku'     => $product->ean13,
+			'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
 		);
+
+		$this->context->smarty->assign($datas);
 
 		return $this->display(__FILE__, 'product.tpl');
 	}
@@ -357,68 +306,7 @@ class PowaTag extends PaymentModule {
 	 */
 	public function getContent()
 	{
-
-		// Suffix to link
-		$suffixLink = '&configure=' . $this->name . '&token=' . Tools::getValue('token') . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
-
-		// Base
-		if (version_compare(_PS_VERSION_, '1.5', '>'))
-			$this->_link = 'index.php?controller=' . Tools::getValue('controller') . $suffixLink;
-		else
-			$this->_link = 'index.php?tab=' . Tools::getValue('tab') . $suffixLink;
-
-		$_html = '';
-
-		return $this->displayBanner() . $_html;
-	}
-
-	/**
-	 * Display 202-banner
-	 * @return string Templates
-	 */
-	private function displayBanner()
-	{
-
-		$translations = array(
-			'by' => $this->l('By'),
-			'web' => $this->l('Web agency specialized in ecommerce web sites'),
-			'addons' => $this->l('Our modules on addons'),
-			'blog' => $this->l('News & advice on our blog')
-		);
-
-		$module = array(
-			'description'  => $this->description,
-			'name'         => $this->name,
-			'displayName'  => $this->displayName,
-			'_path'        => $this->_path
-		);
-
-		$datas = array(
-			'module'       => $module,
-			'translations' => $translations,
-			'module_link'         => $this->_link,
-			'lang'         => $this->context->language
-		);
-
-		if (version_compare(_PS_VERSION_, '1.5', '>'))
-		{
-			$smarty = $this->context->smarty;
-		}
-		else {
-			global $smarty;
-		}
-
-		$smarty->assign($datas);
-
-		return $this->display(__FILE__, '/views/templates/hook/banner.tpl');
-	}
-
-	/**
-	 * Processing post in BO
-	 */
-	public function postProcess()
-	{
-		// 
+		Tools::redirectAdmin($this->context->link->getAdminLink('AdminPowaTagConfiguration'));
 	}
 
 }
