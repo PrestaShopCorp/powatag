@@ -20,8 +20,8 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 		if (!array_key_exists('HTTP_HMAC', $_SERVER))
 			throw new Exception('No API Key provided');
-		// else if (!$APIKey->verifyKey($_SERVER['HTTP_HMAC'], Tools::jsonEncode($this->data)))
-		// 	throw new Exception('Invalid API Key');
+		else if (!$APIKey->verifyKey($_SERVER['HTTP_HMAC'], Tools::jsonEncode($this->data)))
+			throw new Exception('Invalid API Key');
 		
 	}
 
@@ -79,10 +79,10 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			}
 			else
 			{
-				$msg = $order->getError();
+				$msg = $powatagProduct->getError();
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $msg);
+					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::ERROR, $msg);
 
 				$array = array(
 					'code'            => 'SKU_NOT_FOUND',
