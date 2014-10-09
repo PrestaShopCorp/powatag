@@ -112,7 +112,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 	{
 		// Manage informations
 		$datas = $this->data;
-
+		
 		if($this->verb == 'costs')
 		{
 			if (isset($datas->order))

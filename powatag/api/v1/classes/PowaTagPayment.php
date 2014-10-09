@@ -63,7 +63,7 @@ class PowaTagPayment extends PowaTagAbstract
 		}
 	}
 
-	public function confirmPayment()
+	public function confirmPayment($twoSteps = false)
 	{
 
 		$orderState = Configuration::get('PS_OS_PAYMENT');
@@ -73,30 +73,31 @@ class PowaTagPayment extends PowaTagAbstract
 			$orderState = Configuration::get('PS_OS_ERROR');
 		}
 
-		$this->customer = PowaTagPayment::getCustomerByEmail($this->datas->customer->emailAddress);;
-		$addresses = $this->customer->getAddresses((int)$this->context->language->id);
-
-		$address = false;
-
-		foreach ($addresses as $addr)
+		if (isset($this->paymentRequest->paymentCart))
 		{
-			if ($addr['alias'] == $this->datas->paymentRequest->paymentCard->billingAddress->friendlyName)
+
+			$this->customer = PowaTagPayment::getCustomerByEmail($this->datas->customer->emailAddress);;
+			$addresses = $this->customer->getAddresses((int)$this->context->language->id);
+
+			$address = false;
+
+			foreach ($addresses as $addr)
 			{
-				$address = new Address((int)$addr['id_address']);
-				break;
+				if ($addr['alias'] == $this->paymentRequest->paymentCart->billingAddress->friendlyName)
+				{
+					$find = true;
+					$address = new Address((int)$addr['id_address']);
+					break;
+				}
 			}
-		}
 
-		if (!$this->error)
-		{
-			if (!Validate::isLoadedObject($address) && (!$address = !$this->createAddress($this->datas->paymentRequest->paymentCard->billingAddress)))
-				$orderState = Configuration::get('PS_OS_ERROR');
-		}
-
-		if (Validate::isLoadedObject($address))
-		{
-			$this->cart->id_address_invoice = $address->id;
-			$this->cart->save();
+			if ($address || ($address = $this->createAddress($this->paymentRequest->paymentCart->billingAddress)))
+			{
+				$this->cart->id_address_invoice = $address->id;
+				$this->cart->save();
+			}
+			else
+				$orderState = (int)Configuration::get('PS_OS_ERROR');
 		}
 
 		if (!$this->error)
@@ -111,9 +112,12 @@ class PowaTagPayment extends PowaTagAbstract
 				$orderState = Configuration::get('PS_OS_ERROR');
 		}
 
-		if (!$idTransaction = $this->transactionExists())
+		if (!$twoSteps)
 		{
-			$orderState = Configuration::get('PS_OS_ERROR');
+			if (!$idTransaction = $this->transactionExists())
+			{
+				$orderState = Configuration::get('PS_OS_ERROR');
+			}
 		}
 
 		$amountPaid = $this->datas->paymentRequest->amountTotal->amount;
@@ -124,15 +128,22 @@ class PowaTagPayment extends PowaTagAbstract
 				$orderState = (int)Configuration::get('PS_OS_ERROR');
 		}
 
-		$this->setBantAuthorizationCode($this->datas->paymentRequest->bankAuthorizationCode);
+		if (!$this->bankAuthorizationCode)
+			$this->setBantAuthorizationCode($this->datas->paymentRequest->bankAuthorizationCode);
 		
-		$transaction = new PowaTagTransaction((int)$idTransaction);
-		$transaction->orderState = $orderState;
+		if (!$twoSteps)
+		{
+			$transaction = new PowaTagTransaction((int)$idTransaction);
+			$transaction->orderState = $orderState;
+		}
 
 		$currentOrderId = $this->validateOrder($orderState, $this->idCart, $amountPaid);
-		$transaction->id_order = $currentOrderId;
 
-		$transaction->save();
+		if (!$twoSteps)
+		{
+			$transaction->id_order = $currentOrderId;
+			$transaction->save();
+		}
 
 		return $currentOrderId;
 	}
@@ -209,7 +220,12 @@ class PowaTagPayment extends PowaTagAbstract
 			if (Validate::isInt($currency))
 				$currency = new Currency((int)$currency);
 			else
-				$currency = PowaTagPayment::getCurrencyByIsoCode($currency);
+			{
+				$currencyCode = $currency;
+				if (!$currency = PowaTagPayment::getCurrencyByIsoCode($currency))
+					$currency = $currencyCode;
+			}
+
 		}
 
 		if (!PowaTagValidate::currencyEnable($currency))

@@ -30,7 +30,7 @@ class PowaTagOrders extends PowaTagAbstract
 	 * Datas paymentResult
 	 * @var \stdClass
 	 */
-	private $paymentResultDatas;
+	private $paymentRequest;
 
 	/**
 	 * Customer Prestashop
@@ -59,13 +59,13 @@ class PowaTagOrders extends PowaTagAbstract
 		else
 			$order = current($this->datas->orders);
 
-		$this->customerDatas = $order->customer;
-		$this->costsDatas    = $order->orderCostSummary;
-		$this->productsDatas = $order->orderLineItems;
-		$this->deviceDatas   = $order->device;
+		$this->datas->customer = $order->customer;
+		$this->datas->orderCostSummary    = $order->orderCostSummary;
+		$this->datas->orderLineItems = $order->orderLineItems;
+		$this->datas->device   = $order->device;
 
 		if (isset($this->datas->paymentResult))
-			$this->paymentResultDatas = $this->datas->paymentResult;
+			$this->datas->paymentRequest = $this->datas->paymentResult;
 
 		$this->initObjects();
 	}
@@ -76,8 +76,7 @@ class PowaTagOrders extends PowaTagAbstract
 	private function initObjects()
 	{
 		
-		$this->customer = PowaTagOrders::getCustomerByEmail($this->customerDatas->emailAddress, true, $this->customerDatas->lastName, $this->customerDatas->firstName, $this->customerDatas->emailAddress);
-
+		$this->customer = PowaTagOrders::getCustomerByEmail($this->datas->customer->emailAddress, true, $this->datas->customer->lastName, $this->datas->customer->firstName, $this->datas->customer->emailAddress);
 
 		$addresses = $this->customer->getAddresses((int)$this->context->language->id);
 
@@ -85,7 +84,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 		foreach ($addresses as $addr)
 		{
-			if ($addr['alias'] == $this->customerDatas->shippingAddress->friendlyName)
+			if ($addr['alias'] == $this->datas->customer->shippingAddress->friendlyName)
 			{
 				$find = true;
 				$address = new Address((int)$addr['id_address']);
@@ -94,7 +93,7 @@ class PowaTagOrders extends PowaTagAbstract
 		}
 
 		if (!$find)
-			$address = $this->createAddress($this->customerDatas->shippingAddress);
+			$address = $this->createAddress($this->datas->customer->shippingAddress);
 
 		if (Validate::isLoadedObject($address))
 			$this->address = $address;
@@ -108,38 +107,17 @@ class PowaTagOrders extends PowaTagAbstract
 
 		$idOrder = $createCart;
 
-		if ($this->paymentResultDatas)
+		if ($this->datas->paymentRequest)
 		{
 			$orderState = (int)Configuration::get('PS_OS_PAYMENT');
 
 			if (!$createCart)
 				$orderState = (int)Configuration::get('PS_OS_ERROR');
 
-			$addresses = $this->customer->getAddresses((int)$this->context->language->id);
+			$this->datas->customer = $this->datas->customer;
 
-			$find = $address = false;
-
-			foreach ($addresses as $addr)
-			{
-				if ($addr['alias'] == $this->paymentResultDatas->paymentCart->billingAddress->friendlyName)
-				{
-					$find = true;
-					$address = new Address((int)$addr['id_address']);
-					break;
-				}
-			}
-
-			if ($address || ($address = !$this->createAddress($this->paymentResultDatas->paymentCart->billingAddress)))
-			{
-				$this->cart->id_address_invoice = $address->id;
-				$this->cart->save();
-			}
-			else
-				$orderState = (int)Configuration::get('PS_OS_ERROR');
-
-			$payment = new PowaTagPayment();
-			$payment->setBantAuthorizationCode($this->paymentResultDatas->bankAuthorizationCode);
-			$idOrder = $payment->validateOrder($orderState, (int)$this->cart->id, $this->paymentResultDatas->amountTotal->amount, $this->error);
+			$payment = new PowaTagPayment($this->datas, $createCart);
+			$idOrder = $payment->confirmPayment(true);
 		}
 
 		if ($createCart)
@@ -148,8 +126,8 @@ class PowaTagOrders extends PowaTagAbstract
 			$transaction->id_cart     = (int)$this->cart->id;
 			$transaction->id_order    = (int)$idOrder;
 			$transaction->id_customer = (int)$this->customer->id;
-			$transaction->id_device   = $this->deviceDatas->deviceID;
-			$transaction->ip_address  = $this->deviceDatas->ipAddress;
+			$transaction->id_device   = $this->datas->device->deviceID;
+			$transaction->ip_address  = $this->datas->device->ipAddress;
 			$transaction->order_state = isset($orderState) ? (int)$orderState : 0;
 
 			$transaction->save();
@@ -161,18 +139,18 @@ class PowaTagOrders extends PowaTagAbstract
 	private function createCart()
 	{
 
-		if (!$currency = $this->getCurrencyByIsoCode($this->costsDatas->total->currency))
+		if (!$currency = $this->getCurrencyByIsoCode($this->datas->orderCostSummary->total->currency))
 			return false;
 
-		$subTotal = $this->getSubTotal($this->productsDatas, (int)$this->address->id_country);
+		$subTotal = $this->getSubTotal($this->datas->orderLineItems, (int)$this->address->id_country);
 
 		if (!$subTotal)
 			return false;
 
-		$totalAmount       = (float)$this->costsDatas->total->amount;
-		$totalSubTotal     = (float)$this->costsDatas->subTotal->amount;
-		$totalShippingCost = (float)$this->costsDatas->shippingCost->amount;
-		$totalTax          = (float)$this->costsDatas->tax->amount;
+		$totalAmount       = (float)$this->datas->orderCostSummary->total->amount;
+		$totalSubTotal     = (float)$this->datas->orderCostSummary->subTotal->amount;
+		$totalShippingCost = (float)$this->datas->orderCostSummary->shippingCost->amount;
+		$totalTax          = (float)$this->datas->orderCostSummary->tax->amount;
 
 		$this->convertToCurrency($totalSubTotal, $currency, false);
 		$this->convertToCurrency($totalShippingCost, $currency, false);
@@ -199,8 +177,8 @@ class PowaTagOrders extends PowaTagAbstract
 			return false;
 		}
 		
-		$this->shippingCost = $this->getShippingCost($this->productsDatas, $currency, (int)$this->address->id_country, false);
-		$this->shippingCostWt = $this->getShippingCost($this->productsDatas, $currency, (int)$this->address->id_country, true);
+		$this->shippingCost = $this->getShippingCost($this->datas->orderLineItems, $currency, (int)$this->address->id_country, false);
+		$this->shippingCostWt = $this->getShippingCost($this->datas->orderLineItems, $currency, (int)$this->address->id_country, true);
 
 		if (!$this->shippingCost || !Validate::isFloat($this->shippingCost))
 		{
@@ -214,7 +192,7 @@ class PowaTagOrders extends PowaTagAbstract
 			return false;
 		}
 
-		if ($totalTax != ($tax = $this->getTax($this->productsDatas, $currency, (int)$this->address->id_country)))
+		if ($totalTax != ($tax = $this->getTax($this->datas->orderLineItems, $currency, (int)$this->address->id_country)))
 		{
 			$this->error = sprintf($this->module->l('The total tax is not correct : %s != %s'), $totalTax, $tax);
 			return false;
@@ -229,7 +207,7 @@ class PowaTagOrders extends PowaTagAbstract
 		}
 
 		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->customerDatas->shippingAddress->lastName.' '.$this->customerDatas->shippingAddress->firstName);
+			PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->datas->customer->shippingAddress->lastName.' '.$this->datas->customer->shippingAddress->firstName);
 
 
 		$cart = new Cart();
@@ -270,7 +248,7 @@ class PowaTagOrders extends PowaTagAbstract
 	 */
 	private function addProductsToCart($cart, $codeCountry)
 	{
-		$products = $this->productsDatas;
+		$products = $this->datas->orderLineItems;
 
 		if (Validate::isInt($codeCountry))
 			$country = new Country($codeCountry);
