@@ -20,7 +20,7 @@ class PowaTag extends PaymentModule {
 
 		$this->name = 'powatag';
 		$this->tab = 'payments_gateways';
-		$this->version = '0.1.0.0';
+		$this->version = '0.1.0.1';
 		$this->author = '202-ecommerce';
 
 

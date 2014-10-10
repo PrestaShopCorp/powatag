@@ -87,7 +87,8 @@ abstract class PowaTagAPIAbstract
 				throw new Exception("Unexpected Header");
 		}
 		
-		$this->data = Tools::jsonDecode(Tools::file_get_contents("php://input"));
+		$this->data = Tools::file_get_contents("php://input");
+
 		self::$api_log = Configuration::get('POWATAG_API_LOG');
 		self::$request_log = Configuration::get('POWATAG_REQUEST_LOG');
 

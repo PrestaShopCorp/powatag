@@ -20,9 +20,11 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 		if (!array_key_exists('HTTP_HMAC', $_SERVER))
 			throw new Exception('No API Key provided');
-		else if (!$APIKey->verifyKey($_SERVER['HTTP_HMAC'], Tools::jsonEncode($this->data)))
+		else if (!$APIKey->verifyKey($_SERVER['HTTP_HMAC'], $this->data))
 			throw new Exception('Invalid API Key');
 		
+		$this->data = Tools::jsonDecode($this->data);
+
 	}
 
 	/**
