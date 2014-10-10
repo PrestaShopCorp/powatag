@@ -107,7 +107,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 		$idOrder = $createCart;
 
-		if ($this->datas->paymentRequest)
+		if (isset($this->datas->paymentRequest))
 		{
 			$orderState = (int)Configuration::get('PS_OS_PAYMENT');
 
