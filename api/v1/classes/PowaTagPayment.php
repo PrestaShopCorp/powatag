@@ -73,7 +73,7 @@ class PowaTagPayment extends PowaTagAbstract
 			$orderState = Configuration::get('PS_OS_ERROR');
 		}
 
-		if (isset($this->paymentRequest->paymentCart))
+		if (isset($this->datas->paymentResult->paymentCart))
 		{
 
 			$this->customer = PowaTagPayment::getCustomerByEmail($this->datas->customer->emailAddress);;
@@ -81,9 +81,14 @@ class PowaTagPayment extends PowaTagAbstract
 
 			$address = false;
 
+			if (!isset($this->datas->paymentResult->paymentCart->billingAddress->friendlyName))
+				$friendlyName = $this->module->l('My address');
+			else
+				$friendlyName = $this->datas->paymentResult->paymentCart->billingAddress->friendlyName;
+
 			foreach ($addresses as $addr)
 			{
-				if ($addr['alias'] == $this->paymentRequest->paymentCart->billingAddress->friendlyName)
+				if ($addr['alias'] == $friendlyName)
 				{
 					$find = true;
 					$address = new Address((int)$addr['id_address']);
@@ -91,7 +96,7 @@ class PowaTagPayment extends PowaTagAbstract
 				}
 			}
 
-			if ($address || ($address = $this->createAddress($this->paymentRequest->paymentCart->billingAddress)))
+			if ($address || ($address = $this->createAddress($this->datas->paymentResult->paymentCart->billingAddress)))
 			{
 				$this->cart->id_address_invoice = $address->id;
 				$this->cart->save();
@@ -120,16 +125,16 @@ class PowaTagPayment extends PowaTagAbstract
 			}
 		}
 
-		$amountPaid = $this->datas->paymentRequest->amountTotal->amount;
+		$amountPaid = $this->datas->paymentResult->amountTotal->amount;
 
 		if (!$this->error)
 		{
-			if (!$this->checkTotalToPaid($amountPaid, $this->datas->paymentRequest->amountTotal->currency))
+			if (!$this->checkTotalToPaid($amountPaid, $this->datas->paymentResult->amountTotal->currency))
 				$orderState = (int)Configuration::get('PS_OS_ERROR');
 		}
 
 		if (!$this->bankAuthorizationCode)
-			$this->setBantAuthorizationCode($this->datas->paymentRequest->bankAuthorizationCode);
+			$this->setBantAuthorizationCode($this->datas->paymentResult->bankAuthorizationCode);
 		
 		if (!$twoSteps)
 		{

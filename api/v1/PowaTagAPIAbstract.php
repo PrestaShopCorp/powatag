@@ -68,7 +68,7 @@ abstract class PowaTagAPIAbstract
 	{
 		header("Access-Control-Allow-Orgin: *");
 		header("Access-Control-Allow-Methods: *");
-		header("Content-Type: application/json");
+		header("Content-Type: application/json; charset=utf-8");
 
 		$this->args = explode('/', rtrim($request, '/'));
 		$this->endpoint = array_shift($this->args);
@@ -107,7 +107,28 @@ abstract class PowaTagAPIAbstract
 	private function _response($data, $status = 200)
 	{
 		header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
-		return Tools::jsonEncode($data);
+		return Tools::jsonEncode($this->jsonEncode($data));
+	}
+
+	private function jsonEncode($datas, $isArray = true)
+	{
+
+		$tmp = array();
+
+		foreach ($datas as $key => $value)
+		{
+			$key = htmlentities($key, ENT_NOQUOTES, 'UTF-8');
+
+			if (is_array($value))
+				$value = $this->jsonEncode($value, true);
+			else
+				$value = htmlentities($value, ENT_NOQUOTES, 'UTF-8');
+
+			$tmp[$key] = $value;
+		}
+
+		return $tmp;
+
 	}
 
 	private function _cleanInputs($data)

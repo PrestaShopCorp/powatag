@@ -51,10 +51,15 @@ class PowaTagProduct extends PowaTagAbstract
 			'language'            => $this->context->language->iso_code,
 			'productImages'       => $this->getImages(),
 			'productVariants'     => $this->getVariants(),
-			'productAttributes'   => $this->getAttributes(),
-			'customFields'        => $this->getCustomFields()
 		);
 
+
+		if ($attributes = $this->getAttributes())
+			$array['productAttributes'] = $attributes;
+
+		if ($fields = $this->getCustomFields())
+			$array['customFields'] = $fields;
+		
 		if ($hasOptions)
 			$array['productOptions'] = $this->getOptions();
 

@@ -530,20 +530,25 @@ abstract class PowaTagAbstract
 			return false;
 		}
 
+		if (!isset($addressInformations->friendlyName))
+			$friendlyName = $this->module->l('My address');
+		else
+			$friendlyName = $addressInformations->friendlyName;
+
 		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create address', PowaTagLogs::IN_PROGRESS, $addressInformations->lastName.' '.$addressInformations->firstName.' : '.$addressInformations->friendlyName);
+			PowaTagLogs::initAPILog('Create address', PowaTagLogs::IN_PROGRESS, $addressInformations->lastName.' '.$addressInformations->firstName.' : '.$friendlyName);
 
 		$address = Address::initialize();
 		$address->id_customer = (int)$this->customer->id;
 		$address->id_country  = (int)$country->id;
-		$address->alias       = $addressInformations->friendlyName;
+		$address->alias       = $friendlyName;
 		$address->lastname    = $addressInformations->lastName;
 		$address->firstname   = $addressInformations->firstName;
 		$address->address1    = $addressInformations->line1;
 		$address->address2    = $addressInformations->line2;
 		$address->postcode    = $addressInformations->postCode;
 		$address->city        = $addressInformations->city;
-		$address->phone       = isset($this->customerDatas->phone) ? $this->customerDatas->phone : '0000000000' ;
+		$address->phone       = isset($addressInformations->phone) ? $addressInformations->phone : '0000000000' ;
 		$address->id_state    = (int)State::getIdByIso($addressInformations->state, (int)$country->id);
 
 		if (!$address->save())
