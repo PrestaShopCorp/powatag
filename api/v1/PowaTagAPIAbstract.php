@@ -114,17 +114,19 @@ abstract class PowaTagAPIAbstract
 	{
 
 		$tmp = array();
-
-		foreach ($datas as $key => $value)
+		if (is_array($datas))
 		{
-			$key = htmlentities($key, ENT_NOQUOTES, 'UTF-8');
+			foreach ($datas as $key => $value)
+			{
+				$key = htmlentities($key, ENT_NOQUOTES, 'UTF-8');
 
-			if (is_array($value))
-				$value = $this->jsonEncode($value, true);
-			else
-				$value = htmlentities($value, ENT_NOQUOTES, 'UTF-8');
+				if (is_array($value))
+					$value = $this->jsonEncode($value, true);
+				else
+					$value = htmlentities($value, ENT_NOQUOTES, 'UTF-8');
 
-			$tmp[$key] = $value;
+				$tmp[$key] = $value;
+			}
 		}
 
 		return $tmp;
