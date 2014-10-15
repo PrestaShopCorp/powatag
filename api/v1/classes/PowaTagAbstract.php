@@ -111,7 +111,7 @@ abstract class PowaTagAbstract
 	 * Calculate total of products without tax
 	 * @return float Total of products
 	 */
-	protected function getSubTotal($products, $codeCountry)
+	protected function getSubTotal($products, $codeCountry, $check = true)
 	{
 
 		if (Validate::isInt($codeCountry))
@@ -178,13 +178,13 @@ abstract class PowaTagAbstract
 					$variantAmount    = Tools::ps_round($variantAmount, 2);
 					$priceAttributeWt = Tools::ps_round($priceAttributeWt, 2);
 
-					if ($priceAttribute != $variantAmount)
+					if ($check && $priceAttribute != $variantAmount)
 					{
 						$this->error = sprintf($this->module->l('Price variant is different with the price shop : %s %s != %s'), $variant->code, $priceAttribute, $variantAmount);
 						return false;
 					}
 
-					if ($qtyInStock < $p->quantity)
+					if ($check && $qtyInStock < $p->quantity)
 					{
 						$this->error = sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code);
 						return false;
@@ -226,7 +226,7 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::countryEnable($country))
 		{
-			$this->error = sprintf($this->module->l('Country is does not exists or does not enable for this shop : %s'), $countryIso);
+			$this->error = sprintf($this->module->l('Country is does not exists or does not enable for this shop : %s'), $country->iso_code);
 			return false;
 		}
 

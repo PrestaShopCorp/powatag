@@ -45,7 +45,7 @@ class PowaTagCosts extends PowaTagAbstract
 
 		$country = PowaTagCosts::getCountryByCode($this->datas->order->customer->shippingAddress->country->alpha2Code);
 
-		$this->getSubTotal($this->products, (int)$country->id);
+		$this->getSubTotal($this->products, (int)$country->id, false);
 
 		if ($this->error)
 			return false;
