@@ -198,7 +198,11 @@ class PowaTagPayment extends PowaTagAbstract
 
 	private function transactionExists()
 	{
-		$transactions = (isset($this->datas->device) ? PowaTagTransaction::getTransactions((int)$this->idCart, $this->datas->device->deviceID, $this->datas->device->ipAddress) : false);
+
+		if (isset($this->datas->device))
+			$transactions = PowaTagTransaction::getTransactions((int)$this->idCart, $this->datas->device->deviceID, $this->datas->device->ipAddress);
+		else
+			$transactions = PowaTagTransaction::getTransactions((int)$this->idCart);
 
 		if (!$transactions || !count($transactions))
 		{
