@@ -60,6 +60,12 @@ abstract class PowaTagAPIAbstract
 	  */
 	 protected $data;
 
+	 /**
+	  * Response header
+	  * @var int
+	  */
+	 protected $response = 200;
+
 	/**
 	 * Constructor: __construct
 	 * Allow for CORS, assemble and pre-process the data
@@ -95,17 +101,31 @@ abstract class PowaTagAPIAbstract
 		$this->module = Module::getInstanceByName('powatag');
 	}
 
+	public function setResponse($response)
+	{
+		$this->response = $response;
+	}
+
+	public function getResponse()
+	{
+		return $this->response;
+	}
+
 	public function processAPI()
 	{
 
 		if ((int) method_exists($this, $this->endpoint) > 0)
 			return $this->_response(call_user_func(array($this, $this->endpoint), $this->args));
 
-		return $this->_response("No Endpoint: $this->endpoint", 404);
+		$this->setResponse(404);
+
+		return $this->_response("No Endpoint: $this->endpoint");
 	}
 
-	private function _response($data, $status = 200)
+	protected function _response($data)
 	{
+		$status = $this->getResponse();
+
 		header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
 		return Tools::jsonEncode($this->jsonEncode($data));
 	}
@@ -151,6 +171,7 @@ abstract class PowaTagAPIAbstract
 	{
 		$status = array(  
 			200 => 'OK',
+			400 => 'Bad Request',   
 			404 => 'Not Found',   
 			405 => 'Method Not Allowed',
 			500 => 'Internal Server Error',

@@ -144,7 +144,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 			if ($totalAmount != $sum)
 			{
-				$this->error = sprintf($this->module->l('The total amount is not correct with the others total : %s != %s'), $totalAmount, $sum);
+				$this->addError(sprintf($this->module->l('The total amount is not correct with the others total : %s != %s'), $totalAmount, $sum));
 				return false;
 			}
 
@@ -154,7 +154,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 			if ($totalSubTotal != $subTotal)
 			{
-				$this->error = sprintf($this->module->l('The subtotal is not correct : %s != %s'), $totalSubTotal, $subTotal);
+				$this->addError(sprintf($this->module->l('The subtotal is not correct : %s != %s'), $totalSubTotal, $subTotal));
 				return false;
 			}
 			
@@ -163,19 +163,19 @@ class PowaTagOrders extends PowaTagAbstract
 
 			if (!$this->shippingCost || !Validate::isFloat($this->shippingCost))
 			{
-				$this->error = sprintf($this->module->l('Error with shippingCost : %s'), $this->shippingCost);
+				$this->addError(sprintf($this->module->l('Error with shippingCost : %s'), $this->shippingCost));
 				return false;
 			}
 
 			if ($totalShippingCost != $this->shippingCost)
 			{
-				$this->error = sprintf($this->module->l('The total shipping cost is not correct : %s != %s'), $totalShippingCost, $this->shippingCost);
+				$this->addError(sprintf($this->module->l('The total shipping cost is not correct : %s != %s'), $totalShippingCost, $this->shippingCost));
 				return false;
 			}
 
 			if ($totalTax != ($tax = $this->getTax($this->datas->orderLineItems, $currency, (int)$this->address->id_country)))
 			{
-				$this->error = sprintf($this->module->l('The total tax is not correct : %s != %s'), $totalTax, $tax);
+				$this->addError(sprintf($this->module->l('The total tax is not correct : %s != %s'), $totalTax, $tax));
 				return false;
 			}
 
@@ -183,7 +183,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 			if ($totalAmount != $totalWithShipping)
 			{
-				$this->error = sprintf($this->module->l('The total amount is not correct : %s != %s'), $totalAmount, $totalWithShipping);
+				$this->addError(sprintf($this->module->l('The total amount is not correct : %s != %s'), $totalAmount, $totalWithShipping));
 				return false;
 			}
 
@@ -216,7 +216,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 		if (!$cart->save())
 		{
-			$this->error = $this->module->l("Impossible to save cart");
+			$this->addError($this->module->l("Impossible to save cart"));
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create cart', PowaTagLogs::ERROR, $this->error);
@@ -263,7 +263,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 				if (!Validate::isLoadedObject($product))
 				{
-					$this->error = sprintf($this->module->l('This product does not exists : %s'), $p->product->code);
+					$this->addError(sprintf($this->module->l('This product does not exists : %s'), $p->product->code), PowaTagAbstract::$SKU_NOT_FOUND);
 
 					if (PowaTagAPI::apiLog())
 						PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
@@ -281,7 +281,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 					if (!PowaTagValidate::currencyEnable($variantCurrency))
 					{
-						$this->error = sprintf($this->module->l('Currency not found : %s'), $variant->code);
+						$this->addError(sprintf($this->module->l('Currency not found : %s'), $variant->code));
 
 						if (PowaTagAPI::apiLog())
 							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
@@ -304,7 +304,7 @@ class PowaTagOrders extends PowaTagAbstract
 					}
 					else
 					{
-						$this->error = sprintf($this->module->l('This variant does not exist : %s'), $variant->code);
+						$this->addError(sprintf($this->module->l('This variant does not exist : %s'), $variant->code), PowaTagAbstract::$SKU_NOT_FOUND);
 
 						if (PowaTagAPI::apiLog())
 							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
@@ -327,7 +327,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 					if ($priceAttribute != $variantAmount)
 					{
-						$this->error = sprintf($this->module->l('Price variant is different with the price shop : %s != %s'), $priceAttribute, $variantAmount);
+						$this->addError(sprintf($this->module->l('Price variant is different with the price shop : %s != %s'), $priceAttribute, $variantAmount));
 
 						if (PowaTagAPI::apiLog())
 							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
@@ -337,7 +337,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 					if ($qtyInStock < $p->quantity)
 					{
-						$this->error = sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code);
+						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
 
 						if (PowaTagAPI::apiLog())
 							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
@@ -355,7 +355,7 @@ class PowaTagOrders extends PowaTagAbstract
 		}
 		else
 		{
-			$this->error = $this->module->l("No product found in request");
+			$this->addError($this->module->l("No product found in request"), PowaTagAbstract::$BAD_REQUEST);
 			return false;
 		}
 

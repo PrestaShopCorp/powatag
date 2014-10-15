@@ -81,15 +81,17 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			}
 			else
 			{
-				$msg = $powatagProduct->getError();
+				$error = $powatagProduct->getError();
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::ERROR, $msg);
+					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::ERROR, $error['message']);
+
+				$this->setResponse($error['error']['response']);
 
 				$array = array(
-					'code'            => 'SKU_NOT_FOUND',
-					'validationError' => null,
-					'message'         => $msg
+					'code'             => $error['error']['code'],
+					'validationErrors' => null,
+					'message'          => $error['message']
 				);
 
 				return $array;
@@ -114,6 +116,21 @@ class PowaTagAPI extends PowaTagAPIAbstract
 	{
 		// Manage informations
 		$datas = $this->data;
+
+		if (is_null($datas))
+		{
+			$error = PowaTagAbstract::$BAD_REQUEST;
+
+			$this->setResponse($error['response']);
+
+			$data = array(
+				"code"              => $error['code'],
+				"validationErrors" => "",
+				"message"           => "No body of request",
+			);
+
+			return $data;
+		}
 		
 		if($this->verb == 'costs')
 		{
@@ -144,12 +161,20 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			else
 			{
 
-				$msg = $powatagcosts->getError();
+				$error = $powatagcosts->getError();
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::ERROR, $msg);
+					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::ERROR, $error['message']);
 
-				return array('code' => 'NOT_IN_STOCK', 'message' => $msg, 'validationErrors' => null);
+				$this->setResponse($error['error']['response']);
+
+				$array = array(
+					'code'             => $error['error']['code'],
+					'validationErrors' => null,
+					'message'          => $error['message']
+				);
+
+				return $array;
 			}
 		}
 		else if (count($args) == 2 && Validate::isInt($args[0]) && $args[1] = "confirm-payment")
@@ -162,7 +187,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				PowaTagLogs::initRequestLog('Create payment', PowaTagLogs::IN_PROGRESS, $datas);
 
 			$payment = new PowaTagPayment($datas, (int)$args[0]);
-
+			
 			if ($id_order = $payment->confirmPayment())
 			{
 
@@ -178,12 +203,20 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			else
 			{
 
-				$msg = $payment->getError();
+				$error = $payment->getError();
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process payment', PowaTagLogs::ERROR, $msg);
+					PowaTagLogs::initAPILog('Process payment', PowaTagLogs::ERROR, $error['message']);
 
-				return array('code' => 'NOT_IN_STOCK', 'message' => $msg, 'validationErrors' => null);
+				$this->setResponse($error['error']['response']);
+
+				$array = array(
+					'code'             => $error['error']['code'],
+					'validationErrors' => null,
+					'message'          => $error['message']
+				);
+
+				return $array;
 			}
 
 		}
@@ -215,12 +248,20 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			else
 			{
 
-				$msg = $order->getError();
+				$error = $order->getError();
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $msg);
+					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $error['message']);
 
-				return array('code' => 'NOT_IN_STOCK', 'message' => $msg, 'validationErrors' => null);
+				$this->setResponse($error['error']['response']);
+
+				$array = array(
+					'code'             => $error['error']['code'],
+					'validationErrors' => null,
+					'message'          => $error['message']
+				);
+
+				return $array;
 			}
 		}
 	}
