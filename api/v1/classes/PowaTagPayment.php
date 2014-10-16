@@ -45,7 +45,7 @@ class PowaTagPayment extends PowaTagAbstract
 		$cart = new Cart($id_cart);
 		$customer = new Customer($cart->id_customer);
 
-		if ($module->validateOrder((int)$id_cart, (int)$orderState, $amountPaid, $module->name, $message.$this->error, array('transaction_id' => $this->bankAuthorizationCode), null, false, $customer->secure_key))
+		if ($module->validateOrder((int)$id_cart, (int)$orderState, $amountPaid, $module->name, $message.$this->error['message'], array('transaction_id' => $this->bankAuthorizationCode), null, false, $customer->secure_key))
 		{
 
 			if (PowaTagAPI::apiLog())
