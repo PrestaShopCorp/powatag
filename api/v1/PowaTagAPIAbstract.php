@@ -132,25 +132,8 @@ abstract class PowaTagAPIAbstract
 
 	private function jsonEncode($datas, $isArray = true)
 	{
-
-		$tmp = array();
-		if (is_array($datas))
-		{
-			foreach ($datas as $key => $value)
-			{
-				$key = htmlentities($key, ENT_NOQUOTES, 'UTF-8');
-
-				if (is_array($value))
-					$value = $this->jsonEncode($value, true);
-				else
-					$value = htmlentities($value, ENT_NOQUOTES, 'UTF-8');
-
-				$tmp[$key] = $value;
-			}
-		}
-
-		return $tmp;
-
+		//Use if needed
+		return $datas;
 	}
 
 	private function _cleanInputs($data)
