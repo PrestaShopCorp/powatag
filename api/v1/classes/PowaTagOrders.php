@@ -31,7 +31,10 @@ class PowaTagOrders extends PowaTagAbstract
 			$order = current($this->datas->orders);
 
 		$this->datas->customer         = $order->customer;
-		$this->datas->orderCostSummary = $order->orderCostSummary;
+
+		if (isset($order->orderCostSummary))
+			$this->datas->orderCostSummary = $order->orderCostSummary;
+
 		$this->datas->orderLineItems   = $order->orderLineItems;
 
 		if (isset($order->device))
@@ -104,8 +107,11 @@ class PowaTagOrders extends PowaTagAbstract
 			$transaction->id_cart     = (int)$this->cart->id;
 			$transaction->id_order    = (int)$idOrder;
 			$transaction->id_customer = (int)$this->customer->id;
-			$transaction->id_device   = $this->datas->device->deviceID;
-			$transaction->ip_address  = $this->datas->device->ipAddress;
+			if (isset($this->datas->device))
+			{
+				$transaction->id_device   = $this->datas->device->deviceID;
+				$transaction->ip_address  = $this->datas->device->ipAddress;
+			}
 			$transaction->order_state = isset($orderState) ? (int)$orderState : 0;
 
 			$transaction->save();
@@ -189,7 +195,6 @@ class PowaTagOrders extends PowaTagAbstract
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->datas->customer->shippingAddress->lastName.' '.$this->datas->customer->shippingAddress->firstName);
-
 		}
 		else
 		{
@@ -219,7 +224,7 @@ class PowaTagOrders extends PowaTagAbstract
 			$this->addError($this->module->l("Impossible to save cart"));
 
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Create cart', PowaTagLogs::ERROR, $this->error);
+				PowaTagLogs::initAPILog('Create cart', PowaTagLogs::ERROR, $this->error['message']);
 
 			return false;
 		}
@@ -232,7 +237,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 		if (!$this->addProductsToCart($cart, $this->address->id_country)) 
 			return false;
-		
+
 		return $this->cart->id;
 	}
 
@@ -266,7 +271,7 @@ class PowaTagOrders extends PowaTagAbstract
 					$this->addError(sprintf($this->module->l('This product does not exists : %s'), $p->product->code), PowaTagAbstract::$SKU_NOT_FOUND);
 
 					if (PowaTagAPI::apiLog())
-						PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
+						PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
 
 					return false;
 				}
@@ -284,7 +289,7 @@ class PowaTagOrders extends PowaTagAbstract
 						$this->addError(sprintf($this->module->l('Currency not found : %s'), $variant->code));
 
 						if (PowaTagAPI::apiLog())
-							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
+							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
 						return false;
 					}
 
@@ -294,12 +299,12 @@ class PowaTagOrders extends PowaTagAbstract
 
 					if ($idProductAttribute = $this->getCombinationByEAN13($product->id, $variant->code))
 					{
-						$priceAttribute   = $product->getPrice(false, $idProductAttribute);
+						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
 						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);
 					}
 					else if (Validate::isInt($variant->code))
 					{
-						$priceAttribute   = $product->getPrice(false);
+						$priceAttribute   = $product->getPrice(true);
 						$qtyInStock = Product::getQuantity($product->id);
 					}
 					else
@@ -307,7 +312,7 @@ class PowaTagOrders extends PowaTagAbstract
 						$this->addError(sprintf($this->module->l('This variant does not exist : %s'), $variant->code), PowaTagAbstract::$SKU_NOT_FOUND);
 
 						if (PowaTagAPI::apiLog())
-							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
+							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
 
 						return false;
 					}
@@ -330,7 +335,7 @@ class PowaTagOrders extends PowaTagAbstract
 						$this->addError(sprintf($this->module->l('Price variant is different with the price shop : %s != %s'), $priceAttribute, $variantAmount));
 
 						if (PowaTagAPI::apiLog())
-							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
+							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
 
 						return false;
 					}
@@ -340,7 +345,7 @@ class PowaTagOrders extends PowaTagAbstract
 						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
 
 						if (PowaTagAPI::apiLog())
-							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error);
+							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
 
 						return false;
 					}

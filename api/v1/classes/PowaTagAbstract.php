@@ -175,12 +175,12 @@ abstract class PowaTagAbstract
 
 					if ($idProductAttribute = $this->getCombinationByEAN13($product->id, $variant->code))
 					{
-						$priceAttribute   = $product->getPrice(false, $idProductAttribute);
+						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
 						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);
 					}
 					else if (Validate::isInt($variant->code))
 					{
-						$priceAttribute   = $product->getPrice(false);
+						$priceAttribute   = $product->getPrice(true);
 						$qtyInStock = Product::getQuantity($product->id);
 					}
 					else
@@ -431,7 +431,7 @@ abstract class PowaTagAbstract
 				$this->addError($this->module->l("Impossible to save customer"));
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Create customer', PowaTagLogs::ERROR, $this->error);
+					PowaTagLogs::initAPILog('Create customer', PowaTagLogs::ERROR, $this->error['message']);
 
 				return false;
 			}
@@ -579,7 +579,7 @@ abstract class PowaTagAbstract
 			$this->addError($this->module->l("Impossible to save address"));
 
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error);
+				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error['message']);
 
 			return false;
 		}

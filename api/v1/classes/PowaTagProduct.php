@@ -162,11 +162,11 @@ class PowaTagProduct extends PowaTagAbstract
 						'code'          =>  $combination['ean13'],
 						'numberInStock' => $combination['quantity'],
 						'originalPrice' => array(
-							'amount'   => $this->formatNumber($this->product->getPrice(false, null), 2),
+							'amount'   => $this->formatNumber($this->product->getPrice(true, null), 2),
 							'currency' => $this->context->currency->iso_code
 						),
 						'finalPrice'    => array(
-							'amount'   =>  $this->formatNumber($this->product->getPrice(false, $combination['id_product_attribute']), 2),
+							'amount'   =>  $this->formatNumber($this->product->getPrice(true, $combination['id_product_attribute']), 2),
 							'currency' => $this->context->currency->iso_code
 						)
 					);
@@ -183,7 +183,7 @@ class PowaTagProduct extends PowaTagAbstract
 				'code'          => $this->product->ean13,
 				'numberInStock' => Product::getQuantity($this->product->id),
 				'finalPrice'    => array(
-					'amount'   =>  $this->formatNumber($this->product->getPrice(false, null), 2),
+					'amount'   =>  $this->formatNumber($this->product->getPrice(true, null), 2),
 					'currency' => $this->context->currency->iso_code
 				)
 			);
