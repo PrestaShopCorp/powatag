@@ -208,15 +208,16 @@ abstract class PowaTagAbstract
 						return false;
 					}
 
-					if ($check && $qtyInStock < $p->quantity)
+
+					if ($qtyInStock == 0)
 					{
-						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
+						$this->addError(sprintf($this->module->l('No Stock Available'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
 						return false;
 					}
 
-					if ($qtyInStock < $p->quantity || $qtyInStock == 0)
+					if ($qtyInStock < $p->quantity)
 					{
-						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
+						$this->addError(sprintf($this->module->l('Quantity > Stock Count'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
 						return false;
 					}
 
