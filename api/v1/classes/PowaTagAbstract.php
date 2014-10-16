@@ -157,6 +157,8 @@ abstract class PowaTagAbstract
 					return false;
 				}
 
+
+
 				$variants = $p->product->productVariants;
 
 				$product_rate = 1 + ($product->getTaxesRate($address) / 100);
@@ -207,6 +209,12 @@ abstract class PowaTagAbstract
 					}
 
 					if ($check && $qtyInStock < $p->quantity)
+					{
+						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
+						return false;
+					}
+
+					if ($qtyInStock < $p->quantity || $qtyInStock == 0)
 					{
 						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
 						return false;
