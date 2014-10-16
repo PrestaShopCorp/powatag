@@ -260,9 +260,20 @@ class PowaTagOrders extends PowaTagAbstract
 						return false;
 					}
 
+					if ($qtyInStock == 0)
+					{
+						$this->addError(sprintf($this->module->l('No Stock Available')), PowaTagAbstract::$NOT_IN_STOCK);
+
+						if (PowaTagAPI::apiLog())
+							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
+
+
+						return false;
+					}
+
 					if ($qtyInStock < $p->quantity)
 					{
-						$this->addError(sprintf($this->module->l('Quantity > Stock Count : %s'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
+						$this->addError(sprintf($this->module->l('Quantity > Stock Count')), PowaTagAbstract::$NOT_IN_STOCK);
 
 						if (PowaTagAPI::apiLog())
 							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
