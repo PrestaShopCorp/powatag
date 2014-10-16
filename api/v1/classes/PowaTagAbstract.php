@@ -57,8 +57,21 @@ abstract class PowaTagAbstract
 		$this->datas = $datas;
 		$this->context = Context::getContext();
 		$this->module = Module::getInstanceByName('powatag');
+		$this->initLang();
 	}
 	
+	public function initLang()
+	{
+		
+		if($iso = Tools::getValue('lang'))
+		{
+			$lang = substr($iso, 0, 2);
+			if($language_id = Language::getIdByIso($lang))
+				$this->context->language = new Language($language_id);
+
+		}
+	}
+
 	/**
 	 * Get error
 	 * @return string Error
