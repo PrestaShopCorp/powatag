@@ -82,40 +82,40 @@ class PowaTagOrders extends PowaTagAbstract
 
 	public function validateOrder()
 	{
-		$createCart = $this->createCart();
+		$id_cart = $this->createCart();
 
-		$idOrder = $createCart;
+		$id_order = false;
 
 		if (isset($this->datas->paymentResult))
-		{
-			$orderState = (int)Configuration::get('PS_OS_PAYMENT');
+		{ //T
+			$order_state = (int)Configuration::get('PS_OS_PAYMENT');
 
-			if (!$createCart)
-				$orderState = (int)Configuration::get('PS_OS_ERROR');
+			if (!$id_cart)
+				$order_state = (int)Configuration::get('PS_OS_ERROR');
 
 			$this->datas->customer = $this->datas->customer;
 
-			$payment = new PowaTagPayment($this->datas, $createCart);
-			$idOrder = $payment->confirmPayment(true);
+			$payment = new PowaTagPayment($this->datas, $id_cart);
+			$id_order = $payment->confirmPayment(true);
 		}
 
-		if ($createCart)
+		if ($id_cart)
 		{
 			$transaction              = new PowaTagTransaction();
 			$transaction->id_cart     = (int)$this->cart->id;
-			$transaction->id_order    = (int)$idOrder;
+			$transaction->id_order    = (int)$id_order;
 			$transaction->id_customer = (int)$this->customer->id;
 			if (isset($this->datas->device))
 			{
 				$transaction->id_device   = $this->datas->device->deviceID;
 				$transaction->ip_address  = $this->datas->device->ipAddress;
 			}
-			$transaction->order_state = isset($orderState) ? (int)$orderState : 0;
+			$transaction->order_state = isset($order_state) ? (int)$order_state : 0;
 
 			$transaction->save();
 		}
 
-		return $idOrder;
+		return array($id_cart, $id_order);
 	}
 
 	private function createCart()

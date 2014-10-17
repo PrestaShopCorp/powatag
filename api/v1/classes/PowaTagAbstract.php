@@ -78,6 +78,7 @@ abstract class PowaTagAbstract
 	 */
 	public function getError()
 	{
+		
 		return $this->error;
 	}
 
@@ -156,7 +157,6 @@ abstract class PowaTagAbstract
 
 		$address = Address::initialize();
 		$address->id_country = $country->id;
-
 		if ($products && count($products))
 		{
 			foreach ($products as $p)

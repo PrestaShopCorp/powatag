@@ -178,7 +178,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			}
 		}
 		else if (count($args) == 2 && Validate::isInt($args[0]) && $args[1] = "confirm-payment")
-		{
+		{//Three step payment confirmation
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Process payment', PowaTagLogs::IN_PROGRESS, 'Order ID : '.$args[0]);
@@ -224,7 +224,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 		}
 		else if (!count($args))
-		{
+		{//Two step payment or three step payment
 			if (isset($datas->order))
 				$customer = $datas->order->customer;
 			else
@@ -238,15 +238,15 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 			$order = new PowaTagOrders($datas);
 
-			$idOrder = $order->validateOrder();
+			list($id_cart, $id_order) = $order->validateOrder();
 
-			if ($idOrder)
+			if ($id_order || $id_cart)
 			{
-
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process order', PowaTagLogs::SUCCESS, 'Order has been created : '.$idOrder);
+					PowaTagLogs::initAPILog('Process order', PowaTagLogs::SUCCESS, 'Order has been created : '.$id_order);
 
-				$data = array("orderResults" => array("orderId" => $idOrder, "message" => "", "redirectUrl" => ""));
+				$link = new Link();
+				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => "", "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int) $id_cart))));
 					
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
@@ -255,18 +255,24 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			}
 			else
 			{
-
-				$error = $order->getError();
+				
+				$message = '';
+				
+				$errorCode = '';
+				if ($error = $order->getError())
+				{
+					$this->setResponse($error['error']['response']);
+					$errorCode = $error['error']['code'];
+					$message = $error['message'];
+				}
 
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $error['message']);
-
-				$this->setResponse($error['error']['response']);
+					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $message);
 
 				$array = array(
-					'code'             => $error['error']['code'],
+					'code'             => $errorCode,
 					'validationErrors' => null,
-					'message'          => $error['message']
+					'message'          => $message
 				);
 
 				return $array;
