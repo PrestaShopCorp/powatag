@@ -73,11 +73,16 @@ class PowaTagOrders extends PowaTagAbstract
 
 		if (!$find)
 			$address = $this->createAddress($this->datas->customer->shippingAddress);
+		else
+			$address = $this->createAddress($this->datas->customer->shippingAddress, $address);
 
 		if (Validate::isLoadedObject($address))
 			$this->address = $address;
 		else
+		{
+			$this->address = false;
 			return false;
+		}
 	}	
 
 	public function validateOrder()
@@ -111,7 +116,6 @@ class PowaTagOrders extends PowaTagAbstract
 				$transaction->ip_address  = $this->datas->device->ipAddress;
 			}
 			$transaction->order_state = isset($order_state) ? (int)$order_state : 0;
-
 			$transaction->save();
 		}
 

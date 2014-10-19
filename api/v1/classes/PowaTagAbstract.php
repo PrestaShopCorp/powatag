@@ -560,10 +560,10 @@ abstract class PowaTagAbstract
 	}
 
 	/**
-	 * Create Prestashop address
+	 * Create or Updates Prestashop address
 	 * @return Address Address object
 	 */
-	protected function createAddress($addressInformations)
+	protected function createAddress($addressInformations, $address = null)
 	{
 
 		$country = $this->getCountryByCode($addressInformations->country->alpha2Code);
@@ -573,7 +573,7 @@ abstract class PowaTagAbstract
 			$this->addError(sprintf($this->module->l('This country is not active : %s'), $addressInformations->country->alpha2Code));
 			return false;
 		}
-
+		
 		if (!isset($addressInformations->friendlyName))
 			$friendlyName = $this->module->l('My address');
 		else
@@ -582,7 +582,7 @@ abstract class PowaTagAbstract
 		if (PowaTagAPI::apiLog())
 			PowaTagLogs::initAPILog('Create address', PowaTagLogs::IN_PROGRESS, $addressInformations->lastName.' '.$addressInformations->firstName.' : '.$friendlyName);
 
-		$address = Address::initialize();
+		$address = $address != null ? $address : Address::initialize();
 		$address->id_customer = (int)$this->customer->id;
 		$address->id_country  = (int)$country->id;
 		$address->alias       = $friendlyName;
