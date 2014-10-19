@@ -29,9 +29,9 @@ class PowaTagPayment extends PowaTagAbstract
 		$this->cart = new Cart((int)$idCart);
 	}
 
-	public function setBantAuthorizationCode($bankAuthorizationCode)
+	public function setBantAuthorizationCode()
 	{
-		$this->bankAuthorizationCode = $bankAuthorizationCode;
+		$this->bankAuthorizationCode = isset($this->datas->paymentResult->bankAuthorizationCode) ? $this->datas->paymentResult->bankAuthorizationCode : '';
 	}
 	
 	public function validateOrder($orderState, $id_cart, $amountPaid, $message = null)
@@ -134,7 +134,7 @@ class PowaTagPayment extends PowaTagAbstract
 		}
 
 		if (!$this->bankAuthorizationCode)
-			$this->setBantAuthorizationCode($this->datas->paymentResult->bankAuthorizationCode);
+			$this->setBantAuthorizationCode();
 		
 		if (!$twoSteps)
 		{
@@ -195,11 +195,8 @@ class PowaTagPayment extends PowaTagAbstract
 	private function transactionExists()
 	{
 
-		if (isset($this->datas->device))
-			$transactions = PowaTagTransaction::getTransactions((int)$this->idCart, $this->datas->device->deviceID, $this->datas->device->ipAddress);
-		else
-			$transactions = PowaTagTransaction::getTransactions((int)$this->idCart);
-
+		$transactions = PowaTagTransaction::getTransactions((int)$this->idCart);
+		
 		if (!$transactions || !count($transactions))
 		{
 			$this->addError(sprintf($this->module->l('No transaction found for, Cart ID : %s, Device ID : %s & IP : %s'), $this->idCart, $this->datas->device->deviceID, $this->datas->device->ipAddress), PowaTagAbstract::$INVALID_PAYMENT);
