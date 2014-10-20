@@ -243,10 +243,8 @@ class PowaTag extends PaymentModule {
 
 			$live = (bool) Configuration::get('POWATAG_SANDBOX');
 
-			$this->context->controller->addCSS('https://'.($live ? 'live' : 'sandbox').'.powatag.com/static/css/powatag.css');
-			$this->context->controller->addJS('https://'.($live ? 'live' : 'sandbox').'.powatag.com/static/js/powatag.js');
-
-			$this->context->controller->addJS('http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js');
+			$this->context->controller->addCSS('https://'.($live ? 'live' : 'sandbox').'.powatag.com/static/css/1.6.3/powatag.css');
+			$this->context->controller->addJS('https://'.($live ? 'live' : 'sandbox').'.powatag.com/static/js/1.6.3/powatag.js');
 			$this->context->controller->addJS($this->getPathUri().'views/js/powatag.js');
 		}
 	}
