@@ -75,7 +75,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::SUCCESS, 'Id product : '.$idProduct);
 
 				if (PowaTagAPI::requestLog())
-					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::SUCCESS, $value);
+					PowaTagLogs::initRequestLog('Process get products', PowaTagLogs::SUCCESS, $value);
 
 				return $value;
 			}
