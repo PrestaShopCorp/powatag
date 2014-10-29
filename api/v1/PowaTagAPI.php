@@ -266,7 +266,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 					PowaTagLogs::initAPILog('Process order', PowaTagLogs::SUCCESS, 'Order has been created : '.$id_order);
 
 				$link = new Link();
-				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => "", "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int) $id_cart))));
+				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => "Success", "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int) $id_cart))));
 					
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
