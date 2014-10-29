@@ -154,7 +154,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::SUCCESS, 'Customer : '.$customer->firstName . ' ' . $customer->lastName);
 
 				if (PowaTagAPI::requestLog())
-					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::SUCCESS, $value);
+					PowaTagLogs::initRequestLog('Process calculate Costs', PowaTagLogs::SUCCESS, $value);
 
 				return $value;
 			}
