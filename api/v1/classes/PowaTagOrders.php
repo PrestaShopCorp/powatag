@@ -219,12 +219,12 @@ class PowaTagOrders extends PowaTagAbstract
 
 					$variantAmount = $variant->finalPrice->amount;
 
-					$idProductAttribute = false;
+					$id_product_attribute = false;
 
-					if ($idProductAttribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
+					if ($id_product_attribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
-						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
-						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);
+						$priceAttribute   = $product->getPrice(true, $id_product_attribute);
+						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product, $id_product_attribute);
 					}
 					else if (Validate::isInt($variant->code))
 					{
@@ -285,7 +285,7 @@ class PowaTagOrders extends PowaTagAbstract
 						return false;
 					}
 
-					$cart->updateQty($p->quantity, $product->id, $idProductAttribute);
+					$cart->updateQty($p->quantity, $product->id, $id_product_attribute);
 
 					if (PowaTagAPI::apiLog())
 						PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::SUCCESS, "Cart ID : ".$cart->id." - Product ID : ".$product->id);

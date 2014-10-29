@@ -160,7 +160,7 @@ class PowaTagProduct extends PowaTagAbstract
 					$groups[$combination['id_product_attribute']] = array(
 
 						'code'          =>  PowatagProductAttributeHelper::getVariantCode($combination),
-						'numberInStock' => $combination['quantity'],
+						'numberInStock' => PowaTagProductQuantityHelper::getCombinationQuantity($combination),
 						'originalPrice' => array(
 							'amount'   => $this->formatNumber($this->product->getPrice(true, null), 2),
 							'currency' => $this->context->currency->iso_code
@@ -181,7 +181,7 @@ class PowaTagProduct extends PowaTagAbstract
 		{
 			$variant = array(
 				'code'          => PowaTagProductHelper::getProductSKU($this->product),
-				'numberInStock' => Product::getQuantity($this->product->id),
+				'numberInStock' => PowaTagProductQuantityHelper::getProductQuantity($this->product),
 				'finalPrice'    => array(
 					'amount'   =>  $this->formatNumber($this->product->getPrice(true, null), 2),
 					'currency' => $this->context->currency->iso_code

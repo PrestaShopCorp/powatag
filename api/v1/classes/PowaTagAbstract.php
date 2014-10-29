@@ -176,15 +176,15 @@ abstract class PowaTagAbstract
 
 					$variantAmount = $variant->finalPrice->amount;
 
-					if ($idProductAttribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
+					if ($id_product_attribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
-						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
-						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);
+						$priceAttribute   = $product->getPrice(true, $id_product_attribute);
+						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product, $id_product_attribute);
 					}
 					else if (Validate::isInt($variant->code))
 					{
 						$priceAttribute   = $product->getPrice(true);
-						$qtyInStock = Product::getQuantity($product->id);
+						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product);
 					}
 					else
 					{
