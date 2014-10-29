@@ -29,13 +29,18 @@ class powatagconfirmationModuleFrontController extends ModuleFrontController
 		parent::initContent();
 
 		// Init smarty content and set template to display
-		
+		$order = new Order(Order::getOrderByCartId(Tools::getValue('id_cart')));
+		$this->context->smarty->assign(array(
+			'order' => $order,
+			'state' => new OrderState($order->current_state, $this->context->language->id),
+		));
+
 		$this->setTemplate('confirmation.tpl');
 	}
 
 	public function setMedia()
 	{
-		parent::setMedia();		
+		parent::setMedia();
 		$this->addCSS(__PS_BASE_URI__.'modules/powatag/views/css/confirmation.css');
 	}
 }
