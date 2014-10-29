@@ -259,14 +259,15 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				}
 			}
 
-			list($id_cart, $id_order) = $order->validateOrder();
+			list($id_cart, $id_order, $message) = $order->validateOrder();
 			if ($id_order || $id_cart)
 			{
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process order', PowaTagLogs::SUCCESS, 'Order has been created : '.$id_order);
 
 				$link = new Link();
-				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => "Success", "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int) $id_cart))));
+				
+				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => $message, "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int) $id_cart))));
 					
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];

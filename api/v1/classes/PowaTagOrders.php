@@ -102,6 +102,11 @@ class PowaTagOrders extends PowaTagAbstract
 
 			$payment = new PowaTagPayment($this->datas, $id_cart);
 			$id_order = $payment->confirmPayment(true);
+			if($id_order){
+				$message = Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) : 'Success';
+			}
+			else
+				$message = Configuration::get('POWATAG_FAIL_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_FAIL_MSG', $this->context->language->id) : 'Success';
 		}
 
 		if ($id_cart)
@@ -117,9 +122,13 @@ class PowaTagOrders extends PowaTagAbstract
 			}
 			$transaction->order_state = isset($order_state) ? (int)$order_state : 0;
 			$transaction->save();
+			$message = Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) : 'Success';
+			
 		}
 
-		return array($id_cart, $id_order);
+
+
+		return array($id_cart, $id_order, $message);
 	}
 
 	private function createCart()
