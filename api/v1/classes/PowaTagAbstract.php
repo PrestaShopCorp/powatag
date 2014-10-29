@@ -124,10 +124,70 @@ abstract class PowaTagAbstract
 	 */
 	protected function getProductByCode($code)
 	{
-		$idProduct = (int)Product::getIdByEan13($code);
-		$product = new Product($idProduct, true, (int)$this->context->language->id);
+		$powatag_sku = Configuration::get('POWATAG_SKU');
+		
+		switch ($powatag_sku) 
+		{
+			case Powatag::EAN :
+				$id_product = (int)$this->getProductIdByEan13($code);	
+				break;
+			case Powatag::UPC :
+				$id_product = (int)$this->getProductIdByUPC($code);
+			case Powatag::REFERENCE :
+				$id_product = (int)$this->getProductIdByReference($code);
+			default:
+				$id_product = (int)$this->getProductIdByIdProduct($code);
+				break;
+		}
+		if($id_product == 0)
+			$id_product = (int)$this->getProductIdByIdProduct($code);
+
+		
+		$product = new Product($id_product, true, (int)$this->context->language->id);
 
 		return $product;
+	}
+
+	private function getProductIdByIdProduct($code)
+	{
+		return $code;
+	}
+
+	private function getProductIdByReference($reference)
+	{
+		if (empty($reference))
+			return 0;
+		
+		if(!Validate::isReference($reference))
+			return 0;
+
+		$query = new DbQuery();
+		$query->select('p.id_product');
+		$query->from('product', 'p');
+		$query->where('p.reference = \''.pSQL($reference).'\'');
+
+		return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
+	}
+
+	private function getProductIdByEan13($code)
+	{
+		return Product::getIdByEan13($code);
+	}
+
+	private function getProductIdByUPC($upc)
+	{
+		if (empty($upc))
+			return 0;
+		
+		if(!Validate::isUpc($upc))
+			return 0;
+
+		$query = new DbQuery();
+		$query->select('p.id_product');
+		$query->from('product', 'p');
+		$query->where('p.upc = \''.pSQL($upc).'\'');
+
+		return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
 	}
 
 	/**

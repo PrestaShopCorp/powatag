@@ -11,6 +11,10 @@ class PowaTag extends PaymentModule {
 	 * @var String
 	 */
 	private $_link;
+	const EAN = 1;
+	const UPC = 2;
+	const PRODUCT_ID = 3;
+	const REFERENCE = 4;
 
 	/**
 	 * Constructor of module
@@ -289,13 +293,35 @@ class PowaTag extends PaymentModule {
 
 		$datas = array(
 			'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
-			'productSku'     => $product->ean13,
+			'productSku'     => $this->getProductSKU($product),
 			'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
 		);
 
 		$this->context->smarty->assign($datas);
 
 		return $this->display(__FILE__, 'product.tpl');
+	}
+
+	private function getProductSKU($product)
+	{
+		$powatag_sku = Configuration::get('POWATAG_SKU');
+		switch ($powatag_sku) 
+		{
+			case Powatag::EAN :
+				$product_sku = $product->ean13;	
+				break;
+			case Powatag::UPC :
+				$product_sku = $product->upc;	
+			case Powatag::REFERENCE :
+				$product_sku = $product->reference;	
+			default:
+				$product_sku = $product->id;
+				break;
+		}
+		if($product_sku == '')
+			$product_sku = $product->id;
+
+		return $product_sku;
 	}
 
 	/**

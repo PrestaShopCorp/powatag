@@ -19,7 +19,7 @@ class PowaTagProduct extends PowaTagAbstract
 	{
 		parent::__construct($datas);
 
-		$product = new Product((int)$datas->id_product, false, (int)$this->context->language->id);
+		$product = $this->getProductByCode($datas->id_product);
 		$this->product = $product;
 	}
 
