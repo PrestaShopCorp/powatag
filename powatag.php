@@ -293,7 +293,7 @@ class PowaTag extends PaymentModule {
 
 		$datas = array(
 			'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
-			'productSku'     => $this->getProductSKU($product),
+			'productSku'     => PowaTagProductHelper::getProductSKU($product),
 			'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
 		);
 
@@ -302,27 +302,6 @@ class PowaTag extends PaymentModule {
 		return $this->display(__FILE__, 'product.tpl');
 	}
 
-	private function getProductSKU($product)
-	{
-		$powatag_sku = Configuration::get('POWATAG_SKU');
-		switch ($powatag_sku) 
-		{
-			case Powatag::EAN :
-				$product_sku = $product->ean13;	
-				break;
-			case Powatag::UPC :
-				$product_sku = $product->upc;	
-			case Powatag::REFERENCE :
-				$product_sku = $product->reference;	
-			default:
-				$product_sku = $product->id;
-				break;
-		}
-		if($product_sku == '')
-			$product_sku = $product->id;
-
-		return $product_sku;
-	}
 
 	/**
 	 * Admin display

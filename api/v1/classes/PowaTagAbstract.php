@@ -117,78 +117,6 @@ abstract class PowaTagAbstract
 		return $currency;
 	}
 
-	/**
-	 * Get Product object by code
-	 * @param  string $code Code
-	 * @return Product      Product object
-	 */
-	protected function getProductByCode($code)
-	{
-		$powatag_sku = Configuration::get('POWATAG_SKU');
-		
-		switch ($powatag_sku) 
-		{
-			case Powatag::EAN :
-				$id_product = (int)$this->getProductIdByEan13($code);	
-				break;
-			case Powatag::UPC :
-				$id_product = (int)$this->getProductIdByUPC($code);
-			case Powatag::REFERENCE :
-				$id_product = (int)$this->getProductIdByReference($code);
-			default:
-				$id_product = (int)$this->getProductIdByIdProduct($code);
-				break;
-		}
-		if($id_product == 0)
-			$id_product = (int)$this->getProductIdByIdProduct($code);
-
-		
-		$product = new Product($id_product, true, (int)$this->context->language->id);
-
-		return $product;
-	}
-
-	private function getProductIdByIdProduct($code)
-	{
-		return $code;
-	}
-
-	private function getProductIdByReference($reference)
-	{
-		if (empty($reference))
-			return 0;
-		
-		if(!Validate::isReference($reference))
-			return 0;
-
-		$query = new DbQuery();
-		$query->select('p.id_product');
-		$query->from('product', 'p');
-		$query->where('p.reference = \''.pSQL($reference).'\'');
-
-		return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
-	}
-
-	private function getProductIdByEan13($code)
-	{
-		return Product::getIdByEan13($code);
-	}
-
-	private function getProductIdByUPC($upc)
-	{
-		if (empty($upc))
-			return 0;
-		
-		if(!Validate::isUpc($upc))
-			return 0;
-
-		$query = new DbQuery();
-		$query->select('p.id_product');
-		$query->from('product', 'p');
-		$query->where('p.upc = \''.pSQL($upc).'\'');
-
-		return Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue($query);
-	}
 
 	/**
 	 * Get Country object by code
@@ -222,7 +150,7 @@ abstract class PowaTagAbstract
 			foreach ($products as $p)
 			{
 
-				$product = self::getProductByCode($p->product->code);
+				$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
 
 				if (!Validate::isLoadedObject($product))
 				{
@@ -248,7 +176,7 @@ abstract class PowaTagAbstract
 
 					$variantAmount = $variant->finalPrice->amount;
 
-					if ($idProductAttribute = $this->getCombinationByEAN13($product->id, $variant->code))
+					if ($idProductAttribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
 						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
 						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);
@@ -534,20 +462,7 @@ abstract class PowaTagAbstract
 		return number_format($number, 2, ".", "");
 	}
 
-	protected function getCombinationByEAN13($id_product, $ean13)
-	{
-		if (empty($ean13))
-			return 0;
-
-		$query = new DbQuery();
-		$query->select('pa.id_product_attribute');
-		$query->from('product_attribute', 'pa');
-		$query->where('pa.ean13 = \''.pSQL($ean13).'\'');
-		$query->where('pa.id_product = '.(int)$id_product);
-
-		return Db::getInstance()->getValue($query);
-	}
-
+	
 	protected function ifCarrierDeliveryZone($carrier, $idZone = false, $country = false)
 	{
 		if (!$carrier instanceof Carrier)
@@ -653,7 +568,7 @@ abstract class PowaTagAbstract
 		$address->postcode    = $addressInformations->postCode;
 		$address->city        = $addressInformations->city;
 		$address->phone       = isset($addressInformations->phone) ? $addressInformations->phone : '0000000000' ;
-		$address->id_state    = (int)State::getIdByIso($addressInformations->state, (int)$country->id);
+		$address->id_state    = isset($addressInformations->state) ? (int)State::getIdByIso($addressInformations->state, (int)$country->id) : 0;
 
 		if (!$address->save())
 		{
