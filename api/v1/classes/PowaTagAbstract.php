@@ -117,18 +117,6 @@ abstract class PowaTagAbstract
 		return $currency;
 	}
 
-	/**
-	 * Get Product object by code
-	 * @param  string $code Code
-	 * @return Product      Product object
-	 */
-	protected function getProductByCode($code)
-	{
-		$idProduct = (int)Product::getIdByEan13($code);
-		$product = new Product($idProduct, true, (int)$this->context->language->id);
-
-		return $product;
-	}
 
 	/**
 	 * Get Country object by code
@@ -162,7 +150,7 @@ abstract class PowaTagAbstract
 			foreach ($products as $p)
 			{
 
-				$product = self::getProductByCode($p->product->code);
+				$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
 
 				if (!Validate::isLoadedObject($product))
 				{
@@ -188,7 +176,7 @@ abstract class PowaTagAbstract
 
 					$variantAmount = $variant->finalPrice->amount;
 
-					if ($idProductAttribute = $this->getCombinationByEAN13($product->id, $variant->code))
+					if ($idProductAttribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
 						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
 						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);
@@ -474,20 +462,7 @@ abstract class PowaTagAbstract
 		return number_format($number, 2, ".", "");
 	}
 
-	protected function getCombinationByEAN13($id_product, $ean13)
-	{
-		if (empty($ean13))
-			return 0;
-
-		$query = new DbQuery();
-		$query->select('pa.id_product_attribute');
-		$query->from('product_attribute', 'pa');
-		$query->where('pa.ean13 = \''.pSQL($ean13).'\'');
-		$query->where('pa.id_product = '.(int)$id_product);
-
-		return Db::getInstance()->getValue($query);
-	}
-
+	
 	protected function ifCarrierDeliveryZone($carrier, $idZone = false, $country = false)
 	{
 		if (!$carrier instanceof Carrier)
@@ -593,7 +568,7 @@ abstract class PowaTagAbstract
 		$address->postcode    = $addressInformations->postCode;
 		$address->city        = $addressInformations->city;
 		$address->phone       = isset($addressInformations->phone) ? $addressInformations->phone : '0000000000' ;
-		$address->id_state    = (int)State::getIdByIso($addressInformations->state, (int)$country->id);
+		$address->id_state    = isset($addressInformations->state) ? (int)State::getIdByIso($addressInformations->state, (int)$country->id) : 0;
 
 		if (!$address->save())
 		{

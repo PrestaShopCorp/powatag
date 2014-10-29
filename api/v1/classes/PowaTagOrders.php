@@ -13,7 +13,7 @@ class PowaTagOrders extends PowaTagAbstract
 	 * Address Prestashop
 	 * @var \Address
 	 */
-	private $address;
+	public $address;
 
 	/**
 	 * Cart Prestashop
@@ -188,7 +188,7 @@ class PowaTagOrders extends PowaTagAbstract
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::IN_PROGRESS, "Product : ".$p->product->code);
 
-				$product = $this->getProductByCode($p->product->code);
+				$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
 
 				if (!Validate::isLoadedObject($product))
 				{
@@ -221,7 +221,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 					$idProductAttribute = false;
 
-					if ($idProductAttribute = $this->getCombinationByEAN13($product->id, $variant->code))
+					if ($idProductAttribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
 						$priceAttribute   = $product->getPrice(true, $idProductAttribute);
 						$qtyInStock = Product::getQuantity($product->id, $idProductAttribute);

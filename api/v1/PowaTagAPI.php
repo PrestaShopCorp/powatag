@@ -238,7 +238,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 			$order = new PowaTagOrders($datas);
 
-			if(!Validate::isLoadedObject($this->address))
+			if(!Validate::isLoadedObject($order->address))
 			{
 				if($error = $order->getError())
 				{

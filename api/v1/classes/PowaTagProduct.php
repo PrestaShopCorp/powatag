@@ -19,7 +19,7 @@ class PowaTagProduct extends PowaTagAbstract
 	{
 		parent::__construct($datas);
 
-		$product = new Product((int)$datas->id_product, false, (int)$this->context->language->id);
+		$product = PowaTagProductHelper::getProductByCode($datas->id_product, $this->context->language->id);
 		$this->product = $product;
 	}
 
@@ -45,7 +45,7 @@ class PowaTagProduct extends PowaTagAbstract
 			'name'                => $this->product->name,
 			'type'                => 'PRODUCT',
 			'availableCurrencies' => $this->getCurrencies(),
-			'code'                => $this->product->ean13,
+			'code'                => PowaTagProductHelper::getProductSKU($this->product),
 			'description'         => preg_replace("#\r\n#isD", " ", strip_tags($this->product->description)),
 			'currency'            => $this->context->currency->iso_code,
 			'language'            => $this->context->language->iso_code,
@@ -155,11 +155,11 @@ class PowaTagProduct extends PowaTagAbstract
 
 			foreach ($this->combinations as $combination)
 			{
-
 				if (!array_key_exists($combination['id_product_attribute'], $groups))
 				{
 					$groups[$combination['id_product_attribute']] = array(
-						'code'          =>  $combination['ean13'],
+
+						'code'          =>  PowatagProductAttributeHelper::getVariantCode($combination),
 						'numberInStock' => $combination['quantity'],
 						'originalPrice' => array(
 							'amount'   => $this->formatNumber($this->product->getPrice(true, null), 2),
@@ -180,7 +180,7 @@ class PowaTagProduct extends PowaTagAbstract
 		else
 		{
 			$variant = array(
-				'code'          => $this->product->ean13,
+				'code'          => PowaTagProductHelper::getProductSKU($this->product),
 				'numberInStock' => Product::getQuantity($this->product->id),
 				'finalPrice'    => array(
 					'amount'   =>  $this->formatNumber($this->product->getPrice(true, null), 2),

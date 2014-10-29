@@ -118,6 +118,18 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 							array('key' => 'displayFooterProduct', 'name' => $this->l('displayFooterProduct'))
 						),
 						'visibility' => Shop::CONTEXT_SHOP
+					), 
+					'POWATAG_SKU' => array(
+						'title' => $this->l('Which SKU field to use '),
+						'validation' => 'isInt', 
+						'type' => 'select', 
+						'identifier' => 'key', 
+						'list' => array(
+							array('key' => Powatag::EAN, 'name' => $this->l('EAN13 or JAN')),
+							array('key' => Powatag::UPC, 'name' => $this->l('UPC')),
+							array('key' => Powatag::PRODUCT_ID, 'name' => $this->l('Product ID')),
+							array('key' => Powatag::REFERENCE, 'name' => $this->l('REFERENCE')),
+						),
 					)
 				),
 				'submit' => array('title' => $this->l('Save'))
