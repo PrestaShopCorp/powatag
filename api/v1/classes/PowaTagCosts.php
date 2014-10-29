@@ -79,7 +79,7 @@ class PowaTagCosts extends PowaTagAbstract
 					"currency" => $this->currency->iso_code
 				),
 				"total" => array(
-					"amount"   => $this->formatNumber($this->subTotal + $this->shippingCost + $tax, 2),
+					"amount"   => $this->formatNumber($this->subTotal + $this->shippingCost, 2),
 					"currency" => $this->currency->iso_code
 				)
 			)
