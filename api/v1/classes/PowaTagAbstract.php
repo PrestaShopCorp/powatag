@@ -587,7 +587,7 @@ abstract class PowaTagAbstract
 		return $address;
 	}
 
-}
+} 
 
 ?>
 
