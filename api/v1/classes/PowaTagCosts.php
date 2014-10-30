@@ -54,7 +54,7 @@ class PowaTagCosts extends PowaTagAbstract
 		if ($this->error)
 			return false;
 
-		$this->shippingCost = (float)$this->getShippingCost($this->products, $this->currency, $country);
+		$this->shippingCost = (float)$this->getShippingCost($this->products, $this->currency, $country, false);
 
 		if ($this->error)
 			return false;
@@ -83,7 +83,7 @@ class PowaTagCosts extends PowaTagAbstract
 					"currency" => $this->currency->iso_code
 				),
 				"total" => array(
-					"amount"   => $this->formatNumber($this->subTotal + $this->shippingCost, 2),
+					"amount"   => $this->formatNumber($this->subTotal + $this->shippingCost + $tax, 2),
 					"currency" => $this->currency->iso_code
 				)
 			)
