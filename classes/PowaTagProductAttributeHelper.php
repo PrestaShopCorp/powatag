@@ -28,23 +28,7 @@ class PowaTagProductAttributeHelper {
 
 	public static function getVariantCode($combination)
 	{	
-		$powatag_sku = Configuration::get('POWATAG_SKU');
-		switch ($powatag_sku) 
-		{
-			case Powatag::EAN :
-				$combination_sku = $combination['ean13'];	
-				break;
-			case Powatag::UPC :
-				$combination_sku = $combination['upc'];	
-			case Powatag::REFERENCE :
-				$combination_sku = $combination['reference'];	
-			default:
-				$combination_sku = self::constructCombinationSKU($combination);
-				break;
-		}
-		if($combination_sku == '')
-			$combination_sku = self::constructCombinationSKU($combination);
-
+		$combination_sku = self::constructCombinationSKU($combination);
 		return $combination_sku;
 		
 	}
