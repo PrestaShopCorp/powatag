@@ -41,6 +41,11 @@ class PowaTagOrders extends PowaTagAbstract
 		if (isset($this->datas->paymentResult))
 			$this->datas->paymentResult = $this->datas->paymentResult;
 
+		$this->checkProductsAreShippable($this->datas->orderLineItems);
+
+		
+
+
 		$this->initObjects();
 	}
 

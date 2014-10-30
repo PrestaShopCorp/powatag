@@ -587,6 +587,30 @@ abstract class PowaTagAbstract
 		return $address;
 	}
 
+	public function checkProductsAreShippable($products)
+	{
+		 foreach ($products as $p) {
+		 	$carrier_ok = false;
+		 	$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
+		 	$carriers = $product->getCarriers();
+		 	if(count($carriers))
+		 	{
+		 		$powatag_carrier = Configuration::get('POWATAG_SHIPPING');
+			 	foreach ($carriers as $carrier) {
+			 		if($carrier['id_carrier'] == $powatag_carrier)
+			 		{
+			 			$carrier_ok = true;
+			 			break;
+			 		}
+			 	}
+			 	if(!$carrier_ok)
+			 	{
+			 		$this->addError($this->module->l("Product with id").' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier );
+			 	}
+		 	}
+		 }
+	}
+
 } 
 
 ?>

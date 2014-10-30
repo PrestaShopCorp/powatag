@@ -238,25 +238,22 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 			$order = new PowaTagOrders($datas);
 
-			if(!Validate::isLoadedObject($order->address))
+			if($error = $order->getError())
 			{
-				if($error = $order->getError())
-				{
-					$this->setResponse($error['error']['response']);
-					$errorCode = $error['error']['code'];
-					$message = $error['message'];
+				$this->setResponse($error['error']['response']);
+				$errorCode = $error['error']['code'];
+				$message = $error['message'];
 
-					if (PowaTagAPI::apiLog())
-						PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $message);
+				if (PowaTagAPI::apiLog())
+					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $message);
 
-					$array = array(
-						'code'             => $errorCode,
-						'validationErrors' => null,
-						'message'          => $message
-					);
+				$array = array(
+					'code'             => $errorCode,
+					'validationErrors' => null,
+					'message'          => $message
+				);
 
-					return $array;
-				}
+				return $array;
 			}
 
 			list($id_cart, $id_order, $message) = $order->validateOrder();

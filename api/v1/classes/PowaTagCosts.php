@@ -38,6 +38,8 @@ class PowaTagCosts extends PowaTagAbstract
 	public function getSummary()
 	{
 
+
+
 		$this->getCurrency();
 
 		if (!$this->currency)
@@ -46,6 +48,8 @@ class PowaTagCosts extends PowaTagAbstract
 		$country = PowaTagCosts::getCountryByCode($this->datas->order->customer->shippingAddress->country->alpha2Code);
 
 		$this->getSubTotal($this->products, (int)$country->id, false);
+		$this->checkProductsAreShippable($this->products);
+		
 
 		if ($this->error)
 			return false;
