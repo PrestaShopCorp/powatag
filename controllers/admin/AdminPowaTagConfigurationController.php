@@ -77,13 +77,6 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 		 				'size'       => '80',
 						'visibility' => Shop::CONTEXT_SHOP
 					),
-		 			'POWATAG_SHIP_MSG' => array(
-		 				'title'      => $this->l('Failure message on shipping'),
-		 				'validation' => 'isString',
-		 				'type'       => 'textLang',
-		 				'size'       => '80',
-						'visibility' => Shop::CONTEXT_SHOP
-					),
 		 			'POWATAG_IMG_TYPE' => array(
 		 				'title'      => $this->l('Image type to send'),
 		 				'validation' => 'isInt',

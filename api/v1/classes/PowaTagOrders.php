@@ -111,7 +111,7 @@ class PowaTagOrders extends PowaTagAbstract
 				$message = Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) : 'Success';
 			}
 			else
-				$message = Configuration::get('POWATAG_FAIL_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_FAIL_MSG', $this->context->language->id) : 'Success';
+				$message = Configuration::get('POWATAG_FAIL_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_FAIL_MSG', $this->context->language->id) : 'Error';
 		}
 
 		if ($id_cart)
