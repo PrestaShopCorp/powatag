@@ -107,7 +107,8 @@ class PowaTagOrders extends PowaTagAbstract
 
 			$payment = new PowaTagPayment($this->datas, $id_cart);
 			$id_order = $payment->confirmPayment(true);
-			if($id_order){
+			if($id_order)
+			{
 				$message = Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) : 'Success';
 			}
 			else
