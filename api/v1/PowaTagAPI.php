@@ -195,7 +195,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 					PowaTagLogs::initAPILog('Process payment', PowaTagLogs::SUCCESS, 'ID Order : '.$id_order);
 
 				if (PowaTagAPI::requestLog())
-					PowaTagLogs::initAPILog('Process payment', PowaTagLogs::SUCCESS, $id_order);
+					PowaTagLogs::initRequestLog('Process payment', PowaTagLogs::SUCCESS, $id_order);
 
 				return array(
 					'providerTxCode' => isset($datas->paymentResult->providerTxCode) ? $datas->paymentResult->providerTxCode : 'providerTxCode Empty',
