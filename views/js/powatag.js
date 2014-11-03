@@ -2,12 +2,6 @@ $(function() {
 
 	generatePowaTag(urlToPowaTag, apiPowaTag, productSku);
 
-	jQuery("#powatagPopupLink[rel]").overlay(
-		{
-			close : '.powaTagClose'		
-		}
-	);
-
 	jQuery('.powaTagClose').bind('click', function() {
 		jQuery(this).parent('#powaTagPopup').hide();
 	});
