@@ -206,7 +206,7 @@ abstract class PowaTagAbstract
 						$priceAttribute   = $product->getPrice(false, $id_product_attribute);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product, $id_product_attribute);
 					}
-					else if (Validate::isInt($variant->code))
+					else if ($product)
 					{
 						$priceAttribute   = $product->getPrice(false);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product);
