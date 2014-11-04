@@ -1,4 +1,29 @@
 <?php
+/**
+* 2007-2014 PrestaShop 
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Open Software License (OSL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/osl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+*  @author    PrestaShop SA <contact@prestashop.com>
+*  @copyright 2007-2014 PrestaShop SA
+*  @version  Release: $Revision: 7776 $
+*  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+*  International Registered Trademark & Property of PrestaShop SA
+*/
 
 abstract class PowaTagAbstract
 {
@@ -65,7 +90,7 @@ abstract class PowaTagAbstract
 		
 		if($iso = Tools::getValue('lang'))
 		{
-			$lang = substr($iso, 0, 2);
+			$lang = Tools::substr($iso, 0, 2);
 			if($language_id = Language::getIdByIso($lang))
 				$this->context->language = new Language($language_id);
 
@@ -246,7 +271,7 @@ abstract class PowaTagAbstract
 	protected function getShippingCost($products, Currency $currency, $country, $useTax = true)
 	{
 
-		$idCarrier = (int)Configuration::get('POWATAG_SHIPPING');
+		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
 		{
@@ -262,7 +287,7 @@ abstract class PowaTagAbstract
 			return false;
 		}
 
-		$shippingCost = $this->getShippingCostByCarrier($products, $currency, $idCarrier, $country, $useTax);
+		$shippingCost = $this->getShippingCostByCarrier($products, $currency, $id_carrier, $country, $useTax);
 
 		if (Validate::isFloat($shippingCost))
 			return $shippingCost;
@@ -272,23 +297,23 @@ abstract class PowaTagAbstract
 
 	/**
 	 * Get Shipping By barrier
-	 * @param  int     $idCarrier ID Carrier
+	 * @param  int     $id_carrier ID Carrier
 	 * @param  Country $country    Country
 	 * @param  float   $subTotal   Total Products
 	 * @param  boolean $useTax    If use tax
 	 * @return float               Shipping Costs
 	 */
-	private function getShippingCostByCarrier($products, Currency $currency, $idCarrier, Country $country, $useTax = false)
+	private function getShippingCostByCarrier($products, Currency $currency, $id_carrier, Country $country, $useTax = false)
 	{
 		$productLists = $products;
 
 		$shippingCost = 0;
 
-		$idZone = (int)$country->id_zone;
+		$id_zone = (int)$country->id_zone;
 
-		$carrier = new Carrier($idCarrier, (int)$this->context->language->id);
+		$carrier = new Carrier($id_carrier, (int)$this->context->language->id);
 
-		if (!$this->ifCarrierDeliveryZone($carrier, $idZone))
+		if (!$this->ifCarrierDeliveryZone($carrier, $id_zone))
 			return false;
 
 		$address = new Address();
@@ -312,24 +337,24 @@ abstract class PowaTagAbstract
 		if ($carrier->range_behavior)
 		{
 
-			if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && !Carrier::checkDeliveryPriceByWeight($carrier->id, 0, (int)$idZone))
-			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && !Carrier::checkDeliveryPriceByPrice($carrier->id, $this->subTotalWt, $idZone, (int)$this->id_currency)
+			if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && !Carrier::checkDeliveryPriceByWeight($carrier->id, 0, (int)$id_zone))
+			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && !Carrier::checkDeliveryPriceByPrice($carrier->id, $this->subTotalWt, $id_zone, (int)$this->id_currency)
 			))
 				$shippingCost += 0;
 			else
 			{
 				if ($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT)
-					$shippingCost += $carrier->getDeliveryPriceByWeight(0, $idZone);
+					$shippingCost += $carrier->getDeliveryPriceByWeight(0, $id_zone);
 				else // by price
-					$shippingCost += $carrier->getDeliveryPriceByPrice($this->subTotalWt, $idZone, (int)$currency->id);
+					$shippingCost += $carrier->getDeliveryPriceByPrice($this->subTotalWt, $id_zone, (int)$currency->id);
 			}
 		}
 		else
 		{
 			if ($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT)
-				$shippingCost += $carrier->getDeliveryPriceByWeight(0, $idZone);
+				$shippingCost += $carrier->getDeliveryPriceByWeight(0, $id_zone);
 			else
-				$shippingCost += $carrier->getDeliveryPriceByPrice($this->subTotalWt, $idZone, (int)$currency->id);
+				$shippingCost += $carrier->getDeliveryPriceByPrice($this->subTotalWt, $id_zone, (int)$currency->id);
 		}
 
 		if (isset($configuration['PS_SHIPPING_HANDLING']) && $carrier->shipping_handling)
@@ -350,7 +375,7 @@ abstract class PowaTagAbstract
 		return $shippingCost;
 	}
 	
-	private function isCarrierInRange($carrier, $idZone)
+	private function isCarrierInRange($carrier, $id_zone)
 	{
 
 		if (!$carrier->range_behavior)
@@ -362,18 +387,18 @@ abstract class PowaTagAbstract
 			return true;
 
 		$check_delivery_price_by_weight = Carrier::checkDeliveryPriceByWeight(
-			(int)$idCarrier,
+			(int)$carrier->id,
 			null,
-			$idZone
+			$id_zone
 		);
 
 		if ($shipping_method == Carrier::SHIPPING_METHOD_WEIGHT && $check_delivery_price_by_weight)
 			return true;
 
 		$check_delivery_price_by_price = Carrier::checkDeliveryPriceByPrice(
-			(int)$idCarrier,
+			(int)$carrier->id,
 			$this->subTotal,
-			$idZone,
+			$id_zone,
 			(int)$this->id_currency
 		);
 
@@ -390,13 +415,13 @@ abstract class PowaTagAbstract
 	protected function getTax($products, Currency $currency, $country)
 	{
 
-		$idCarrier = (int)Configuration::get('POWATAG_SHIPPING');
+		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
 			$country = new Country($country);
 
 		$tax = $this->subTax;
-		$shippingCostWt = $this->getShippingCostByCarrier($products,  $currency, $idCarrier, $country, $this->subTotal, true);
+		$shippingCostWt = $this->getShippingCostByCarrier($products,  $currency, $id_carrier, $country, $this->subTotal, true);
 		$tax += ($shippingCostWt - $this->shippingCost);
 
 		return (float)Tools::ps_round($tax, 2);
@@ -413,7 +438,7 @@ abstract class PowaTagAbstract
 		if (!Validate::isLoadedObject($customer))
 		{
 			if (Validate::isEmail($customer))
-				$customer = self::getCustomerByEmail($customer);
+				$customer = $this->getCustomerByEmail($customer);
 			else if (Validate::isInt($customer))
 				$customer = new Customer((int)$customer);
 		}
@@ -421,7 +446,7 @@ abstract class PowaTagAbstract
 		return !Group::getPriceDisplayMethod((int)$customer->id_default_group);
 	}
 
-	protected static function getCustomerByEmail($email, $register = false, $lastName = null, $firstName = null, $emailAddress = null)
+	protected function getCustomerByEmail($email, $register = false, $lastName = null, $firstName = null, $emailAddress = null)
 	{
 		$customer = new Customer();
 		$customer->getByEmail($email);
@@ -434,7 +459,7 @@ abstract class PowaTagAbstract
 			$customer->lastname  = $lastName;
 			$customer->firstname = $firstName;
 			$customer->email     = $emailAddress;
-			$customer->setWsPasswd(substr($customer->lastname, 0, 1).$firstName);
+			$customer->setWsPasswd(Tools::substr($customer->lastname, 0, 1).$firstName);
 
 			if (!$customer->save())
 			{
@@ -463,7 +488,7 @@ abstract class PowaTagAbstract
 	}
 
 	
-	protected function ifCarrierDeliveryZone($carrier, $idZone = false, $country = false)
+	protected function ifCarrierDeliveryZone($carrier, $id_zone = false, $country = false)
 	{
 		if (!$carrier instanceof Carrier)
 		{
@@ -476,12 +501,12 @@ abstract class PowaTagAbstract
 			}
 		}
 
-		if (!$idZone && !$country)
+		if (!$id_zone && !$country)
 		{
 			$this->addError($this->module->l("Thanks to fill country or id zone"));
 			return false;
 		}
-		else if (!$idZone && $country)
+		else if (!$id_zone && $country)
 		{
 			if (!$country instanceof Country)
 			{
@@ -497,10 +522,10 @@ abstract class PowaTagAbstract
 				return false;
 			}
 
-			$idZone = (int)$country->id_zone;
+			$id_zone = (int)$country->id_zone;
 		}
 
-		if (!$this->isCarrierInRange($carrier, $idZone))
+		if (!$this->isCarrierInRange($carrier, $id_zone))
 		{
 			$this->addError(sprintf($this->module->l('Carrier not delivery in : %s'), $country->name));
 			return false;
@@ -518,10 +543,10 @@ abstract class PowaTagAbstract
 		$shippingMethod = $carrier->getShippingMethod();
 
 		// Get only carriers that are compliant with shipping method
-		if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && $carrier->getMaxDeliveryPriceByWeight($idZone) === false)
-			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && $carrier->getMaxDeliveryPriceByPrice($idZone) === false))
+		if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && $carrier->getMaxDeliveryPriceByWeight($id_zone) === false)
+			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && $carrier->getMaxDeliveryPriceByPrice($id_zone) === false))
 		{
-			$this->addError(sprintf($this->module->l('Carrier not delivery for this shipping method in ID Zone : %s'), $idZone));
+			$this->addError(sprintf($this->module->l('Carrier not delivery for this shipping method in ID Zone : %s'), $id_zone));
 			return false;
 		}
 
@@ -531,7 +556,7 @@ abstract class PowaTagAbstract
 	protected function convertToCurrency(&$amount, $currency, $toCurrency = true)
 	{
 		if ($currency->iso_code != $this->context->currency->iso_code)
-			$amount = Tools::convertPrice($amount, $variantCurrency, $toCurrency);	
+			$amount = Tools::convertPrice($amount, $currency, $toCurrency);	
 	}
 
 	/**
