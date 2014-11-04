@@ -271,7 +271,7 @@ class PowaTagOrders extends PowaTagAbstract
 						$priceAttribute   = $product->getPrice(true, $id_product_attribute);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product, $id_product_attribute);
 					}
-					else if (Validate::isInt($variant->code))
+					else if ($product)
 					{
 						$priceAttribute   = $product->getPrice(true);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product);
