@@ -307,15 +307,18 @@ class PowaTag extends PaymentModule {
 
 		$product = new Product((int)Tools::getValue('id_product'), true, (int)$this->context->language->id);
 
-		$datas = array(
-			'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
-			'productSku'     => PowaTagProductHelper::getProductSKU($product),
-			'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
-		);
+		if($product_sku = PowaTagProductHelper::getProductSKU($product))
+		{
+			$datas = array(
+				'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
+				'productSku'     => PowaTagProductHelper::getProductSKU($product),
+				'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
+			);
 
-		$this->context->smarty->assign($datas);
+			$this->context->smarty->assign($datas);
 
-		return $this->display(__FILE__, 'product.tpl');
+			return $this->display(__FILE__, 'product.tpl');
+		}
 	}
 
 

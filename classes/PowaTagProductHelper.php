@@ -29,6 +29,7 @@ class PowaTagProductHelper {
 
 	public static function getProductSKU($product)
 	{
+		$product_sku = false;
 		$powatag_sku = Configuration::get('POWATAG_SKU');
 		switch ($powatag_sku) 
 		{
@@ -43,9 +44,7 @@ class PowaTagProductHelper {
 				$product_sku = $product->id;
 				break;
 		}
-		if($product_sku == '')
-			$product_sku = $product->id;
-
+		
 		return $product_sku;
 	}
 
@@ -71,9 +70,6 @@ class PowaTagProductHelper {
 				$id_product = (int)self::getProductIdByIdProduct($code);
 				break;
 		}
-		if($id_product == 0)
-			$id_product = (int)self::getProductIdByIdProduct($code);
-
 		
 		$product = new Product($id_product, true, (int)$id_lang);
 
