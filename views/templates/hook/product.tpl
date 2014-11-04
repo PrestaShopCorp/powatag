@@ -87,7 +87,7 @@
 </div>
 {literal}
 <script>
-	var urlToPowaTag = 'https://{/literal}{if $powatagSandbox}live{else}sandbox{/if}{literal}.powatag.com/generator/powatag';
+	var urlToPowaTag = '{$powatagGeneratorURL}';
 	var apiPowaTag = '{/literal}{$powatagApi}{literal}';
 	var productSku = '{/literal}{$productSku}{literal}';
 </script>

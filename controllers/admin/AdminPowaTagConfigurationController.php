@@ -56,21 +56,23 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 		 				'title'      => $this->l('HMAC Key'),
 		 				'validation' => 'isString',
 		 				'type'       => 'text',
-		 				'size'       => '80',
 						'visibility' => Shop::CONTEXT_SHOP,
 						'required'   => true
 					),
-		 			'POWATAG_SANDBOX' => array(
-		 				'title'      => $this->l('Live'),
-		 				'validation' => 'isUnsignedId',
-		 				'type'       => 'select',
-		 				'identifier' => 'key', 
-						'list'       => array(
-							array('key' => 0, 'name' => $this->l('Sandbox')),
-							array('key' => 1, 'name' => $this->l('Live'))
-						),
-						'visibility' => Shop::CONTEXT_SHOP,
-						'required' => true
+					'POWATAG_GENERATOR_URL' =>  array(
+						'title' => $this->l('Powatag Generator URL'),
+						'validation' => 'isString', 
+						'type' => 'text', 
+					),
+					'POWATAG_JAVASCRIPT_URL' =>  array(
+						'title' => $this->l('Head powatag.js URL'),
+						'validation' => 'isString', 
+						'type' => 'text', 
+					),
+					'POWATAG_JAVASCRIPT_URL' =>  array(
+						'title' => $this->l('Head powatag.css URL'),
+						'validation' => 'isString', 
+						'type' => 'text', 
 					),
 				),
 				'submit' => array('title' => $this->l('Save'))
@@ -168,6 +170,14 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 			)
 		);
 
+	}
+
+	public function renderOptions()
+	{
+		$before = $this->module->display(dirname(__FILE__).'/../../'.$this->module->name.'.php', 'powatag_configuration_before.tpl');
+		$form = parent::renderOptions();
+		$after = $this->module->display(dirname(__FILE__).'/../../'.$this->module->name.'.php', 'powatag_configuration_after.tpl');
+		return $before.$form.$after;
 	}
 
 	public static function install($menu_id, $module_name)

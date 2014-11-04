@@ -312,7 +312,7 @@ class PowaTag extends PaymentModule {
 			$datas = array(
 				'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
 				'productSku'     => PowaTagProductHelper::getProductSKU($product),
-				'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
+				'powatagGeneratorURL' => Configuration::get('POWATAG_GENERATOR_URL'),
 			);
 
 			$this->context->smarty->assign($datas);
