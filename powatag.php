@@ -264,7 +264,7 @@ class PowaTag extends PaymentModule {
 			$live = (bool) Configuration::get('POWATAG_SANDBOX');
 
 			$this->context->controller->addCSS(Configuration::get('POWATAG_CSS_URL'));
-			$this->context->controller->addJS(Configuration::get('POWATAG_CSS_JS'));
+			$this->context->controller->addJS(Configuration::get('POWATAG_JS_URL'));
 			$this->context->controller->addJS($this->getPathUri().'js/powatag.js');
 		}
 	}
@@ -312,7 +312,7 @@ class PowaTag extends PaymentModule {
 			$datas = array(
 				'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
 				'productSku'     => PowaTagProductHelper::getProductSKU($product),
-				'powatagSandbox' => Configuration::get('POWATAG_SANDBOX'),
+				'powatagGeneratorURL' => Configuration::get('POWATAG_GENERATOR_URL'),
 			);
 
 			$this->context->smarty->assign($datas);
