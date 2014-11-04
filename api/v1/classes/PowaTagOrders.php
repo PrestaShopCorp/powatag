@@ -120,6 +120,7 @@ class PowaTagOrders extends PowaTagAbstract
 		$id_cart = $this->createCart();
 
 		$id_order = false;
+		
 
 		if (isset($this->datas->paymentResult))
 		{ //T
@@ -155,6 +156,10 @@ class PowaTagOrders extends PowaTagAbstract
 			$transaction->save();
 			$message = Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) : 'Success';
 			
+		}
+		else
+		{
+			$message = 'Cart has not been created';
 		}
 
 
