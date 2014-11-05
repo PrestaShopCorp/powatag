@@ -67,13 +67,13 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'size'       => 80,
 					),
 					'POWATAG_JS_URL' =>  array(
-						'title'      => $this->l('Head powatag.js URL'),
+						'title'      => $this->l('Head JavaScript URL'),
 						'validation' => 'isString', 
 						'type'       => 'text', 
 						'size'       => 80,
 					),
 					'POWATAG_CSS_URL' =>  array(
-						'title'      => $this->l('Head powatag.css URL'),
+						'title'      => $this->l('Head CSS URL'),
 						'validation' => 'isString', 
 						'type'       => 'text', 
 						'size'       => 80,
@@ -86,10 +86,11 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 				'image'  => '../img/admin/tab-tools.gif',
 				'fields' =>	array(
 		 			'POWATAG_SHIPPING' => array(
-		 				'title'      => $this->l('Shipping Method : This will be used to calculate shipping costs'),
+		 				'title'      => $this->l('Shipping Method'),
 		 				'validation' => 'isInt',
 		 				'type'       => 'select',
 		 				'identifier' => 'id_carrier',
+		 				'desc' => $this->l('This will be used to calculate shipping costs'),
 		 				'list'       => Carrier::getCarriers($this->context->language->id),
 						'visibility' => Shop::CONTEXT_SHOP,
 						'required'   => true
