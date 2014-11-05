@@ -115,7 +115,15 @@ class PowaTag extends PaymentModule {
 		if (!$this->registrationHook())
 			return false;
 
-
+		//Install default configs 
+		$configs = array(
+			'POWATAG_SKU' => Powatag::PRODUCT_ID,
+		);
+		foreach ($configs as $config => $value) {
+			Configuration::updateValue($config, $value);
+		}
+		
+		
 		return true;
 	}
 
@@ -147,10 +155,32 @@ class PowaTag extends PaymentModule {
 		// Delete tabs
 		if(!$this->uninstallTabs())
 			return false;
+		
 
+		//Delete configuration
+		$configs = array(
+			'POWATAG_API_LOG',
+			'POWATAG_REQUEST_LOG',
+			'POWATAG_SKU',
+			'POWATAG_QR_POS',
+			'POWATAG_QR',
+			'POWATAG_IMG_TYPE',
+			'POWATAG_SUCCESS_MSG',
+			'POWATAG_SHIPPING',
+			'POWATAG_CSS_URL',
+			'POWATAG_JS_URL',
+			'POWATAG_GENERATOR_URL',
+			'POWATAG_HMAC_KEY',
+			'POWATAG_API_KEY',
+		);
+		foreach ($configs as $config) {
+			Configuration::deleteByName($config);
+		}
 		// Uninstall default
 		if (!parent::uninstall())
 			return false;
+
+
 
 		return true;
 	}

@@ -71,14 +71,16 @@ class powatagTotAdminTabHelper
 		$id_tab = Db::getInstance()->Insert_ID();
 
 	   //Define tab multi language data
-		$data_lang = array(
-						 'id_tab' => $id_tab, 
-						 'id_lang' => Configuration::get('PS_LANG_DEFAULT'),
-						 'name' => $tab['name'], 
-						 );
+	   foreach ( Language::getLanguages(false) as $language) {
+			$data_lang = array(
+							 'id_tab' => $id_tab, 
+							 'id_lang' => $language['id_lang'],
+							 'name' => $tab['name'], 
+							 );
 
-		// Now insert the tab lang data
-		$res = Db::getInstance()->insert('tab_lang', $data_lang);
+			// Now insert the tab lang data
+			$res = Db::getInstance()->insert('tab_lang', $data_lang);
+	   }
 
 		return $id_tab;		
 	}
