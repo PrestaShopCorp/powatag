@@ -33,7 +33,7 @@
 			<div id="powatag0-tagline-line-overlay" class="powatag-tagline powatag-message"></div>
 		</div>
 	</div>
-	<a href="#" rel="#powaTagPopup" id="powatagPopupLink"></a>
+	<a id="powatagPopuplink"  rel="powaTagPopup" href="#powaTagPopup">{l s='What\'s this' mod='powatag'}</a>
 </div>
 
 <div id="powaTagZoom">
@@ -43,8 +43,11 @@
 </div>
 
 <div id="powaTagPopup">
-	<a href="#" class="powaTagClose">X</a>
+	
 	<div class="powaTagHidden"></div>
+	<div class="powaTagPopupOverlay" id="powaTagPopupOverlay">
+	</div>
+	<a href="#" class="powaTagClose">X</a>
 	<div class="powaTagPopupWrapper">
 		<div class="powaTagContent">
 			<div class="powaTagLeft">
