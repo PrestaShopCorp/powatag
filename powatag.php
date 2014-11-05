@@ -190,7 +190,6 @@ class PowaTag extends PaymentModule {
 	 */
 	private function installTabs() 
 	{
-		
 		$menu_id = -1;
 
 		$controllers = scandir(dirname(__FILE__).'/controllers/admin');
@@ -228,12 +227,14 @@ class PowaTag extends PaymentModule {
 		$toolbar_btn = array();
 		$toolbar_btn['configuration'] = array(
 					'href' => $this->context->link->getAdminLink('AdminPowaTagConfiguration'),
-					'desc' => $this->l('Configuration')
+					'desc' => $this->l('Configuration'),
+					'imgclass' => 'edit'
 				);
 
 		$toolbar_btn['logs'] = array(
 					'href' => $this->context->link->getAdminLink('AdminPowaTagLogs'),
-					'desc' => $this->l('Logs')
+					'desc' => $this->l('Logs'),
+					'imgclass' => 'preview',
 				);
 
 		return $toolbar_btn;
