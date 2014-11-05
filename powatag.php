@@ -297,12 +297,13 @@ class PowaTag extends PaymentModule {
 			|| !$this->registerHook('displayRightColumnProduct') 
 			|| !$this->registerHook('displayLeftColumnProduct') 
 			|| !$this->registerHook('displayFooterProduct') 
-			|| !$this->registerHook('displayFooterProduct')
+			|| !$this->registerHook('displayProductButtons')
 			|| !$this->registerHook('actionCarrierUpdate'))
 			return false;
 		
 		return true;
 	}
+
 
 	public function hookDisplayHeader()
 	{
@@ -319,6 +320,17 @@ class PowaTag extends PaymentModule {
 				$this->context->controller->addJS($this->getPathUri().'js/powatag.js');
 			}
 		}
+	}
+
+	public function hookDisplayProductButtons()
+	{
+		if (!Configuration::get('POWATAG_QR') || Configuration::get('POWATAG_QR_POS') != 'displayProductButtons')
+			return false;
+
+		if(!version_compare(_PS_VERSION_, 1.6, '<'))
+			$this->context->controller->addCSS($this->getPathUri().'css/powatag.css');
+
+		return $this->generateTag();
 	}
 
 	public function hookdisplayRightColumnProduct()

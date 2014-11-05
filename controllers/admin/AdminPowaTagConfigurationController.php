@@ -132,7 +132,8 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'list'       => array(
 							array('key' => 'displayRightColumnProduct', 'name' => $this->l('displayRightColumnProduct')),
 							array('key' => 'displayLeftColumnProduct', 'name' => $this->l('displayLeftColumnProduct')),
-							array('key' => 'displayFooterProduct', 'name' => $this->l('displayFooterProduct'))
+							array('key' => 'displayFooterProduct', 'name' => $this->l('displayFooterProduct')),
+							array('key' => 'displayProductButtons', 'name' => $this->l('displayProductButtons'))
 						),
 						'visibility' => Shop::CONTEXT_SHOP
 					), 
