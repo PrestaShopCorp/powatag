@@ -87,7 +87,7 @@ class AdminPowaTagLogsController extends ModuleAdminController
 
 	public function renderList()
 	{
-		$this->toolbar_btn = array();
+		$this->toolbar_btn = $this->module->initToolbar();
 		return parent::renderList();
 	}
 

@@ -53,26 +53,30 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'required'   => true
 					),
 		 			'POWATAG_HMAC_KEY' => array(
-		 				'title'      => $this->l('HMAC Key'),
-		 				'validation' => 'isString',
-		 				'type'       => 'text',
+						'title'      => $this->l('HMAC Key'),
+						'validation' => 'isString',
+						'type'       => 'text',
 						'visibility' => Shop::CONTEXT_SHOP,
+						'size'       => 80,
 						'required'   => true
 					),
 					'POWATAG_GENERATOR_URL' =>  array(
-						'title' => $this->l('Powatag Generator URL'),
+						'title'      => $this->l('Powatag Generator URL'),
 						'validation' => 'isString', 
-						'type' => 'text', 
+						'type'       => 'text', 
+						'size'       => 80,
 					),
-					'POWATAG_JAVASCRIPT_URL' =>  array(
-						'title' => $this->l('Head powatag.js URL'),
+					'POWATAG_JS_URL' =>  array(
+						'title'      => $this->l('Head powatag.js URL'),
 						'validation' => 'isString', 
-						'type' => 'text', 
+						'type'       => 'text', 
+						'size'       => 80,
 					),
-					'POWATAG_JAVASCRIPT_URL' =>  array(
-						'title' => $this->l('Head powatag.css URL'),
+					'POWATAG_CSS_URL' =>  array(
+						'title'      => $this->l('Head powatag.css URL'),
 						'validation' => 'isString', 
-						'type' => 'text', 
+						'type'       => 'text', 
+						'size'       => 80,
 					),
 				),
 				'submit' => array('title' => $this->l('Save'))
@@ -170,6 +174,12 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 			)
 		);
 
+	}
+
+	public function initToolbar()
+	{
+		$this->toolbar_btn = $this->module->initToolbar();
+		parent::initToolbar();
 	}
 
 	public function renderOptions()

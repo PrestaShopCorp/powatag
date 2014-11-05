@@ -192,6 +192,23 @@ class PowaTag extends PaymentModule {
 		return true;
 	}
 
+	public function initToolbar()
+	{
+
+		$toolbar_btn = array();
+		$toolbar_btn['configuration'] = array(
+					'href' => $this->context->link->getAdminLink('AdminPowaTagConfiguration'),
+					'desc' => $this->l('Configuration')
+				);
+
+		$toolbar_btn['logs'] = array(
+					'href' => $this->context->link->getAdminLink('AdminPowaTagLogs'),
+					'desc' => $this->l('Logs')
+				);
+
+		return $toolbar_btn;
+	}
+
 	/**
 	 * Install DataBase table
 	 * @return boolean if install was successfull
