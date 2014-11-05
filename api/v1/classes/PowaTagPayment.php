@@ -109,7 +109,6 @@ class PowaTagPayment extends PowaTagAbstract
 				$friendlyName = $this->module->l('My address');
 			else
 				$friendlyName = $this->datas->paymentResult->paymentCart->billingAddress->friendlyName;
-
 			foreach ($addresses as $addr)
 			{
 				if ($addr['alias'] == $friendlyName)
@@ -254,12 +253,16 @@ class PowaTagPayment extends PowaTagAbstract
 
 		}
 
+
 		if (!PowaTagValidate::currencyEnable($currency))
 		{
 			$this->addError(sprintf($this->module->l('Currency is not enable : %s'), (isset($currency->iso_code) ? $currency->iso_code : $currency)), PowaTagAbstract::$INVALID_PAYMENT);
 			return false;
 		}
 
+		//We change context currency to be sure that calculs are made with correct currency
+		$context = Context::getContext();
+		$context->currency = $currency;
 		if ($this->cart->getOrderTotal(true, Cart::BOTH, null, Configuration::get('POWATAG_SHIPPING')) != $amountPaid)
 		{
 			$this->addError($this->module->l("Amount paid is not same as the cart"), PowaTagAbstract::$INVALID_PAYMENT);

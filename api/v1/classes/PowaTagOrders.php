@@ -118,7 +118,6 @@ class PowaTagOrders extends PowaTagAbstract
 	public function validateOrder()
 	{
 		$id_cart = $this->createCart();
-
 		$id_order = false;
 		
 
@@ -171,6 +170,7 @@ class PowaTagOrders extends PowaTagAbstract
 	{
 		$firstItem = current($this->datas->orderLineItems);
 		$firstVariant = current($firstItem->product->productVariants);
+
 
 		if (!$currency = $this->getCurrencyByIsoCode($firstVariant->finalPrice->currency))
 			return false;
@@ -291,7 +291,8 @@ class PowaTagOrders extends PowaTagAbstract
 					$priceAttribute   = $this->formatNumber($priceAttribute, 2);
 					$variantAmount    = $this->formatNumber($variantAmount, 2);
 
-					$this->convertToCurrency($variantAmount, $variantCurrency, false);
+					$this->convertToCurrency($priceAttribute, $variantCurrency, true);
+					
 
 					$priceAttribute   = $this->formatNumber($priceAttribute, 2);
 					$variantAmount    = $this->formatNumber($variantAmount, 2);
