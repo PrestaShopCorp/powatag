@@ -308,12 +308,16 @@ class PowaTag extends PaymentModule {
 	{
 		if ($this->context->smarty->getTemplateVars('page_name') == 'product')
 		{
+			$product = new Product((int)Tools::getValue('id_product'), true, (int)$this->context->language->id);
 
-			$live = (bool) Configuration::get('POWATAG_SANDBOX');
+			if($product_sku = PowaTagProductHelper::getProductSKU($product))
+			{
+				$live = (bool) Configuration::get('POWATAG_SANDBOX');
 
-			$this->context->controller->addCSS(Configuration::get('POWATAG_CSS_URL'));
-			$this->context->controller->addJS(Configuration::get('POWATAG_JS_URL'));
-			$this->context->controller->addJS($this->getPathUri().'js/powatag.js');
+				$this->context->controller->addCSS(Configuration::get('POWATAG_CSS_URL'));
+				$this->context->controller->addJS(Configuration::get('POWATAG_JS_URL'));
+				$this->context->controller->addJS($this->getPathUri().'js/powatag.js');
+			}
 		}
 	}
 
