@@ -66,6 +66,9 @@ class PowaTagOrders extends PowaTagAbstract
 		if (isset($this->datas->paymentResult))
 			$this->datas->paymentResult = $this->datas->paymentResult;
 
+		if (isset($order->orderCostSummary))
+			$this->datas->orderCostSummary = $order->orderCostSummary;
+
 		$this->checkProductsAreShippable($this->datas->orderLineItems);
 
 		
@@ -168,6 +171,9 @@ class PowaTagOrders extends PowaTagAbstract
 
 	private function createCart()
 	{
+		if(!$this->validateOrderSummary())
+			return false;
+
 		$firstItem = current($this->datas->orderLineItems);
 		$firstVariant = current($firstItem->product->productVariants);
 
@@ -208,6 +214,87 @@ class PowaTagOrders extends PowaTagAbstract
 			return false;
 
 		return $this->cart->id;
+	}
+
+	public function validateOrderSummary()
+	{
+		if(isset($this->datas->orderCostSummary))
+		{
+
+			if (!$currency = $this->getCurrencyByIsoCode($this->datas->orderCostSummary->total->currency))
+				return false;
+
+			$subTotal = $this->getSubTotal($this->datas->orderLineItems, (int)$this->address->id_country, false);
+
+			if (!$subTotal)
+				return false;
+
+			$totalAmount       = (float)$this->datas->orderCostSummary->total->amount;
+			$totalSubTotal     = (float)$this->datas->orderCostSummary->subTotal->amount;
+			$totalShippingCost = (float)$this->datas->orderCostSummary->shippingCost->amount;
+			$totalTax          = (float)$this->datas->orderCostSummary->tax->amount;
+
+			$this->convertToCurrency($totalSubTotal, $currency, false);
+			$this->convertToCurrency($totalShippingCost, $currency, false);
+			$this->convertToCurrency($totalTax, $currency, false);
+			$this->convertToCurrency($totalAmount, $currency, false);
+			
+
+			$totalAmount       = $this->formatNumber($totalAmount, 2);
+
+			$sum = $this->formatNumber($totalSubTotal + $totalShippingCost + $totalTax, 2);
+
+			if ($totalAmount != $sum)
+			{
+				$this->addError(sprintf($this->module->l('The total amount is not correct with the others total : %s != %s'), $totalAmount, $sum));
+				return false;
+			}
+
+			$totalSubTotal     = $this->formatNumber($totalSubTotal, 2);
+			$totalShippingCost = $this->formatNumber($totalShippingCost, 2);
+			$totalTax          = $this->formatNumber($totalTax, 2);
+
+			if ($totalSubTotal != $subTotal)
+			{
+				$this->addError(sprintf($this->module->l('The subtotal is not correct : %s != %s'), $totalSubTotal, $subTotal));
+				return false;
+			}
+			
+			$this->shippingCost   = $this->getShippingCost($this->datas->orderLineItems, $currency, (int)$this->address->id_country, false);
+			$this->shippingCostWt = $this->getShippingCost($this->datas->orderLineItems, $currency, (int)$this->address->id_country, true);
+
+			if (!$this->shippingCost || !Validate::isFloat($this->shippingCost))
+			{
+				$this->addError(sprintf($this->module->l('Error with shippingCost : %s'), $this->shippingCost));
+				return false;
+			}
+
+			if ($totalShippingCost != $this->shippingCost)
+			{
+				$this->addError(sprintf($this->module->l('The total shipping cost is not correct : %s != %s'), $totalShippingCost, $this->shippingCost));
+				return false;
+			}
+
+			if ($totalTax != ($tax = $this->getTax($this->datas->orderLineItems, $currency, (int)$this->address->id_country)))
+			{
+				$this->addError(sprintf($this->module->l('The total tax is not correct : %s != %s'), $totalTax, $tax));
+				return false;
+			}
+
+			$totalWithShipping = $this->formatNumber($this->subTotalWt + $this->shippingCost + ($this->shippingCostWt - $this->shippingCost), 2);
+
+			if ($totalAmount != $totalWithShipping)
+			{
+				$this->addError(sprintf($this->module->l('The total amount is not correct : %s != %s'), $totalAmount, $totalWithShipping));
+				return false;
+			}
+
+			if (PowaTagAPI::apiLog())
+				PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->datas->customer->shippingAddress->lastName.' '.$this->datas->customer->shippingAddress->firstName);
+		}
+
+		return true;
+
 	}
 
 	/**
