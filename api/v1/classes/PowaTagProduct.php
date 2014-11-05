@@ -34,6 +34,8 @@ class PowaTagProduct extends PowaTagAbstract
 	 */
 	private $product;
 
+	private $display_taxes;
+
 	/**
 	 * List of combinations
 	 * @var array
@@ -45,6 +47,11 @@ class PowaTagProduct extends PowaTagAbstract
 		parent::__construct($datas);
 
 		$product = PowaTagProductHelper::getProductByCode($datas->id_product, $this->context->language->id);
+
+		$id_group = Group::getCurrent()->id;
+
+		$this->display_taxes = Group::getPriceDisplayMethod($id_group) == PS_TAX_EXC ? false : true;
+
 		$this->product = $product;
 	}
 
@@ -187,11 +194,11 @@ class PowaTagProduct extends PowaTagAbstract
 						'code'          =>  PowatagProductAttributeHelper::getVariantCode($combination),
 						'numberInStock' => PowaTagProductQuantityHelper::getCombinationQuantity($combination),
 						'originalPrice' => array(
-							'amount'   => $this->formatNumber($this->product->getPrice(true, null), 2),
+							'amount'   => $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
 							'currency' => $this->context->currency->iso_code
 						),
 						'finalPrice'    => array(
-							'amount'   =>  $this->formatNumber($this->product->getPrice(true, $combination['id_product_attribute']), 2),
+							'amount'   =>  $this->formatNumber($this->product->getPrice($this->display_taxes, $combination['id_product_attribute']), 2),
 							'currency' => $this->context->currency->iso_code
 						)
 					);
@@ -208,7 +215,7 @@ class PowaTagProduct extends PowaTagAbstract
 				'code'          => PowaTagProductHelper::getProductSKU($this->product),
 				'numberInStock' => PowaTagProductQuantityHelper::getProductQuantity($this->product),
 				'finalPrice'    => array(
-					'amount'   =>  $this->formatNumber($this->product->getPrice(true, null), 2),
+					'amount'   =>  $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
 					'currency' => $this->context->currency->iso_code
 				)
 			);
