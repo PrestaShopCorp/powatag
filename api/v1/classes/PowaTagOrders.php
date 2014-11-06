@@ -122,14 +122,10 @@ class PowaTagOrders extends PowaTagAbstract
 	{
 		$id_cart = $this->createCart();
 		$id_order = false;
-		
 
-		if (isset($this->datas->paymentResult))
+		if (isset($this->datas->paymentResult) && $id_cart)
 		{ //T
 			$order_state = (int)Configuration::get('PS_OS_PAYMENT');
-
-			if (!$id_cart)
-				$order_state = (int)Configuration::get('PS_OS_ERROR');
 
 			$this->datas->customer = $this->datas->customer;
 
