@@ -73,6 +73,25 @@ class PowaTagProductHelper {
 		
 		$product = new Product($id_product, true, (int)$id_lang);
 
+		//Check if multishop is enabled
+		if(Shop::isFeatureActive() && $product)
+		{
+			//Check that product exists in current shop
+			$id_shops = Product::getShopsByProduct($product->id);
+			$context = Context::getContext();
+			$product_exists = false;
+			foreach ($id_shops as $id_shop) {
+				if($id_shop['id_shop'] == Context::getContext()->shop->id)
+				{
+					$product_exists = true;
+					break;
+				}
+			}
+			if(!$product_exists)
+				$product = false;
+
+		}
+
 		return $product;
 	}
 
