@@ -98,7 +98,7 @@
                     <a href="mailto:{l s='powatagmerchantsupport@powa.com' mod='powatag'}">{l s='PrestaShop Enquiry' mod='powatag'}</a>
                 </p>
             </div>
-            <div class="sidebar-item sidebar-item-placeholder"></div>
+            <!--div class="sidebar-item sidebar-item-placeholder"></div-->
         </div>
 
 		
