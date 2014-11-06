@@ -178,6 +178,12 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 
 	}
 
+	public function setMedia()
+	{
+		parent::setMedia();
+		$this->addCSS($this->module->getPathUri().'css/backoffice.css');
+	}
+
 	public function initToolbar()
 	{
 		$this->toolbar_btn = $this->module->initToolbar();
@@ -186,6 +192,9 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 
 	public function renderOptions()
 	{
+		$this->context->smarty->assign(array(
+			'marketing' => !Configuration::get('POWATAG_HMAC_KEY') || !Configuration::get('POWATAG_API_KEY')
+		));
 		$before = $this->module->display(dirname(__FILE__).'/../../'.$this->module->name.'.php', 'powatag_configuration_before.tpl');
 		$form = parent::renderOptions();
 		$after = $this->module->display(dirname(__FILE__).'/../../'.$this->module->name.'.php', 'powatag_configuration_after.tpl');

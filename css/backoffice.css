@@ -1,0 +1,128 @@
+#powatag_marketing {
+        color: #4d4d4f;
+        font-family: din-bold, sans-serif;
+    }
+
+    #powatag_marketing a, #powatag_marketing a:visited {
+        color: #4D81C2;
+        text-decoration: none;
+    }
+
+    #powatag_marketing a:hover {
+        text-decoration: underline;
+    }
+
+    #powatag_marketing h2, #powatag_marketing h3 {
+        color: #58585B;
+    }
+
+    #powatag_marketing h2
+    {
+        font-size: 23px;
+    }
+
+
+    #powatag_marketing h2 .header-main {
+        display: block;
+        font-size: 42px;
+        line-height: 42px;
+        color: #4D81C2;
+    }
+    #powatag_marketing p {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+
+    #powatag_marketing li {
+    margin-left: 40px;
+    margin-bottom: 1px;
+    list-style: disc;
+    }
+
+    #powatag_marketing p, #powatag_marketing ul li
+    {
+        font-size:16px;
+    }
+
+    #powatag_marketing h2 .header-note {
+        position: relative;
+        bottom: 0.1em;
+        display: block;
+        margin-bottom: 1.25em;
+        line-height: 80%;
+        color: #A7A9AB;
+    }
+
+    #powatag_marketing #logo {
+        width: 280px;
+        height: 85px;
+        margin: 10px 0;
+        background-image: url("http://powatag.com/template/resource/runtime/1275/g16/static/images/logo-desktop.png");
+        background-repeat: no-repeat;
+        background-size: 100%;
+    }
+
+    #powatag_marketing #logo h1 {
+        display: none;
+    }
+
+    #powatag_marketing .content {
+        display: table;
+        margin-top: 2em;
+    }
+
+    #powatag_marketing #main {
+        display: table-cell;
+        width: 100%;
+        vertical-align: top;
+        margin: 10px 20px 10px 0;
+        padding: 10px 17px;
+        background-color: #ebebeb;
+    }
+
+    #powatag_marketing #sidebar {
+        display: table-cell;
+        vertical-align: top;
+        min-width: 350px;
+        padding: 0;
+        background-color: #ebebeb;
+    }
+
+    #powatag_marketing .sidebar-item {
+        display: inline-block;
+        padding: 10px 15px;
+        border-left: 20px solid #ffffff;
+        border-bottom: 20px solid #ffffff;
+    }
+
+    #powatag_marketing .sidebar-item.sidebar-item-first {
+        border-top: none;
+    }
+
+    #powatag_marketing .sidebar-item.sidebar-item-last {
+        border-bottom: none;
+    }
+
+    #powatag_marketing .sidebar-item.sidebar-item-placeholder {
+        width: 100%;
+        height: 100%;
+    }
+
+    #powatag_marketing .clear {
+        clear: both;
+    }
+
+    #powatag_marketing .button-wrapper {
+        text-align: center;
+    }
+
+    #powatag_marketing a.button_powa {
+        display: inline-block;
+        margin: 5px;
+        padding: 10px 15px;
+        color: #ffffff;
+        background-color: #4D81C2;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 16px;
+    }
