@@ -75,11 +75,12 @@ class PowaTagAPI extends PowaTagAPIAbstract
 	 */
 	protected function products($args)
 	{
-
-		if($args)
+		if($args || $this->verb)
 		{
-
-			$idProduct = current($args);
+			if($args)
+				$idProduct = current($args);
+			else if($this->verb)
+				$idProduct = $this->verb;
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Process get products', PowaTagLogs::IN_PROGRESS, 'Id product : '.$idProduct);
