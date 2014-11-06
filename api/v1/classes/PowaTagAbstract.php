@@ -287,11 +287,15 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::countryEnable($country))
 		{
+		
 			$this->addError(sprintf($this->module->l('Country is does not exists or does not enable for this shop : %s'), $country->iso_code));
 			return false;
 		}
 
 		$shippingCost = $this->getShippingCostByCarrier($products, $currency, $id_carrier, $country, $useTax);
+
+		if(!$shippingCost)
+			$shippingCost = 0.0;
 
 		if (Validate::isFloat($shippingCost))
 			return $shippingCost;

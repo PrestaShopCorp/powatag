@@ -259,7 +259,7 @@ class PowaTagOrders extends PowaTagAbstract
 			$this->shippingCost   = $this->getShippingCost($this->datas->orderLineItems, $currency, (int)$this->address->id_country, false);
 			$this->shippingCostWt = $this->getShippingCost($this->datas->orderLineItems, $currency, (int)$this->address->id_country, true);
 
-			if (!$this->shippingCost || !Validate::isFloat($this->shippingCost))
+			if ($this->shippingCost === false || !Validate::isFloat($this->shippingCost))
 			{
 				$this->addError(sprintf($this->module->l('Error with shippingCost : %s'), $this->shippingCost));
 				return false;
