@@ -124,7 +124,7 @@ class PowaTagOrders extends PowaTagAbstract
 		$id_order = false;
 
 		if (isset($this->datas->paymentResult) && $id_cart)
-		{ //T
+		{
 			$order_state = (int)Configuration::get('PS_OS_PAYMENT');
 
 			$this->datas->customer = $this->datas->customer;
@@ -279,11 +279,6 @@ class PowaTagOrders extends PowaTagAbstract
 
 			$totalWithShipping = $this->formatNumber($this->subTotalWt + $this->shippingCost + ($this->shippingCostWt - $this->shippingCost), 2);
 
-			if ($totalAmount != $totalWithShipping)
-			{
-				$this->addError(sprintf($this->module->l('The total amount is not correct : %s != %s'), $totalAmount, $totalWithShipping));
-				return false;
-			}
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create cart', PowaTagLogs::IN_PROGRESS, $this->datas->customer->shippingAddress->lastName.' '.$this->datas->customer->shippingAddress->firstName);
