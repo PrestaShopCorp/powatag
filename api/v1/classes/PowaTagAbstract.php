@@ -47,6 +47,8 @@ abstract class PowaTagAbstract
 	 */
 	protected $context;
 
+	protected $display_taxes;
+
 	/**
 	 * Module
 	 * @var Module
@@ -83,6 +85,8 @@ abstract class PowaTagAbstract
 		$this->context = Context::getContext();
 		$this->module = Module::getInstanceByName('powatag');
 		$this->initLang();
+		$id_group = Group::getCurrent()->id;
+		$this->display_taxes = Group::getPriceDisplayMethod($id_group) == PS_TAX_EXC ? false : true;
 	}
 	
 	public function initLang()

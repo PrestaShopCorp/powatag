@@ -34,7 +34,7 @@ class PowaTagProduct extends PowaTagAbstract
 	 */
 	private $product;
 
-	private $display_taxes;
+	
 
 	/**
 	 * List of combinations
@@ -50,7 +50,7 @@ class PowaTagProduct extends PowaTagAbstract
 
 		$id_group = Group::getCurrent()->id;
 
-		$this->display_taxes = Group::getPriceDisplayMethod($id_group) == PS_TAX_EXC ? false : true;
+		
 
 		$this->product = $product;
 	}

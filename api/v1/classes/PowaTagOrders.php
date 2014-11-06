@@ -346,12 +346,12 @@ class PowaTagOrders extends PowaTagAbstract
 
 					if ($id_product_attribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
-						$priceAttribute   = $product->getPrice(true, $id_product_attribute);
+						$priceAttribute   = $product->getPrice($this->display_taxes, $id_product_attribute);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product, $id_product_attribute);
 					}
 					else if ($product)
 					{
-						$priceAttribute   = $product->getPrice(true);
+						$priceAttribute   = $product->getPrice($this->display_taxes);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product);
 					}
 					else
