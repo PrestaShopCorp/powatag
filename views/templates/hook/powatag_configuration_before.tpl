@@ -106,15 +106,15 @@
     </div>
 </div>
 
+
+{else}
+
 <div>
 		 <p>
                 {l s='If you have any questions please download our' mod='powatag'} <a href="{l s='http://fe-dev.powaweb.io/pdf/usermanual.pdf' mod='powatag'}">{l s='user manual' mod='powatag'}</a> {l s='or email' mod='powatag'} 
                <a href="mailto:{l s='powatagmerchantsupport@powa.com' mod='powatag'}">{l s='PrestaShop Enquiry' mod='powatag'}</a>
             </p>
 </div>
-{else}
-
-
 <fieldset> 
 	{l s='To start transacting with your merchants, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='www.powatag.com/page/prestashop' mod='powatag'}"> {l s='contacting us' mod='powatag'}</a>
 </fieldset>

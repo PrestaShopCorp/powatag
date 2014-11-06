@@ -24,5 +24,6 @@
 *}
 
 <fieldset>
-	{l s='If you have any questions or issues please contact ' mod='powatag'}<a href="mailto:support@powatag.com">support@powatag.com</a>
+ <a href=""></a>  
+	{l s='If you have any issues or have questions please download our' mod='powatag'} <a href="{l s='http://fe-dev.powaweb.io/pdf/usermanual.pdf' mod='powatag'}">{l s='user manual' mod='powatag'}</a> {l s='or email' mod='powatag'} <a href="mailto:{l s='mailto:powatagmerchantsupport@powa.com' mod='powatag'}">{l s='PrestaShop Enquiry' mod='powatag'}</a>
 </fieldset>
