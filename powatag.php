@@ -56,8 +56,8 @@ class PowaTag extends PaymentModule {
 
 		$this->includeFiles();
 
-		$this->displayName = $this->l('PowaTag Payment');
-		$this->description = $this->l('PowaTag payment');
+		$this->displayName = $this->l('PowaTag');
+		$this->description = $this->l('PowaTag, the one touch payment solution that increases your online & mobile conversions');
 
 		if (self::isInstalled($this->name) && self::isEnabled($this->name))
 			$this->upgrade();
