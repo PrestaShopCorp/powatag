@@ -138,8 +138,7 @@ abstract class PowaTagAPIAbstract
 
 	public function processAPI()
 	{
-
-		if ((int) method_exists($this, $this->endpoint) > 0)
+		if ((int)method_exists($this, $this->endpoint) > 0)
 			return $this->_response(call_user_func(array($this, $this->endpoint), $this->args));
 
 		$this->setResponse(404);
@@ -151,7 +150,7 @@ abstract class PowaTagAPIAbstract
 	{
 		$status = $this->getResponse();
 
-		header("HTTP/1.1 " . $status . " " . $this->_requestStatus($status));
+		header("HTTP/1.1 ".$status." ".$this->_requestStatus($status));
 		return Tools::jsonEncode($data);
 	}
 

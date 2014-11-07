@@ -47,17 +47,13 @@ class PowaTagProduct extends PowaTagAbstract
 		parent::__construct($datas);
 
 		$product = PowaTagProductHelper::getProductByCode($datas->id_product, $this->context->language->id);
-
-		$id_group = Group::getCurrent()->id;
-
-		
-
 		$this->product = $product;
 	}
 
 	public function setJSONRequest()
 	{
-		if (Validate::isLoadedObject($this->product)) {
+		if (Validate::isLoadedObject($this->product)) 
+		{
 			$product = $this->getProductWithoutOptions();
 
 			return $product;
@@ -71,7 +67,7 @@ class PowaTagProduct extends PowaTagAbstract
 
 	private function getProductWithoutOptions()
 	{
-		$hasOptions = $this->hasOptions();
+		$has_options = $this->hasOptions();
 
 		$array = array(
 			'name'                => $this->product->name,
@@ -92,7 +88,7 @@ class PowaTagProduct extends PowaTagAbstract
 		if ($fields = $this->getCustomFields())
 			$array['customFields'] = $fields;
 		
-		if ($hasOptions)
+		if ($has_options)
 			$array['productOptions'] = $this->getOptions();
 
 		return array($array);
@@ -153,7 +149,7 @@ class PowaTagProduct extends PowaTagAbstract
 	private function hasOptions()
 	{
 		$this->combinations = $this->product->getAttributeCombinations($this->context->language->id);
-		return (bool) $this->combinations;
+		return (bool)$this->combinations;
 	}
 
 	private function getOptions()
@@ -163,7 +159,8 @@ class PowaTagProduct extends PowaTagAbstract
 		{
 			foreach ($this->combinations as $combination)
 			{
-				if (!array_key_exists($combination['group_name'], $combinations)) {
+				if (!array_key_exists($combination['group_name'], $combinations)) 
+				{
 					$combinations[$combination['group_name']] = array(
 						'id' => $combination['id_attribute_group'],
 						'values' => array()

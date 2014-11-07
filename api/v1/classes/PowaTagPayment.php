@@ -27,7 +27,6 @@
 
 class PowaTagPayment extends PowaTagAbstract
 {
-
 	/**
 	 * Transaction ID
 	 * @var string
@@ -60,7 +59,6 @@ class PowaTagPayment extends PowaTagAbstract
 	
 	public function validateOrder($orderState, $id_cart, $amountPaid, $message = null)
 	{
-
 		if (PowaTagAPI::apiLog())
 			PowaTagLogs::initAPILog('Create order', PowaTagLogs::IN_PROGRESS, "Cart ID : ".$id_cart);
 
@@ -71,7 +69,6 @@ class PowaTagPayment extends PowaTagAbstract
 
 		if ($module->validateOrder((int)$id_cart, (int)$orderState, $amountPaid, $module->name, $message.$this->error['message'], array('transaction_id' => $this->bankAuthorizationCode), null, false, $customer->secure_key))
 		{
-
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create order', PowaTagLogs::SUCCESS, "Order ID : ".$module->currentOrder);
 
@@ -79,7 +76,6 @@ class PowaTagPayment extends PowaTagAbstract
 		}
 		else
 		{
-
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create order', PowaTagLogs::ERROR, "FAIL");
 
@@ -89,18 +85,14 @@ class PowaTagPayment extends PowaTagAbstract
 
 	public function confirmPayment($twoSteps = false)
 	{
-
 		$orderState = Configuration::get('PS_OS_PAYMENT');
 
 		if (!$this->cartEnabled())
-		{
 			$orderState = Configuration::get('PS_OS_ERROR');
-		}
 
 		if (isset($this->datas->paymentResult->paymentCart))
 		{
-
-			$this->customer = $this->getCustomerByEmail($this->datas->customer->emailAddress);;
+			$this->customer = $this->getCustomerByEmail($this->datas->customer->emailAddress);
 			$addresses = $this->customer->getAddresses((int)$this->context->language->id);
 
 			$address = false;
@@ -113,7 +105,6 @@ class PowaTagPayment extends PowaTagAbstract
 			{
 				if ($addr['alias'] == $friendlyName)
 				{
-					$find = true;
 					$address = new Address((int)$addr['id_address']);
 					break;
 				}
@@ -178,7 +169,6 @@ class PowaTagPayment extends PowaTagAbstract
 
 	private function cartEnabled()
 	{
-
 		if (!Validate::isLoadedObject($this->cart))
 		{
 			$this->addError(sprintf($this->module->l('Cart not exists : %s'), $this->idCart), PowaTagAbstract::$INVALID_PAYMENT);
@@ -217,7 +207,6 @@ class PowaTagPayment extends PowaTagAbstract
 
 	private function transactionExists()
 	{
-
 		$transactions = PowaTagTransaction::getTransactions((int)$this->idCart);
 		
 		if (!$transactions || !count($transactions))
@@ -239,7 +228,6 @@ class PowaTagPayment extends PowaTagAbstract
 
 	private function checkTotalToPaid($amountPaid, $currency)
 	{
-
 		if (!$currency instanceof Currency)
 		{
 			if (Validate::isInt($currency))

@@ -44,15 +44,15 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 				'title'  =>	$this->l('API Settings'),
 				'image'  => '../img/admin/prefs.gif',
 				'fields' =>	array(
-		 			'POWATAG_API_KEY' => array(
-		 				'title'      => $this->l('API Key'),
-		 				'validation' => 'isString',
-		 				'type'       => 'text',
-		 				'size'       => '80',
+					'POWATAG_API_KEY' => array(
+						'title'      => $this->l('API Key'),
+						'validation' => 'isString',
+						'type'       => 'text',
+						'size'       => '80',
 						'visibility' => Shop::CONTEXT_SHOP,
 						'required'   => true
 					),
-		 			'POWATAG_HMAC_KEY' => array(
+					'POWATAG_HMAC_KEY' => array(
 						'title'      => $this->l('HMAC Key'),
 						'validation' => 'isString',
 						'type'       => 'text',
@@ -85,29 +85,29 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 				'title'  =>	$this->l('Other Settings'),
 				'image'  => '../img/admin/tab-tools.gif',
 				'fields' =>	array(
-		 			'POWATAG_SHIPPING' => array(
-		 				'title'      => $this->l('Shipping Method'),
-		 				'validation' => 'isInt',
-		 				'type'       => 'select',
-		 				'identifier' => 'id_carrier',
-		 				'desc' => $this->l('This will be used to calculate shipping costs'),
-		 				'list'       => Carrier::getCarriers($this->context->language->id),
+					'POWATAG_SHIPPING' => array(
+						'title'      => $this->l('Shipping Method'),
+						'validation' => 'isInt',
+						'type'       => 'select',
+						'identifier' => 'id_carrier',
+						'desc' => $this->l('This will be used to calculate shipping costs'),
+						'list'       => Carrier::getCarriers($this->context->language->id),
 						'visibility' => Shop::CONTEXT_SHOP,
 						'required'   => true
 					),
-		 			'POWATAG_SUCCESS_MSG' => array(
-		 				'title'      => $this->l('Sucess message'),
-		 				'validation' => 'isString',
-		 				'type'       => 'textLang',
-		 				'size'       => '80',
+					'POWATAG_SUCCESS_MSG' => array(
+						'title'      => $this->l('Sucess message'),
+						'validation' => 'isString',
+						'type'       => 'textLang',
+						'size'       => '80',
 						'visibility' => Shop::CONTEXT_SHOP
 					),
-		 			'POWATAG_IMG_TYPE' => array(
-		 				'title'      => $this->l('Image type to send'),
-		 				'validation' => 'isInt',
-		 				'type'       => 'select',
-		 				'identifier' => 'id_image_type',
-		 				'list'       => ImageType::getImagesTypes(),
+					'POWATAG_IMG_TYPE' => array(
+						'title'      => $this->l('Image type to send'),
+						'validation' => 'isInt',
+						'type'       => 'select',
+						'identifier' => 'id_image_type',
+						'list'       => ImageType::getImagesTypes(),
 						'visibility' => Shop::CONTEXT_SHOP,
 						'required'   => true
 					),
@@ -116,7 +116,7 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 			),
 			'product_settings' => array(
 				'title'  =>	$this->l('Product Settings'),
-				'image'  => $this->module->getPathUri() . 'img/qr_code.png',
+				'image'  => $this->module->getPathUri().'img/qr_code.png',
 				'fields' =>	array(
 					'POWATAG_QR' => array(
 						'title'      => $this->l('QR Code enabled'),
@@ -125,11 +125,11 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'type'       => 'bool',
 						'visibility' => Shop::CONTEXT_SHOP
 					),
-		 			'POWATAG_QR_POS' => array(
-		 				'title'      => $this->l('QR code Position'),
-		 				'validation' => 'isString',
-		 				'type'       => 'select',
-		 				'identifier' => 'key', 
+					'POWATAG_QR_POS' => array(
+						'title'      => $this->l('QR code Position'),
+						'validation' => 'isString',
+						'type'       => 'select',
+						'identifier' => 'key', 
 						'list'       => array(
 							array('key' => 'displayRightColumnProduct', 'name' => $this->l('displayRightColumnProduct')),
 							array('key' => 'displayLeftColumnProduct', 'name' => $this->l('displayLeftColumnProduct')),

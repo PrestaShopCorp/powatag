@@ -56,7 +56,6 @@ class PowaTagOrders extends PowaTagAbstract
 			$order = current($this->datas->orders);
 
 		$this->datas->customer         = $order->customer;
-
 		
 		$this->datas->orderLineItems   = $order->orderLineItems;
 
@@ -71,9 +70,6 @@ class PowaTagOrders extends PowaTagAbstract
 
 		$this->checkProductsAreShippable($this->datas->orderLineItems);
 
-		
-
-
 		$this->initObjects();
 	}
 
@@ -82,7 +78,6 @@ class PowaTagOrders extends PowaTagAbstract
 	 */
 	private function initObjects()
 	{
-		
 		$this->customer = $this->getCustomerByEmail($this->datas->customer->emailAddress, true, $this->datas->customer->lastName, $this->datas->customer->firstName, $this->datas->customer->emailAddress);
 
 		$addresses = $this->customer->getAddresses((int)$this->context->language->id);
@@ -131,10 +126,8 @@ class PowaTagOrders extends PowaTagAbstract
 
 			$payment = new PowaTagPayment($this->datas, $id_cart);
 			$id_order = $payment->confirmPayment(true);
-			if($id_order)
-			{
+			if ($id_order)
 				$message = Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) != '' ? Configuration::get('POWATAG_SUCCESS_MSG', $this->context->language->id) : 'Success';
-			}
 			else
 				$message = 'Error on order creation';
 		}
@@ -156,23 +149,18 @@ class PowaTagOrders extends PowaTagAbstract
 			
 		}
 		else
-		{
 			$message = 'Cart has not been created';
-		}
-
-
 
 		return array($id_cart, $id_order, $message);
 	}
 
 	private function createCart()
 	{
-		if(!$this->validateOrderSummary())
+		if (!$this->validateOrderSummary())
 			return false;
 
 		$firstItem = current($this->datas->orderLineItems);
 		$firstVariant = current($firstItem->product->productVariants);
-
 
 		if (!$currency = $this->getCurrencyByIsoCode($firstVariant->finalPrice->currency))
 			return false;
@@ -203,7 +191,6 @@ class PowaTagOrders extends PowaTagAbstract
 		if (PowaTagAPI::apiLog())
 			PowaTagLogs::initAPILog('Create cart', PowaTagLogs::SUCCESS, "Cart ID : ".$cart->id);
 
-
 		$this->cart = $cart;
 
 		if (!$this->addProductsToCart($cart, $this->address->id_country)) 
@@ -214,7 +201,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 	public function validateOrderSummary()
 	{
-		if(isset($this->datas->orderCostSummary))
+		if (isset($this->datas->orderCostSummary))
 		{
 
 			if (!$currency = $this->getCurrencyByIsoCode($this->datas->orderCostSummary->total->currency))
@@ -235,7 +222,6 @@ class PowaTagOrders extends PowaTagAbstract
 			$this->convertToCurrency($totalTax, $currency, false);
 			$this->convertToCurrency($totalAmount, $currency, false);
 			
-
 			$totalAmount       = $this->formatNumber($totalAmount, 2);
 
 			$sum = $this->formatNumber($totalSubTotal + $totalShippingCost + $totalTax, 2);

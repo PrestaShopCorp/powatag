@@ -25,7 +25,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-if( !defined ('_PS_VERSION_') )
+if (!defined ('_PS_VERSION_'))
 	exit;
 
 class PowaTag extends PaymentModule {
@@ -45,10 +45,9 @@ class PowaTag extends PaymentModule {
 	 */
 	public function __construct()
 	{
-
 		$this->name = 'powatag';
 		$this->tab = 'payments_gateways';
-		$this->version = '0.1.0.5';
+		$this->version = '0.1.6.';
 		$this->author = '202-ecommerce';
 
 
@@ -70,11 +69,11 @@ class PowaTag extends PaymentModule {
 
 		foreach (scandir($path) as $class)
 		{
-			if(is_file($path.$class))
+			if (is_file($path.$class))
 			{
 				$class_name = Tools::substr($class, 0, -4);
 				//Check if class_name is an existing Class or not
-				if(!class_exists($class_name) && $class_name != 'index')
+				if (!class_exists($class_name) && $class_name != 'index')
 					require_once($path.$class_name.'.php');
 			}
 		}
@@ -83,11 +82,11 @@ class PowaTag extends PaymentModule {
 
 		foreach (scandir($path) as $class)
 		{
-			if(is_file($path.$class))
+			if (is_file($path.$class))
 			{
 				$class_name = Tools::substr($class, 0, -4);
 				//Check if class_name is an existing Class or not
-				if(!class_exists($class_name) && $class_name != 'index')
+				if (!class_exists($class_name) && $class_name != 'index')
 					require_once($path.$class_name.'.php');
 			}
 		}
@@ -108,7 +107,7 @@ class PowaTag extends PaymentModule {
 			return false;
 
 		// Install tabs
-		if(!$this->installTabs())
+		if (!$this->installTabs())
 			return false;
 
 		// Registration hook
@@ -119,10 +118,8 @@ class PowaTag extends PaymentModule {
 		$configs = array(
 			'POWATAG_SKU' => Powatag::PRODUCT_ID,
 		);
-		foreach ($configs as $config => $value) {
+		foreach ($configs as $config => $value)
 			Configuration::updateValue($config, $value);
-		}
-		
 		
 		return true;
 	}
@@ -132,13 +129,11 @@ class PowaTag extends PaymentModule {
 	 */
 	public function upgrade()
 	{
-		$cfgName = Tools::strtoupper($this->name . '_version');
+		$cfgName = Tools::strtoupper($this->name.'_version');
 		$version = Configuration::get($cfgName);
 
 		if ($version === false || version_compare($version, $this->version, '<'))
-		{
 			Configuration::updateValue($cfgName, $this->version);
-		}
 	}
 
 	/**
@@ -147,13 +142,12 @@ class PowaTag extends PaymentModule {
 	 */
 	public function uninstall()
 	{
-
 		// Uninstall DataBase
 		if (!$this->uninstallSQL())
 			return false;
 
 		// Delete tabs
-		if(!$this->uninstallTabs())
+		if (!$this->uninstallTabs())
 			return false;
 		
 
@@ -173,9 +167,8 @@ class PowaTag extends PaymentModule {
 			'POWATAG_HMAC_KEY',
 			'POWATAG_API_KEY',
 		);
-		foreach ($configs as $config) {
+		foreach ($configs as $config)
 			Configuration::deleteByName($config);
-		}
 		// Uninstall default
 		if (!parent::uninstall())
 			return false;
@@ -195,13 +188,13 @@ class PowaTag extends PaymentModule {
 		$controllers = scandir(dirname(__FILE__).'/controllers/admin');
 		foreach ($controllers as $controller)
 		{
-			if(is_file(dirname(__FILE__).'/controllers/admin/'.$controller) && $controller != 'index.php')
+			if (is_file(dirname(__FILE__).'/controllers/admin/'.$controller) && $controller != 'index.php')
 			{
 				require_once(dirname(__FILE__).'/controllers/admin/'.$controller);
 				$controller_name = Tools::substr($controller, 0, -4);
-				if(class_exists($controller_name))
+				if (class_exists($controller_name))
 				{
-					if(method_exists($controller_name, 'install'))
+					if (method_exists($controller_name, 'install'))
 						call_user_func(array($controller_name, 'install'), $menu_id, $this->name);
 				}
 			}
@@ -223,7 +216,6 @@ class PowaTag extends PaymentModule {
 
 	public function initToolbar()
 	{
-
 		$toolbar_btn = array();
 		$toolbar_btn['configuration'] = array(
 					'href' => $this->context->link->getAdminLink('AdminPowaTagConfiguration'),
@@ -249,12 +241,12 @@ class PowaTag extends PaymentModule {
 		$classes = scandir(dirname(__FILE__).'/classes');
 		foreach ($classes as $class)
 		{
-			if(is_file(dirname(__FILE__).'/classes/'.$class))
+			if (is_file(dirname(__FILE__).'/classes/'.$class))
 			{
 				$class_name = Tools::substr($class, 0, -4);
-				if(class_exists($class_name))
+				if (class_exists($class_name))
 				{
-					if(method_exists($class_name, 'install'))
+					if (method_exists($class_name, 'install'))
 						call_user_func(array($class_name, 'install'));
 				}
 			}
@@ -272,12 +264,12 @@ class PowaTag extends PaymentModule {
 		$classes = scandir(dirname(__FILE__).'/classes');
 		foreach ($classes as $class)
 		{
-			if(is_file(dirname(__FILE__).'/classes/'.$class))
+			if (is_file(dirname(__FILE__).'/classes/'.$class))
 			{
 				$class_name = Tools::substr($class, 0, -4);
-				if(class_exists($class_name))
+				if (class_exists($class_name))
 				{
-					if(method_exists($class_name, 'uninstall'))
+					if (method_exists($class_name, 'uninstall'))
 						call_user_func(array($class_name, 'uninstall'));
 				}
 			}
@@ -292,7 +284,6 @@ class PowaTag extends PaymentModule {
 	 */
 	private function registrationHook()
 	{
-		
 		if (!$this->registerHook('displayHeader') 
 			|| !$this->registerHook('displayRightColumnProduct') 
 			|| !$this->registerHook('displayLeftColumnProduct') 
@@ -311,10 +302,8 @@ class PowaTag extends PaymentModule {
 		{
 			$product = new Product((int)Tools::getValue('id_product'), true, (int)$this->context->language->id);
 
-			if($product_sku = PowaTagProductHelper::getProductSKU($product))
+			if ($product_sku = PowaTagProductHelper::getProductSKU($product))
 			{
-				$live = (bool) Configuration::get('POWATAG_SANDBOX');
-
 				$this->context->controller->addCSS(Configuration::get('POWATAG_CSS_URL'));
 				$this->context->controller->addJS(Configuration::get('POWATAG_JS_URL'));
 				$this->context->controller->addJS($this->getPathUri().'js/powatag.js');
@@ -327,7 +316,7 @@ class PowaTag extends PaymentModule {
 		if (!Configuration::get('POWATAG_QR') || Configuration::get('POWATAG_QR_POS') != 'displayProductButtons')
 			return false;
 
-		if(!version_compare(_PS_VERSION_, 1.6, '<'))
+		if (!version_compare(_PS_VERSION_, 1.6, '<'))
 			$this->context->controller->addCSS($this->getPathUri().'css/powatag.css');
 
 		return $this->generateTag();
@@ -368,10 +357,9 @@ class PowaTag extends PaymentModule {
 
 	private function generateTag()
 	{
-
 		$product = new Product((int)Tools::getValue('id_product'), true, (int)$this->context->language->id);
 
-		if($product_sku = PowaTagProductHelper::getProductSKU($product))
+		if ($product_sku = PowaTagProductHelper::getProductSKU($product))
 		{
 			$datas = array(
 				'powatagApi'     => Configuration::get('POWATAG_API_KEY'),

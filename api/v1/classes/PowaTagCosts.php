@@ -62,9 +62,6 @@ class PowaTagCosts extends PowaTagAbstract
 	 */
 	public function getSummary()
 	{
-
-
-
 		$this->getCurrency();
 
 		if (!$this->currency)

@@ -27,7 +27,6 @@
 
 abstract class PowaTagAbstract
 {
-
 	public static $BAD_REQUEST      = array('code' => 'BAD_REQUEST',      'response' => 400);
 	public static $SHOP_NOT_FOUND   = array('code' => 'SHOP_NOT_FOUND',   'response' => 404);
 	public static $SKU_NOT_FOUND    = array('code' => 'SKU_NOT_FOUND',    'response' => 404);
@@ -91,11 +90,10 @@ abstract class PowaTagAbstract
 	
 	public function initLang()
 	{
-		
-		if($iso = Tools::getValue('lang'))
+		if ($iso = Tools::getValue('lang'))
 		{
 			$lang = Tools::substr($iso, 0, 2);
-			if($language_id = Language::getIdByIso($lang))
+			if ($language_id = Language::getIdByIso($lang))
 				$this->context->language = new Language($language_id);
 
 		}
@@ -107,13 +105,11 @@ abstract class PowaTagAbstract
 	 */
 	public function getError()
 	{
-		
 		return $this->error;
 	}
 
 	public function addError($message, $error = null)
 	{
-
 		if (is_null($error))
 			$error = PowaTagAbstract::$UNEXPECTED_ERROR;
 
@@ -166,7 +162,6 @@ abstract class PowaTagAbstract
 	 */
 	protected function getSubTotal($products, $codeCountry, $check = true)
 	{
-
 		if (Validate::isInt($codeCountry))
 			$country = new Country($codeCountry);
 		else if (!$codeCountry instanceof Country)
@@ -178,7 +173,6 @@ abstract class PowaTagAbstract
 		{
 			foreach ($products as $p)
 			{
-
 				$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
 
 				if (!Validate::isLoadedObject($product))
@@ -274,7 +268,6 @@ abstract class PowaTagAbstract
 	 */
 	protected function getShippingCost($products, Currency $currency, $country, $useTax = true)
 	{
-
 		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
@@ -287,14 +280,13 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::countryEnable($country))
 		{
-		
 			$this->addError(sprintf($this->module->l('Country is does not exists or does not enable for this shop : %s'), $country->iso_code));
 			return false;
 		}
 
 		$shippingCost = $this->getShippingCostByCarrier($products, $currency, $id_carrier, $country, $useTax);
 
-		if(!$shippingCost)
+		if (!$shippingCost)
 			$shippingCost = 0.0;
 
 		if (Validate::isFloat($shippingCost))
@@ -344,7 +336,6 @@ abstract class PowaTagAbstract
 		// Get shipping cost using correct method
 		if ($carrier->range_behavior)
 		{
-
 			if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && !Carrier::checkDeliveryPriceByWeight($carrier->id, 0, (int)$id_zone))
 			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && !Carrier::checkDeliveryPriceByPrice($carrier->id, $this->subTotalWt, $id_zone, (int)$this->id_currency)
 			))
@@ -385,7 +376,6 @@ abstract class PowaTagAbstract
 	
 	private function isCarrierInRange($carrier, $id_zone)
 	{
-
 		if (!$carrier->range_behavior)
 			return true;
 
@@ -422,14 +412,13 @@ abstract class PowaTagAbstract
 	 */
 	protected function getTax($products, Currency $currency, $country)
 	{
-
 		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
 			$country = new Country($country);
 
 		$tax = $this->subTax;
-		$shippingCostWt = $this->getShippingCostByCarrier($products,  $currency, $id_carrier, $country, $this->subTotal, true);
+		$shippingCostWt = $this->getShippingCostByCarrier($products, $currency, $id_carrier, $country, $this->subTotal, true);
 		$tax += ($shippingCostWt - $this->shippingCost);
 
 		return (float)Tools::ps_round($tax, 2);
@@ -442,7 +431,6 @@ abstract class PowaTagAbstract
 	 */
 	protected function taxEnableByCustomer($customer)
 	{
-		
 		if (!Validate::isLoadedObject($customer))
 		{
 			if (Validate::isEmail($customer))
@@ -462,7 +450,7 @@ abstract class PowaTagAbstract
 		if (!Validate::isLoadedObject($customer) && $register)
 		{
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Create customer', PowaTagLogs::IN_PROGRESS, 'Customer : '.$lastName . ' ' . $firstName);
+				PowaTagLogs::initAPILog('Create customer', PowaTagLogs::IN_PROGRESS, 'Customer : '.$lastName.' '.$firstName);
 
 			$customer->lastname  = $lastName;
 			$customer->firstname = $firstName;
@@ -489,7 +477,6 @@ abstract class PowaTagAbstract
 
 	protected function formatNumber($number, $precision = 0)
 	{
-
 		$number = Tools::ps_round($number, $precision);
 
 		return number_format($number, 2, ".", "");
@@ -573,7 +560,6 @@ abstract class PowaTagAbstract
 	 */
 	protected function createAddress($addressInformations, $address = null)
 	{
-
 		$country = $this->getCountryByCode($addressInformations->country->alpha2Code);
 
 		if (!$country->active)
@@ -600,12 +586,11 @@ abstract class PowaTagAbstract
 		$address->address2    = $addressInformations->line2;
 		$address->postcode    = $addressInformations->postCode;
 		$address->city        = $addressInformations->city;
-		$address->phone       = isset($addressInformations->phone) ? $addressInformations->phone : '0000000000' ;
+		$address->phone       = isset($addressInformations->phone) ? $addressInformations->phone : '0000000000';
 		$address->id_state    = isset($addressInformations->state) ? (int)State::getIdByIso($addressInformations->state, (int)$country->id) : 0;
 
 		if (!$address->save())
 		{
-
 			$this->addError($this->module->l("Impossible to save address"));
 
 			if (PowaTagAPI::apiLog())
@@ -615,32 +600,32 @@ abstract class PowaTagAbstract
 		}
 
 		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create address', PowaTagLogs::SUCCESS, 'Address ID : '. $address->id);
+			PowaTagLogs::initAPILog('Create address', PowaTagLogs::SUCCESS, 'Address ID : '.$address->id);
 
 		return $address;
 	}
 
 	public function checkProductsAreShippable($products)
 	{
-		 foreach ($products as $p) {
-		 	$carrier_ok = false;
-		 	$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
-		 	$carriers = $product->getCarriers();
-		 	if(count($carriers))
-		 	{
-		 		$powatag_carrier = Configuration::get('POWATAG_SHIPPING');
-			 	foreach ($carriers as $carrier) {
-			 		if($carrier['id_carrier'] == $powatag_carrier)
-			 		{
-			 			$carrier_ok = true;
-			 			break;
-			 		}
-			 	}
-			 	if(!$carrier_ok)
-			 	{
-			 		$this->addError($this->module->l("Product with id").' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier );
-			 	}
-		 	}
+		 foreach ($products as $p) 
+		 {
+			$carrier_ok = false;
+			$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
+			$carriers = $product->getCarriers();
+			if (count($carriers))
+			{
+				$powatag_carrier = Configuration::get('POWATAG_SHIPPING');
+				foreach ($carriers as $carrier) 
+				{
+					if ($carrier['id_carrier'] == $powatag_carrier)
+					{
+						$carrier_ok = true;
+						break;
+					}
+				}
+				if (!$carrier_ok)
+					$this->addError($this->module->l("Product with id").' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier );
+			}
 		 }
 	}
 

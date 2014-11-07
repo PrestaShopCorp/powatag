@@ -29,10 +29,8 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'PowaTagAPIAbstract.php';
 
 class PowaTagAPI extends PowaTagAPIAbstract
 {
-
 	public function __construct($request, $origin)
 	{
-
 		$this->loadClasses();
 
 		parent::__construct($request);
@@ -40,7 +38,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 		// Abstracted out for example
 		$APIKey = new PowaTagAPIKey();
 
-		if (!Module::isInstalled('powatag')|| !Module::isEnabled('powatag'))
+		if (!Module::isInstalled('powatag') || !Module::isEnabled('powatag'))
 			throw new Exception('Module not enable');
 
 		if (!array_key_exists('HTTP_HMAC', $_SERVER))
@@ -49,7 +47,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			throw new Exception('Invalid API Key');
 		
 		$this->data = Tools::jsonDecode($this->data);
-
 	}
 
 	/**
@@ -75,11 +72,11 @@ class PowaTagAPI extends PowaTagAPIAbstract
 	 */
 	protected function products($args)
 	{
-		if($args || $this->verb)
+		if ($args || $this->verb)
 		{
-			if($args)
+			if ($args)
 				$idProduct = current($args);
-			else if($this->verb)
+			else if ($this->verb)
 				$idProduct = $this->verb;
 
 			if (PowaTagAPI::apiLog())
@@ -96,7 +93,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			//Handle to get one specific products
 			if ($value = $powatagProduct->setJSONRequest())
 			{
-
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::SUCCESS, 'Id product : '.$idProduct);
 
@@ -125,7 +121,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 		}
 		else 
 		{
-
 			$msg = "No product mentionned";
 
 			if (PowaTagAPI::apiLog())
@@ -158,7 +153,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			return $data;
 		}
 		
-		if($this->verb == 'costs')
+		if ($this->verb == 'costs')
 		{
 			if (isset($datas->order))
 				$customer = $datas->order->customer;
@@ -166,7 +161,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				$customer = current($datas->orders)->customer;
 
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::IN_PROGRESS, 'Customer : '.$customer->firstName . ' ' . $customer->lastName);
+				PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::IN_PROGRESS, 'Customer : '.$customer->firstName.' '.$customer->lastName);
 
 			if (PowaTagAPI::requestLog())
 				PowaTagLogs::initRequestLog('Process calculate Costs', PowaTagLogs::IN_PROGRESS, $datas);
@@ -175,9 +170,8 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 			if ($value = $powatagcosts->getSummary())
 			{
-
 				if (PowaTagAPI::apiLog())
-					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::SUCCESS, 'Customer : '.$customer->firstName . ' ' . $customer->lastName);
+					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::SUCCESS, 'Customer : '.$customer->firstName.' '.$customer->lastName);
 
 				if (PowaTagAPI::requestLog())
 					PowaTagLogs::initRequestLog('Process calculate Costs', PowaTagLogs::SUCCESS, $value);
@@ -186,7 +180,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			}
 			else
 			{
-
 				$error = $powatagcosts->getError();
 
 				if (PowaTagAPI::apiLog())
@@ -205,7 +198,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 		}
 		else if (count($args) == 2 && Validate::isInt($args[0]) && $args[1] = "confirm-payment")
 		{//Three step payment confirmation
-
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Process payment', PowaTagLogs::IN_PROGRESS, 'Order ID : '.$args[0]);
 
@@ -216,7 +208,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			
 			if ($id_order = $payment->confirmPayment())
 			{
-
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process payment', PowaTagLogs::SUCCESS, 'ID Order : '.$id_order);
 
@@ -225,13 +216,12 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 				return array(
 					'providerTxCode' => isset($datas->paymentResult->providerTxCode) ? $datas->paymentResult->providerTxCode : 'providerTxCode Empty',
-					'message' => 'Authorization success order '. $id_order . ' created',
+					'message' => 'Authorization success order '.$id_order.' created',
 				);
 
 			}
 			else
 			{
-
 				$error = $payment->getError();
 
 				if (PowaTagAPI::apiLog())
@@ -257,14 +247,14 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				$customer = current($datas->orders)->customer;
 
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Process order', PowaTagLogs::IN_PROGRESS, 'Customer : '.$customer->firstName . ' ' . $customer->lastName);
+				PowaTagLogs::initAPILog('Process order', PowaTagLogs::IN_PROGRESS, 'Customer : '.$customer->firstName.' '.$customer->lastName);
 
 			if (PowaTagAPI::requestLog())
 				PowaTagLogs::initRequestLog('Create order', PowaTagLogs::IN_PROGRESS, $datas);
 
 			$order = new PowaTagOrders($datas);
 
-			if($error = $order->getError())
+			if ($error = $order->getError())
 			{
 				$this->setResponse($error['error']['response']);
 				$errorCode = $error['error']['code'];
@@ -290,7 +280,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 				$link = new Link();
 				
-				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => $message, "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int) $id_cart))));
+				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => $message, "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart))));
 					
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
@@ -298,8 +288,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				return $data;
 			}
 			else
-			{
-				
+			{	
 				$message = '';
 				
 				$errorCode = '';

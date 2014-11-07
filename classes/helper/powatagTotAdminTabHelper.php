@@ -34,8 +34,8 @@ class powatagTotAdminTabHelper
 	 */
 	public static function deleteAdminTabs($name)
 	{
-		Db::getInstance()->Execute('DELETE FROM ' . _DB_PREFIX_ . 'tab_lang WHERE id_tab IN (SELECT id_tab FROM ' . _DB_PREFIX_ . 'tab WHERE module = "'.pSQL($name).'")');
-		Db::getInstance()->Execute('DELETE FROM ' . _DB_PREFIX_ . 'tab WHERE module = "' .pSQL($name).'"');
+		Db::getInstance()->Execute('DELETE FROM '._DB_PREFIX_.'tab_lang WHERE id_tab IN (SELECT id_tab FROM '._DB_PREFIX_.'tab WHERE module = "'.pSQL($name).'")');
+		Db::getInstance()->Execute('DELETE FROM '._DB_PREFIX_.'tab WHERE module = "'.pSQL($name).'"');
 	}
 
 	/**
@@ -71,7 +71,8 @@ class powatagTotAdminTabHelper
 		$id_tab = Db::getInstance()->Insert_ID();
 
 	   //Define tab multi language data
-	   foreach ( Language::getLanguages(false) as $language) {
+	   foreach (Language::getLanguages(false) as $language)
+	   {
 			$data_lang = array(
 							 'id_tab' => $id_tab, 
 							 'id_lang' => $language['id_lang'],
@@ -94,6 +95,6 @@ class powatagTotAdminTabHelper
 	 */
 	public static function getAdminTabIDByClassName($name)
 	{
-		return Db::getInstance()->getValue('SELECT id_tab FROM ' . _DB_PREFIX_ . 'tab WHERE class_name = "'.pSQL($name).'"');
+		return Db::getInstance()->getValue('SELECT id_tab FROM '._DB_PREFIX_.'tab WHERE class_name = "'.pSQL($name).'"');
 	}
 }

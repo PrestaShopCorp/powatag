@@ -32,7 +32,7 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'PowaTagAPI.php';
 class PowaTagAPIHandle
 {
 
-	static public function init()
+	public static function init()
 	{
 		if (!array_key_exists('HTTP_ORIGIN', $_SERVER))
 			$_SERVER['HTTP_ORIGIN'] = $_SERVER['SERVER_NAME'];

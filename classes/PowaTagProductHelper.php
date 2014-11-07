@@ -74,20 +74,20 @@ class PowaTagProductHelper {
 		$product = new Product($id_product, true, (int)$id_lang);
 
 		//Check if multishop is enabled
-		if(Shop::isFeatureActive() && $product)
+		if (Shop::isFeatureActive() && $product)
 		{
 			//Check that product exists in current shop
 			$id_shops = Product::getShopsByProduct($product->id);
-			$context = Context::getContext();
 			$product_exists = false;
-			foreach ($id_shops as $id_shop) {
-				if($id_shop['id_shop'] == Context::getContext()->shop->id)
+			foreach ($id_shops as $id_shop) 
+			{
+				if ($id_shop['id_shop'] == Context::getContext()->shop->id)
 				{
 					$product_exists = true;
 					break;
 				}
 			}
-			if(!$product_exists)
+			if (!$product_exists)
 				$product = false;
 
 		}
@@ -105,7 +105,7 @@ class PowaTagProductHelper {
 		if (empty($reference))
 			return 0;
 		
-		if(!Validate::isReference($reference))
+		if (!Validate::isReference($reference))
 			return 0;
 
 		$query = new DbQuery();
@@ -126,7 +126,7 @@ class PowaTagProductHelper {
 		if (empty($upc))
 			return 0;
 		
-		if(!Validate::isUpc($upc))
+		if (!Validate::isUpc($upc))
 			return 0;
 
 		$query = new DbQuery();
