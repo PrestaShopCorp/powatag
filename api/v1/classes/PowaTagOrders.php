@@ -140,8 +140,8 @@ class PowaTagOrders extends PowaTagAbstract
 			$transaction->id_customer = (int)$this->customer->id;
 			if (isset($this->datas->device))
 			{
-				$transaction->id_device   = $this->datas->device->deviceID;
-				$transaction->ip_address  = $this->datas->device->ipAddress;
+				$transaction->id_device   = isset($this->datas->device->deviceID) ? $this->datas->device->deviceID : '';
+				$transaction->ip_address  = isset($this->datas->device->ipAddress) ? $this->datas->device->ipAddress : '';
 			}
 			$transaction->order_state = isset($order_state) ? (int)$order_state : 0;
 			$transaction->save();
