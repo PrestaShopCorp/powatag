@@ -118,7 +118,7 @@
 
             <div id="register-wrapper">
                 <div class="register">
-                    <a class="button_powa" href="{l s='www.powatag.com/page/prestashop' mod='powatag'}">
+                    <a class="button_powa" href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}">
                         {l s='Register now' mod='powatag'}
                     </a>
                 </div>
@@ -141,7 +141,7 @@
 {else}
 
 <fieldset> 
-	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='www.powatag.com/page/prestashop' mod='powatag'}"> {l s='contacting us' mod='powatag'}</a>
+	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}"> {l s='contacting us' mod='powatag'}</a>
 </fieldset>
 
 <br/>
