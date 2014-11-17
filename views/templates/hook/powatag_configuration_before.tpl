@@ -54,7 +54,7 @@
 
             <p class="user-manual">
                 {l s='For further support' mod='powatag'},
-                <a href="{l s='http://fe-dev.powaweb.io/pdf/usermanual.pdf' mod='powatag'}">{l s='click here to download the PowaTag User Manual' mod='powatag'}​
+                <a href="{l s='http://fe-dev.powaweb.io/pdf/usermanual.pdf' mod='powatag'}" target="_blank">{l s='click here to download the PowaTag User Manual' mod='powatag'}​
                 </a>
             </p>
         </div>
@@ -126,7 +126,7 @@
                 <div class="questions">
                     {l s='Got questions?' mod='powatag'} <br/>
                     {l s='Visit our website' mod='powatag'}
-                    <a href="{l s='http://powatag.com' mod='powatag'}">{l s='powatag.com' mod='powatag'}</a>
+                    <a href="{l s='http://powatag.com' mod='powatag'}" target="_blank">{l s='powatag.com' mod='powatag'}</a>
                     or email
                     <a href="mailto:{l s='powatagmerchantsupport@powa.com' mod='powatag'}">{l s='PrestaShop Enquiry' mod='powatag'}</a>
                 </div>
@@ -141,7 +141,7 @@
 {else}
 
 <fieldset> 
-	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}"> {l s='contacting us' mod='powatag'}</a>
+	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}" target="_blank"> {l s='contacting us' mod='powatag'}</a>
 </fieldset>
 
 <br/>
