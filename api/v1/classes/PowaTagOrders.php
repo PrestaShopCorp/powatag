@@ -342,9 +342,11 @@ class PowaTagOrders extends PowaTagAbstract
 					$variantAmount = $variant->finalPrice->amount;
 
 					$id_product_attribute = false;
+					$combination = false;
 
 					if ($id_product_attribute = PowaTagProductAttributeHelper::getCombinationByCode($product->id, $variant->code))
 					{
+						$combination = new Combination($id_product_attribute);
 						$priceAttribute   = $product->getPrice($this->display_taxes, $id_product_attribute);
 						$qtyInStock = PowaTagProductQuantityHelper::getProductQuantity($product, $id_product_attribute);
 					}
@@ -407,6 +409,16 @@ class PowaTagOrders extends PowaTagAbstract
 
 						return false;
 					}
+					if($p->quantity < $product->minimal_quantity || ($combination && $combination->minimal_quantity > $product->minimal_quantity))
+					{
+						$this->addError(sprintf($this->module->l('Quantity < minimal quantity for product')), PowaTagAbstract::$NOT_IN_STOCK);
+
+						if (PowaTagAPI::apiLog())
+							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
+
+						return false;
+					}
+
 
 					$cart->updateQty($p->quantity, $product->id, $id_product_attribute);
 
