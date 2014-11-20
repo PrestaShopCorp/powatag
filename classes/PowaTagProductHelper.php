@@ -70,7 +70,7 @@ class PowaTagProductHelper {
 				$id_product = (int)self::getProductIdByIdProduct($code);
 				break;
 		}
-		
+
 		$product = new Product($id_product, true, (int)$id_lang);
 
 		//Check if multishop is enabled
@@ -97,6 +97,8 @@ class PowaTagProductHelper {
 
 	private static function getProductIdByIdProduct($code)
 	{
+		if((string)(int)$code !== $code)
+			return false;
 		return $code;
 	}
 

@@ -56,6 +56,9 @@ class PowaTagOrders extends PowaTagAbstract
 			$order = current($this->datas->orders);
 
 		$this->datas->customer         = $order->customer;
+		$this->datas->customer->shippingAddress->phone = $order->customer->phone;
+		if(isset($this->datas->customer->billingAddress))
+			$this->datas->customer->billingAddress->phone = $order->customer->phone;
 		
 		$this->datas->orderLineItems   = $order->orderLineItems;
 
@@ -409,7 +412,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 						return false;
 					}
-					if($p->quantity < $product->minimal_quantity || ($combination && $combination->minimal_quantity > $product->minimal_quantity))
+					if($p->quantity < $product->minimal_quantity || ($combination && $combination->minimal_quantity > $product->minimal_quantity))
 					{
 						$this->addError(sprintf($this->module->l('Quantity < minimal quantity for product')), PowaTagAbstract::$NOT_IN_STOCK);
 
