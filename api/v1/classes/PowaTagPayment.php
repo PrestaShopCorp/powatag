@@ -90,35 +90,6 @@ class PowaTagPayment extends PowaTagAbstract
 		if (!$this->cartEnabled())
 			$orderState = Configuration::get('PS_OS_ERROR');
 
-		if (isset($this->datas->paymentResult->paymentCart))
-		{
-			$this->customer = $this->getCustomerByEmail($this->datas->customer->emailAddress);
-			$addresses = $this->customer->getAddresses((int)$this->context->language->id);
-
-			$address = false;
-
-			if (!isset($this->datas->paymentResult->paymentCart->billingAddress->friendlyName))
-				$friendlyName = $this->module->l('My address');
-			else
-				$friendlyName = $this->datas->paymentResult->paymentCart->billingAddress->friendlyName;
-			foreach ($addresses as $addr)
-			{
-				if ($addr['alias'] == $friendlyName)
-				{
-					$address = new Address((int)$addr['id_address']);
-					break;
-				}
-			}
-
-			if ($address || ($address = $this->createAddress($this->datas->paymentResult->paymentCart->billingAddress)))
-			{
-				$this->cart->id_address_invoice = $address->id;
-				$this->cart->save();
-			}
-			else
-				$orderState = (int)Configuration::get('PS_OS_ERROR');
-		}
-
 		if (!$this->error)
 		{
 			if (!$this->compareCustomer())
