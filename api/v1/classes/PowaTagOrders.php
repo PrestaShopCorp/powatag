@@ -412,7 +412,7 @@ class PowaTagOrders extends PowaTagAbstract
 
 						return false;
 					}
-					if($p->quantity < $product->minimal_quantity || ($combination && $combination->minimal_quantity > $product->minimal_quantity))
+					if($p->quantity < $product->minimal_quantity || ($combination && $combination->minimal_quantity > $p->quantity))
 					{
 						$this->addError(sprintf($this->module->l('Quantity < minimal quantity for product')), PowaTagAbstract::$NOT_IN_STOCK);
 
