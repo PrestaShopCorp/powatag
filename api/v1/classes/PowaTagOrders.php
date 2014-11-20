@@ -78,6 +78,8 @@ class PowaTagOrders extends PowaTagAbstract
 	 */
 	private function initObjects()
 	{
+		$invoice_address = false;
+
 		$this->customer = $this->getCustomerByEmail($this->datas->customer->emailAddress, true, $this->datas->customer->lastName, $this->datas->customer->firstName, $this->datas->customer->emailAddress);
 
 		$addresses = $this->customer->getAddresses((int)$this->context->language->id);
@@ -103,14 +105,25 @@ class PowaTagOrders extends PowaTagAbstract
 			$address = $this->createAddress($this->datas->customer->shippingAddress);
 		else
 			$address = $this->createAddress($this->datas->customer->shippingAddress, $address);
+		
+		if(isset($this->datas->customer->billingAddress))
+			$invoice_address = $this->createAddress($this->datas->customer->billingAddress);
+
 
 		if (Validate::isLoadedObject($address))
+		{
 			$this->address = $address;
+			$this->invoice_address = $address;
+		}
 		else
 		{
 			$this->address = false;
 			return false;
 		}
+
+		if(Validate::isLoadedObject($invoice_address))
+			$this->invoice_address = $invoice_address;
+
 	}	
 
 	public function validateOrder()
@@ -173,7 +186,7 @@ class PowaTagOrders extends PowaTagAbstract
 		$cart->delivery_option     = serialize(array($this->address->id => $cart->id_carrier.','));
 		$cart->id_lang             = (int)$this->context->language->id;
 		$cart->id_address_delivery = (int)$this->address->id;
-		$cart->id_address_invoice  = (int)$this->address->id;
+		$cart->id_address_invoice  = (int)$this->invoice_address->id;
 		$cart->id_currency         = (int)$currency->id;
 		$cart->id_customer         = (int)$this->customer->id;
 		$cart->secure_key          = $this->customer->secure_key;
