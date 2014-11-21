@@ -56,9 +56,9 @@ class PowaTagOrders extends PowaTagAbstract
 			$order = current($this->datas->orders);
 
 		$this->datas->customer         = $order->customer;
-		$this->datas->customer->shippingAddress->phone = $order->customer->phone;
+		$this->datas->customer->shippingAddress->phone = isset($order->customer->phone) ? $order->customer->phone : '000000000';
 		if(isset($this->datas->customer->billingAddress))
-			$this->datas->customer->billingAddress->phone = $order->customer->phone;
+			$this->datas->customer->billingAddress->phone = isset($order->customer->phone) ? $order->customer->phone : '000000000';
 		
 		$this->datas->orderLineItems   = $order->orderLineItems;
 
@@ -303,6 +303,8 @@ class PowaTagOrders extends PowaTagAbstract
 		else if (!$codeCountry instanceof Country)
 			$country = $this->getCountryByCode($codeCountry);
 
+		$context = Context::getContext();
+		$context->country = $country;
 		$address = Address::initialize();
 		$address->id_country = $country->id;
 
@@ -368,29 +370,6 @@ class PowaTagOrders extends PowaTagAbstract
 						return false;
 					}
 
-					$priceAttributeWt = $priceAttribute * $product_rate;
-
-					$priceAttribute   = $this->formatNumber($priceAttribute, 2);
-					$variantAmount    = $this->formatNumber($variantAmount, 2);
-
-					$this->convertToCurrency($priceAttribute, $variantCurrency, true);
-					
-
-					$priceAttribute   = $this->formatNumber($priceAttribute, 2);
-					$variantAmount    = $this->formatNumber($variantAmount, 2);
-					$priceAttributeWt = $this->formatNumber($priceAttributeWt, 2) * $p->quantity;
-
-					$this->subTotalWt += $priceAttributeWt;
-
-					if ($priceAttribute != $variantAmount)
-					{
-						$this->addError(sprintf($this->module->l('Price variant is different with the price shop : %s != %s'), $priceAttribute, $variantAmount));
-
-						if (PowaTagAPI::apiLog())
-							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);
-
-						return false;
-					}
 
 					if ($qtyInStock == 0)
 					{
