@@ -25,6 +25,8 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
+require_once(dirname(__FILE__).'/../../classes/PowaTagRequestLogs.php');
+
 abstract class PowaTagAPIAbstract
 {
 
@@ -123,6 +125,15 @@ abstract class PowaTagAPIAbstract
 		self::$api_log = Configuration::get('POWATAG_API_LOG');
 		self::$request_log = Configuration::get('POWATAG_REQUEST_LOG');
 
+		
+		PowaTagRequestLogs::add(array(
+			'args' => $this->args,
+			'endpoint' => $this->endpoint,
+			'verb' => $this->verb,
+			'method' => $this->method,
+			'data' => $this->data,
+		));
+
 		$this->module = Module::getInstanceByName('powatag');
 	}
 
@@ -151,6 +162,9 @@ abstract class PowaTagAPIAbstract
 		$status = $this->getResponse();
 
 		header("HTTP/1.1 ".$status." ".$this->_requestStatus($status));
+		PowaTagRequestLogs::add(array(
+			'response' => Tools::jsonEncode($data)
+		));
 		return Tools::jsonEncode($data);
 	}
 
