@@ -388,7 +388,7 @@ class PowaTagOrders extends PowaTagAbstract
 					}
 					if($p->quantity < $product->minimal_quantity || ($combination && $combination->minimal_quantity > $p->quantity))
 					{
-						$this->addError(sprintf($this->module->l('Quantity < minimal quantity for product')), PowaTagAbstract::$NOT_IN_STOCK);
+						$this->addError(sprintf($this->module->l('Quantity < minimal quantity for product')), PowaTagAbstract::$BAD_REQUEST);
 
 						if (PowaTagAPI::apiLog())
 							PowaTagLogs::initAPILog('Add product to cart', PowaTagLogs::ERROR, "Product : ".$this->error['message']);

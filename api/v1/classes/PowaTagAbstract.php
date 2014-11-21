@@ -639,6 +639,20 @@ abstract class PowaTagAbstract
 		 }
 	}
 
+	public function checkOrderState($id_order, &$data)
+	{
+		$order = new Order($id_order);
+		if($order->current_state == Configuration::get('PS_OS_ERROR'))
+		{
+			$data = array(
+				'code'             => self::$BAD_REQUEST['code'],
+				'response' 		   => self::$BAD_REQUEST['response'],
+				'validationErrors' => null,
+				'message'          => $this->module->l('Error while creating the order. Payment error')
+			);
+		}
+	}
+
 } 
 
 ?>

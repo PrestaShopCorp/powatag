@@ -214,10 +214,14 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if (PowaTagAPI::requestLog())
 					PowaTagLogs::initRequestLog('Process payment', PowaTagLogs::SUCCESS, $id_order);
 
-				return array(
+				$data = array(
 					'providerTxCode' => isset($datas->paymentResult->providerTxCode) ? $datas->paymentResult->providerTxCode : 'providerTxCode Empty',
 					'message' => 'Authorization success order '.$id_order.' created',
 				);
+
+				$payment->checkOrderState($id_order, $data);
+
+				return $data;
 
 			}
 			else
@@ -285,6 +289,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
 
+				$order->checkOrderState($id_order, $data);
 				return $data;
 			}
 			else
