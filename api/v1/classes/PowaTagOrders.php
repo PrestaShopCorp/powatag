@@ -298,13 +298,8 @@ class PowaTagOrders extends PowaTagAbstract
 	{
 		$products = $this->datas->orderLineItems;
 
-		if (Validate::isInt($codeCountry))
-			$country = new Country($codeCountry);
-		else if (!$codeCountry instanceof Country)
-			$country = $this->getCountryByCode($codeCountry);
-
-		$context = Context::getContext();
-		$context->country = $country;
+		$country = $this->getCountry($codeCountry);
+		
 		$address = Address::initialize();
 		$address->id_country = $country->id;
 

@@ -222,6 +222,8 @@ class PowaTagPayment extends PowaTagAbstract
 		//We change context currency to be sure that calculs are made with correct currency
 		$context = Context::getContext();
 		$context->currency = $currency;
+		$context->country = $this->getCountry($this->datas->customer->shippingAddress->country->alpha2Code);
+		
 		if ($this->cart->getOrderTotal(true, Cart::BOTH, null, Configuration::get('POWATAG_SHIPPING')) != $amountPaid)
 		{
 			$this->addError($this->module->l("Amount paid is not same as the cart"), PowaTagAbstract::$INVALID_PAYMENT);

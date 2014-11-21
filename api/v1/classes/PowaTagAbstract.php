@@ -122,6 +122,16 @@ abstract class PowaTagAbstract
 		);
 	}
 
+	public function getCountry($codeCountry)
+	{
+		if (Validate::isInt($codeCountry))
+			$country = new Country($codeCountry);
+		else if (!$codeCountry instanceof Country)
+			$country = $this->getCountryByCode($codeCountry);
+
+		return $country;
+	}
+
 	/**
 	 * Get currency object by iso_code
 	 * @param  string $iso_code ISO code
