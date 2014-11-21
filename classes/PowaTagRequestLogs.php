@@ -30,9 +30,13 @@ class PowaTagRequestLogs {
 
 	static public function add($datas)
 	{
-		$handle = fopen(dirname(__FILE__).'/../logs_requests.txt', 'a+');
-		fwrite($handle, print_r($datas, true));
-		fclose($handle);
+		if(Configuration::get('POWATAG_REQUEST_LOG'))
+		{
+			$handle = fopen(dirname(__FILE__).'/../logs_requests.txt', 'a+');
+			fwrite($handle, print_r($datas, true));
+			fclose($handle);
+			
+		}
 
 	}
 
