@@ -77,12 +77,14 @@
 					{l s='using the PowaTag app on your mobile device' mod='powatag'}
 				</p>
 				<div class="powaTagWrapper-large">
-					<div id="powatag0-powatag-large" class="powatag-powatag-large"></div>
-					<div id="powatag0-overlay-large"></div>
-					<div id="powatag0-tagline-line1-overlay-large" class="powatag-tagline powatag-label">
-						{l s='Processing securely for:' mod='powatag'}
+					<div id="powatag0-powatag-large" class="powatag-powatag-large">
+						<div id="powatag0-overlay-large"></div>
+						<div id="powatag0-tagline-line1-overlay-large" class="powatag-tagline powatag-label">
+							{l s='Processing securely for:' mod='powatag'}
+						</div>
+						<div id="powatag0-tagline-line2-overlay-large" class="powatag-tagline powatag-message"></div>
+						
 					</div>
-					<div id="powatag0-tagline-line2-overlay-large" class="powatag-tagline powatag-message"></div>
 				</div>
 			</div>
 		</div>
