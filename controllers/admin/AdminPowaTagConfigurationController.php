@@ -190,6 +190,12 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 		parent::initToolbar();
 	}
 
+	public function initPageHeaderToolbar()
+	{
+		$this->page_header_toolbar_btn = $this->module->initToolbar();
+		parent::initPageHeaderToolbar();
+	}
+	
 	public function renderOptions()
 	{
 		$this->context->smarty->assign(array(

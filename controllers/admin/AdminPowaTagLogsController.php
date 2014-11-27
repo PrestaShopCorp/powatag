@@ -103,4 +103,9 @@ class AdminPowaTagLogsController extends ModuleAdminController
 		return $root_category;
 	}
 
+	public function initPageHeaderToolbar()
+	{
+		$this->page_header_toolbar_btn = $this->module->initToolbar();
+		parent::initPageHeaderToolbar();
+	}
 }
