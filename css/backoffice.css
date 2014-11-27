@@ -160,14 +160,14 @@
         font-size: 80%;
     }
 
-    #powatag_marketing #main {
+    #powatag_marketing #powatag_main {
         margin-left: 450px;
         clear:initial;
         background: none;
         min-height: 540px;
     }
 
-    #powatag_marketing #main #adventages li {
+    #powatag_marketing #powatag_main #adventages li {
         padding-bottom: 5px;
     }
 
@@ -179,26 +179,27 @@
         background-color: #4D81C2;
         border-radius: 15px;
         font-weight: bold;
+        width:140px;
     }
 
-    #powatag_marketing #main #register-wrapper {
+    #powatag_marketing #powatag_main #register-wrapper {
         display: table;
         margin-top: 40px;
     }
 
-    #powatag_marketing #main .register {
+    #powatag_marketing #powatag_main .register {
         display: table-cell;
         vertical-align: middle;
         padding: 0 10px;
     }
 
-    #powatag_marketing #main .register a {
-        width: 110px;
+    #powatag_marketing #powatag_main .register a {
+        width: 140px;
         text-align: center;
         /*margin-left: 20px;*/
     }
 
-    #powatag_marketing #main .questions {
+    #powatag_marketing #powatag_main .questions {
         display: table-cell;
         vertical-align: middle;
         margin: 10px 5px 5px 20px;

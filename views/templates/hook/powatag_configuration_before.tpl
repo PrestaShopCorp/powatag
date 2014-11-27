@@ -59,7 +59,7 @@
             </p>
         </div>
 
-        <div id="main">
+        <div id="powatag_main">
             <h2>
             <span class="header-main">
                 {l s='PowaTag' mod='powatag'}
@@ -132,7 +132,7 @@
                 </div>
             </div>
 
-            <div class="clearfix"></div>
+            <div class="clearfix clear"></div>
         </div>
     </div>
 </div>
