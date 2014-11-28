@@ -70,20 +70,15 @@
             </h2>
 
             <p>
-                {l s='PowaTag is an exciting new mobile business solution that seamlessly
-                integrates the physical and online experience to transform
-                the future of shopping and your business.' mod='powatag'}
+                {l s='PowaTag is an exciting new mobile business solution that seamlessly integrates the physical and online experience to transform the future of shopping and your business.' mod='powatag'}
             </p>
 
             <p>
-                {l s='As retail\'s missing link, PowaTag combines the instant gratification
-                of real world shopping with the speed, convenience and informative
-                nature of internet retailing.' mod='powatag'}
+                {l s='As retail\'s missing link, PowaTag combines the instant gratification of real world shopping with the speed, convenience and informative nature of internet retailing.' mod='powatag'}
             </p>
 
             <p>
-                {l s='PowaTag acts as a mobile payment enabler, integrating directly
-                with PrestaShop\'s platform and existing payment infrastructures. ​' mod='powatag'}
+                {l s='PowaTag acts as a mobile payment enabler, integrating directly with PrestaShop\'s platform and existing payment infrastructures. ​' mod='powatag'}
             </p>
 
             <h4>{l s='The advantages of PowaTag' mod='powatag'}:</h4>
