@@ -91,23 +91,19 @@
                     {l s='Allow customers to purchase straight from your product pages' mod='powatag'}
                 </li>
                 <li>
-                    {l s='Enable customers to download your catalogue and purchase at their
-                    leisure from their mobile' mod='powatag'}
+                    {l s='Enable customers to download your catalogue and purchase at their leisure from their mobile' mod='powatag'}
                 </li>
                 <li>
-                    {l s='Experience an omni-channel solution that truly opens up new sales channels,
-                    generating new revenue for you' mod='powatag'}
+                    {l s='Experience an omni-channel solution that truly opens up new sales channels, generating new revenue for you' mod='powatag'}
                 </li>
                 <li>
                     {l s='Sell directly and instantly from online advertising, broadcast and print' mod='powatag'}
                 </li>
                 <li>
-                    {l s='Interact with customers – engaging, incentivising, rewarding
-                    loyalty and generating action' mod='powatag'}
+                    {l s='Interact with customers – engaging, incentivising, rewarding loyalty and generating action' mod='powatag'}
                 </li>
                 <li>
-                    {l s='Drive and support impulse purchases, by simplifying the buying experience
-                    within existing e-commerce workflows' mod='powatag'}
+                    {l s='Drive and support impulse purchases, by simplifying the buying experience within existing e-commerce workflows' mod='powatag'}
                 </li>
             </ul>
 
