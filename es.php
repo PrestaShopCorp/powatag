@@ -1,9 +1,7 @@
 <?php
 
 global $_MODULE;
-
 $_MODULE = array();
-
 $_MODULE['<{powatag}prestashop>powatag_c164ac045c418625b802f488348bf1f9'] = 'PowaTag';
 $_MODULE['<{powatag}prestashop>powatag_ba232a8e09c58ddb7cce6e6c2712e459'] = 'Powatag, la solución de pago en un solo clic, que incrementa tu ratio de conversión on line y móvil';
 $_MODULE['<{powatag}prestashop>powatag_254f642527b45bc260048e30704edb39'] = 'Configuración';
@@ -30,7 +28,6 @@ $_MODULE['<{powatag}prestashop>powatagorders_e372d89f8f97be9e67f77cf3bcd4a705'] 
 $_MODULE['<{powatag}prestashop>powatagorders_4c7490ad9d07138986300c3cab26ee84'] = 'El producto no existe : %s';
 $_MODULE['<{powatag}prestashop>powatagorders_d3ec7632d605da9da12880dd25ac1af1'] = 'La moneda no existe : %s';
 $_MODULE['<{powatag}prestashop>powatagorders_30bee8c9919a19866a702119b87d62f8'] = 'La variante no existe : %s';
-$_MODULE['<{powatag}prestashop>powatagorders_f8104718d425031478a68acd0913f94a'] = 'El precio de esta variante  es diferente que en la tienda : %s != %s';
 $_MODULE['<{powatag}prestashop>powatagorders_01d8561901fe857fa3fefe4e04b5e4b0'] = 'Stock no disponible';
 $_MODULE['<{powatag}prestashop>powatagorders_24297a992eeaa67461e0810b574637e7'] = 'Cantidad  > stock disponible';
 $_MODULE['<{powatag}prestashop>powatagorders_7c404c6dc9d5101160daedc54bb07f94'] = 'Cantidad  < mínima cantidad de productos';
@@ -91,15 +88,22 @@ $_MODULE['<{powatag}prestashop>powatag_configuration_before_91f421e886e0ba5b1c0a
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_86da54f80878ca6e218a7e406421b8fa'] = 'Compras con un solo clic';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_dcc37a2b01e7801aa3977932c4156471'] = 'Una solución omnicanal que abren nuevos canales de ventas';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_03df362d5faff9da8b9652f02dfda111'] = 'Compromiso, incentivar y premiar la fidelidad del cliente';
-$_MODULE['<{powatag}prestashop>powatag_configuration_before_af5cc364997a1cd395df3a8fda09657a'] = 'http://www.youtube.com/embed/tgoLAfQofaA?controls=0&amp;showinfo=0&amp;rel=0';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_af5cc364997a1cd395df3a8fda09657a'] = 'http://www.youtube.com/embed/tgoLAfQofaA?controls=0&showinfo=0&rel=0';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_20efc8190821a61d58d97c83049401cc'] = 'Para más información';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_6a94efad08e2e7aabc153e876e802bab'] = 'v.powaweb.io/pdf/manual de usuario';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_0dd9fefe4bff9426aa6dd15c0584d627'] = 'Haz clic aquí para descargarte el manual de usuario de PowaTag';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_9c888c824690ff560b1687b38717cf23'] = 'La libertad de compra es conocer la experiencia de tus clientes';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_577fbd7945527a7b0fa3a9e476745fc5'] = 'PowaTag  es una solución  realmente interesante  para los negocios a través del  móvil  que integra perfectamente la experiencia de la compra física y la online.  Además,  transformará el futuro de los hábitos de compras y de tu negocio.';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_920da8ddc3c22ea3851c9340c33e2d85'] = 'Como el eslabón que falta en el retail,  PowaTag combina la satisfacción  instantánea de la experiencia real  de compra  con la rapidez, la comodidad, y el carácter  informativo de la venta  online.';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_d35794e5cd4be0b9122cd72555752ff3'] = 'PowaTag actúa como un facilitador de pagos desde el móvil, integrando directamente con la plataforma de PrestaShop y las infraestructuras de pago ya existentes.';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_fe6e051c947bc1d83dc517c40e77e211'] = 'Las ventajas de PowaTag';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_1abebfaa4e85e8e543aa4e4915b0556c'] = 'Ofrecer una experiencia innovadora a los consumidores a través de todos los canales de compra';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_2c81c0a4b7aea4e294d8107a5511f887'] = 'Permite a los clientes comprar directamente desde las páginas de productos';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_e416e30c539b333f32fea0d8a43aed48'] = 'Permita a los clientes descargar el catálogo de productos  y comprar  durante el tiempo libre desde el  móvil';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_b1754d32d5ee8d0cc66ada82f252e249'] = 'Vive la experiencia de una solución  omni-canal que verdaderamente abre nuevos canales de ventas, que  genera  nuevos ingresos';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_e2477c3fa77712a6afd77d301c9a20a3'] = 'Venta directa e instantánea de la publicidad online, audiovisual e impresa';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_66ed003633283ca1b951be9e452b6cb9'] = 'Interactuar con los clientes, enganchar, incentivar, premiar la fidelidad y generar acción';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_241373fa154f2de622a7da1a4d039e53'] = 'Guiar y apoyar las compras por impulso, simplificando la experiencia de compra dentro de los flujos del e-commerce ya existentes.';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_31c7b87204d32cfd398ad981c1239d41'] = 'http://www.powatag.com/page/prestashop_es';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_c00fde11f32c833a28ae11fc2946effe'] = 'Regístrate ahora';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_0ec0305a18fce08b3072b1b46798ff6f'] = '¿Preguntas?';
@@ -110,13 +114,3 @@ $_MODULE['<{powatag}prestashop>powatag_configuration_before_d00f40e027fbd995c688
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_40c416816ff65e1a16216f1a2da3d18b'] = 'Consultas PrestaShop';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_79c4e0eba4751d82643ba740e8f9ce6d'] = 'Para empezar a realizar transacciones con tus clientes, pásate a una cuenta PowaTag activa  por';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_c61908d15e20a46ffb4f79ebd339f106'] = 'Ponte en contacto con nosotros';
-$_MODULE['<{powatag}prestashop>product_6fc866fa6c1ddcc328dc574122c71209'] = 'Proceso seguro para:';
-$_MODULE['<{powatag}prestashop>product_bef0f74aab8ce243a81a09138f03c2c1'] = '¿Qué es esto?';
-$_MODULE['<{powatag}prestashop>product_42c568a9c965de2c99ceee15e3bb8070'] = '¿Qué es Powatag ?';
-$_MODULE['<{powatag}prestashop>product_06954b182d2306f28fcf560f9448f0c9'] = 'Powatag es una aplicación gratuita y sencilla, que te permite realizar un pago desde tu móvil de forma rápida y segura';
-$_MODULE['<{powatag}prestashop>product_7e5b3c823b0bc7f3ed319aaf9cfd6f96'] = 'No es un monedero electrónico, ya que la aplicación no registra tus gastos - Los pedidos se envían directamente a las empresas que utilizan el  servicio de PowaTag';
-$_MODULE['<{powatag}prestashop>product_04dcbd15a13e7a1e87e40bbe6321d343'] = 'Si hay un código PowaTag puedes comprar ese artículo, ya sea en Internet, en un anuncio impreso o audio - sin tener que realizar el proceso habitual de checkout';
-$_MODULE['<{powatag}prestashop>product_b0f5899503698ea633f035e1a5cf8ae2'] = 'Descarga la App desde el App Store';
-$_MODULE['<{powatag}prestashop>product_6681b7b729163005c3f79fcd237d1fd0'] = 'Descarga desde Google Play';
-$_MODULE['<{powatag}prestashop>product_052d37ba8ce3a9576bca82510cbb7022'] = 'Escanea el tag  inferior para pagar';
-$_MODULE['<{powatag}prestashop>product_caf33d84e1f065f513d3ef2d476a0b56'] = 'Utiliza la app PowaTag en tu móvil';

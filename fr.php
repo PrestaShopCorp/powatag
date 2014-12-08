@@ -100,6 +100,7 @@ $_MODULE['<{powatag}prestashop>powatag_configuration_before_fe6e051c947bc1d83dc5
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_1abebfaa4e85e8e543aa4e4915b0556c'] = 'Offrir une expérience client innovante et fluide, sur tous les canaux d’achat.';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_2c81c0a4b7aea4e294d8107a5511f887'] = 'Permet aux clients d\'acheter en un clic à partir des pages produits';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_e416e30c539b333f32fea0d8a43aed48'] = 'Permettre aux consommateurs de télécharger votre catalogue et de faire leurs achats à leur convenance à partir de leur portable ';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_b1754d32d5ee8d0cc66ada82f252e249'] = 'Découvrir une solution omni-canal qui ouvre vraiment de nouveaux canaux de vente, ce qui se traduit par des revenus supplémentaires pour vous';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_e2477c3fa77712a6afd77d301c9a20a3'] = 'Vendre directement et immédiatement à partir de publicités en ligne, magazines ou sur pistes audio (campagnes de télévision, radio)';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_66ed003633283ca1b951be9e452b6cb9'] = 'Interagir avec les consommateurs : impliquer, stimuler, récompenser la fidélité et pousser à l’action';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_241373fa154f2de622a7da1a4d039e53'] = 'Encourager et favoriser les achats impulsifs, en simplifiant l’expérience d’achat au sein des infrastructures d’e-commerce qui existent déjà';
@@ -111,15 +112,5 @@ $_MODULE['<{powatag}prestashop>powatag_configuration_before_7d9c1812de1eccf1d6b7
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_e9722ba4751b57282ba6e3374f1fed04'] = 'powatag.com';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_d00f40e027fbd995c688ae37ae7ac47c'] = 'powatagmerchantsupport@powa.com';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_40c416816ff65e1a16216f1a2da3d18b'] = 'PrestaShop Enquiry';
-$_MODULE['<{powatag}prestashop>powatag_configuration_before_79c4e0eba4751d82643ba740e8f9ce6d'] = 'To start transacting with your customers, switch to a live PowaTag account by';
-$_MODULE['<{powatag}prestashop>powatag_configuration_before_c61908d15e20a46ffb4f79ebd339f106'] = 'contactez nous';
-$_MODULE['<{powatag}prestashop>product_6fc866fa6c1ddcc328dc574122c71209'] = 'Traité en toute sécurité pour:';
-$_MODULE['<{powatag}prestashop>product_bef0f74aab8ce243a81a09138f03c2c1'] = 'Qu\'est ce que c\'est?';
-$_MODULE['<{powatag}prestashop>product_42c568a9c965de2c99ceee15e3bb8070'] = 'Qu\'est powatag ?';
-$_MODULE['<{powatag}prestashop>product_06954b182d2306f28fcf560f9448f0c9'] = 'Powatag est une application gratuite, facile à utiliser, qui permet de réaliser un paiement par téléphone mobile rapidement et en toute sécurité';
-$_MODULE['<{powatag}prestashop>product_7e5b3c823b0bc7f3ed319aaf9cfd6f96'] = 'Ce n\'est pas un portefeuille électronique, car l\'application ne conserve pas de solde - les commandes sont envoyées directement aux entreprises qui ont adoptées le service PowaTag,';
-$_MODULE['<{powatag}prestashop>product_04dcbd15a13e7a1e87e40bbe6321d343'] = 'If there is a PowaTag you can buy that item, whether it is on the internet, a printed ad or in audio - without having to do throught the normal checkout experience.';
-$_MODULE['<{powatag}prestashop>product_b0f5899503698ea633f035e1a5cf8ae2'] = 'Téléchargez de l\'App Store';
-$_MODULE['<{powatag}prestashop>product_6681b7b729163005c3f79fcd237d1fd0'] = 'Téléchargez de Google Play';
-$_MODULE['<{powatag}prestashop>product_052d37ba8ce3a9576bca82510cbb7022'] = 'Scannez le tag ci-dessous pour payer';
-$_MODULE['<{powatag}prestashop>product_caf33d84e1f065f513d3ef2d476a0b56'] = 'Utilisation de l\'application PowaTag app sur vgotre téléphone portable';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_79c4e0eba4751d82643ba740e8f9ce6d'] = 'Afin de commencer à vendre à vos clients, passer à un compte live en ';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_c61908d15e20a46ffb4f79ebd339f106'] = 'nous contactant';
