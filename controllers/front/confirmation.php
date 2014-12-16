@@ -55,12 +55,17 @@ class powatagconfirmationModuleFrontController extends ModuleFrontController
 
 		// Init smarty content and set template to display
 		$order = new Order(Order::getOrderByCartId(Tools::getValue('id_cart')));
-		$this->context->smarty->assign(array(
-			'order' => $order,
-			'state' => new OrderState($order->current_state, $this->context->language->id),
-		));
+		if($order->id_customer == Tools::getValue('id_customer'))
+		{
+			$this->context->smarty->assign(array(
+				'order' => $order,
+				'state' => new OrderState($order->current_state, $this->context->language->id),
+			));
 
-		$this->setTemplate('confirmation.tpl');
+			$this->setTemplate('confirmation.tpl');
+		}
+		else
+			$this->setTemplate('error.tpl');
 	}
 
 	public function setMedia()

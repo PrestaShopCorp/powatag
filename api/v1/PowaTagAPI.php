@@ -284,7 +284,15 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 				$link = new Link();
 				
-				$data = array("orderResults" => array("orderId" => $id_order ? $id_order : $id_cart, "message" => $message, "redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart))));
+				$cart = new Cart($id_cart);
+				$data = array(
+					"orderResults" => array(
+						"orderId" => $id_order ? $id_order : $id_cart, 
+						"message" => $message, 
+						"redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart, 'id_customer' => (int)$cart->id_customer)
+						)
+					)
+				);
 					
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
