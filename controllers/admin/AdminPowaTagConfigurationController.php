@@ -61,7 +61,7 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 						'required'   => true
 					),
 					'POWATAG_GENERATOR_URL' =>  array(
-						'title'      => $this->l('Powatag Generator URL'),
+						'title'      => $this->l('Powatag Endpoint URL'),
 						'validation' => 'isString', 
 						'type'       => 'text', 
 						'size'       => 80,

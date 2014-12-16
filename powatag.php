@@ -305,7 +305,6 @@ class PowaTag extends PaymentModule {
 			if ($product_sku = PowaTagProductHelper::getProductSKU($product))
 			{
 				$this->context->controller->addJS(Configuration::get('POWATAG_JS_URL'));
-				$this->context->controller->addJS($this->getPathUri().'js/powatag.js');
 				$this->context->smarty->assign(array(
 					'powatag_css_url' => Configuration::get('POWATAG_CSS_URL')
 				));
