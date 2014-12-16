@@ -289,12 +289,20 @@ class PowaTag extends PaymentModule {
 			|| !$this->registerHook('displayLeftColumnProduct') 
 			|| !$this->registerHook('displayFooterProduct') 
 			|| !$this->registerHook('displayProductButtons')
-			|| !$this->registerHook('actionCarrierUpdate'))
+			|| !$this->registerHook('actionCarrierUpdate')
+			|| !$this->registerHook('displayMobileAddToCartTop')
+			|| !$this->registerHook('displayMobileHeader')
+		)
 			return false;
 		
 		return true;
 	}
 
+
+	public function hookdisplayMobileHeader()
+	{
+		return $this->hookDisplayHeader();
+	}
 
 	public function hookDisplayHeader()
 	{
@@ -327,6 +335,14 @@ class PowaTag extends PaymentModule {
 	public function hookdisplayRightColumnProduct()
 	{
 		if (!Configuration::get('POWATAG_QR') || Configuration::get('POWATAG_QR_POS') != 'displayRightColumnProduct')
+			return false;
+
+		return $this->generateTag();
+	}
+
+	public function hookDisplayMobileAddToCartTop()
+	{
+		if (!Configuration::get('POWATAG_QR'))
 			return false;
 
 		return $this->generateTag();
