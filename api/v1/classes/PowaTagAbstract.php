@@ -650,7 +650,9 @@ abstract class PowaTagAbstract
 				'validationErrors' => null,
 				'message'          => $this->module->l('Error while creating the order. Payment error')
 			);
+			return 'error';
 		}
+		return false;
 	}
 
 } 

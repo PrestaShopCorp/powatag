@@ -219,7 +219,8 @@ class PowaTagAPI extends PowaTagAPIAbstract
 					'message' => 'Authorization success order '.$id_order.' created',
 				);
 
-				$payment->checkOrderState($id_order, $data);
+				if($payment->checkOrderState($id_order, $data) == 'error')
+					$this->setResponse($data['response']);
 
 				return $data;
 
@@ -297,7 +298,9 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
 
-				$order->checkOrderState($id_order, $data);
+				if($order->checkOrderState($id_order, $data))
+					$this->setResponse($data['response']);
+				
 				return $data;
 			}
 			else
