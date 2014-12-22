@@ -127,7 +127,29 @@
         </div>
     </div>
 </div>
+<div class="register-question">
+    {l s='Have you registered and accepted our T&Cs ?' mod='powatag'}
+    <input type="radio" name="powa_registered" class="powa_register_rb" id="powa_register_rb1" value="no" checked > No
+    <input type="radio" name="powa_registered" class="powa_register_rb" value="yes"> Yes
+</div>
 
+<script>
+	$(document).ready(function(){
+		$('#powatag_form').hide();
+		$('.powa_register_rb').change(function () {
+        if ($("#powa_register_rb1").attr("checked")) {
+            $('#powatag_form').hide();
+            $('#powatag_container').show();
+        }
+        else {
+            $('#powatag_form').show();
+            $('#powatag_container').hide();
+        }
+    });
+		
+		
+	})
+</script>
 
 {else}
 
@@ -141,5 +163,7 @@
 <script>
 	$(document).ready(function(){
 		$('#powatag_marketing').insertAfter('.toolbar-placeholder');
+		$('#powatag_form').hide();
 	})
 </script>
+<div id="powatag_form">
