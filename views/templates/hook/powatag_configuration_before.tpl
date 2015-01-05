@@ -24,12 +24,12 @@
 *}
 
 <div id="powatag_marketing">
+<div id="logo">
+    <h1>{l s='PowaTag' mod='powatag'}</h1>
+</div>
 {if $marketing}
 <div id="powatag_container">
     
-    <div id="logo">
-        <h1>{l s='PowaTag' mod='powatag'}</h1>
-    </div>
 
     <div id="powatag_content">
 
