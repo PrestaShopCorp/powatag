@@ -43,7 +43,7 @@ class PowaTagAPIHandle
 			$request = null;
 
 			if (array_key_exists('request', $_GET) && !empty($_GET['request']))
-				$request = $_GET['request'];
+				$request = Tools::getValue('request');
 
 			$api = new PowaTagAPI($request, $_SERVER['HTTP_ORIGIN']);
 			$content = $api->processAPI();
