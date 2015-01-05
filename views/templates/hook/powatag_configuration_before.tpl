@@ -23,10 +23,6 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-
-
-
-
 <div id="powatag_marketing">
 {if $marketing}
 <div id="powatag_container">
@@ -128,8 +124,9 @@
     </div>
 </div>
 <div class="register-question">
+    <img src="../modules/powatag/img/logo_transparent.png" alt="">
     {l s='Have you registered and accepted our T&Cs ?' mod='powatag'}
-    <input type="radio" name="powa_registered" class="powa_register_rb" id="powa_register_rb1" value="no" checked > No
+    <input type="radio" name="powa_registered" class="powa_register_rb" id="powa_register_rb1" value="no" checked > No &nbsp;&nbsp;
     <input type="radio" name="powa_registered" class="powa_register_rb" value="yes"> Yes
 </div>
 
@@ -154,6 +151,7 @@
 {else}
 
 <fieldset> 
+<img src="../modules/powatag/img/logo_transparent.png" alt="">
 	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}" target="_blank"> {l s='contacting us' mod='powatag'}</a>
 </fieldset>
 
@@ -162,8 +160,7 @@
 </div>
 <script>
 	$(document).ready(function(){
-		$('#powatag_marketing').insertAfter('.toolbar-placeholder');
-		$('#powatag_form').hide();
+		$('#powatag_marketing').insertBefore('#powatag_form');
 	})
 </script>
 <div id="powatag_form">

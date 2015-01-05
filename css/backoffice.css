@@ -140,8 +140,13 @@
     .register-question {
         padding: 10px 17px;
         background-color: #f5f5f5;
-	width: 100%;
-	text-align:center;
+    	width: 100%;
+    	text-align:center;
+    }
+
+    #powatag_container
+    {
+        margin-bottom:10px;
     }
 
     #powatag_marketing #sidebar {

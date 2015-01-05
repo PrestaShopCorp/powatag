@@ -204,6 +204,7 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 		$before = $this->module->display(dirname(__FILE__).'/../../'.$this->module->name.'.php', 'powatag_configuration_before.tpl');
 		$form = parent::renderOptions();
 		$after = $this->module->display(dirname(__FILE__).'/../../'.$this->module->name.'.php', 'powatag_configuration_after.tpl');
+
 		return $before.$form.$after;
 	}
 

@@ -27,10 +27,10 @@
 
 <p>
 {l s='An order has been successfully created.' mod='powatag'}<br/>
-{l s='If you need to contact the merchant because of the order please use the following reference : ' mod='powatag'} {$order->reference|escape:'htmlall':'UTF-8'}.<br/>
-{l s='The order state is : ' mod='powatag'} {$state->name|escape:'htmlall':'UTF-8'}. <br/>
+{l s='If you need to contact the merchant because of the order please use the following reference : ' mod='powatag'} {$order->reference|escape:'html':'UTF-8'}.<br/>
+{l s='The order state is : ' mod='powatag'} {$state->name|escape:'html':'UTF-8'}. <br/>
 </p>
 
 <p>
-	{l s='You can visit the shop by clicking' mod='powatag'} <a href="{$link->getPageLink('index')|escape:'htmlall':'UTF-8'}"> {l s='here' mod='powatag'}</a>
+	{l s='You can visit the shop by clicking' mod='powatag'} <a href="{$link->getPageLink('index')|escape:'html':'UTF-8'}"> {l s='here' mod='powatag'}</a>
 </p>
