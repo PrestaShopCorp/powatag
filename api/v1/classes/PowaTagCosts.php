@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -91,22 +91,22 @@ class PowaTagCosts extends PowaTagAbstract
 		$this->convertToCurrency($tax, $this->currency, true);
 
 		$datas = array(
-			"orderCostSummary" => array(
-				"subTotal" => array(
-					"amount"   => $this->formatNumber($this->subTotal, 2),
-					"currency" => $this->currency->iso_code
+			'orderCostSummary' => array(
+				'subTotal' => array(
+					'amount'   => $this->formatNumber($this->subTotal, 2),
+					'currency' => $this->currency->iso_code
 				),
-				"shippingCost" => array(
-					"amount"   => $this->formatNumber($this->shippingCost, 2),
-					"currency" => $this->currency->iso_code
+				'shippingCost' => array(
+					'amount'   => $this->formatNumber($this->shippingCost, 2),
+					'currency' => $this->currency->iso_code
 				),
-				"tax" => array(
-					"amount"   => $this->formatNumber($tax, 2),
-					"currency" => $this->currency->iso_code
+				'tax' => array(
+					'amount'   => $this->formatNumber($tax, 2),
+					'currency' => $this->currency->iso_code
 				),
-				"total" => array(
-					"amount"   => $this->formatNumber($this->subTotal + $this->shippingCost + $tax, 2),
-					"currency" => $this->currency->iso_code
+				'total' => array(
+					'amount'   => $this->formatNumber($this->subTotal + $this->shippingCost + $tax, 2),
+					'currency' => $this->currency->iso_code
 				)
 			)
 		);

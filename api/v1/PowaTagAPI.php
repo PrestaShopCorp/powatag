@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -121,7 +121,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 		}
 		else 
 		{
-			$msg = "No product mentionned";
+			$msg = 'No product mentionned';
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Process get products', PowaTagLogs::ERROR, $msg);
@@ -145,9 +145,9 @@ class PowaTagAPI extends PowaTagAPIAbstract
 			$this->setResponse($error['response']);
 
 			$data = array(
-				"code"              => $error['code'],
-				"validationErrors" => "",
-				"message"           => "No body of request",
+				'code'              => $error['code'],
+				'validationErrors' => '',
+				'message'           => 'No body of request',
 			);
 
 			return $data;
@@ -196,7 +196,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				return $array;
 			}
 		}
-		else if (count($args) == 2 && Validate::isInt($args[0]) && $args[1] = "confirm-payment")
+		else if (count($args) == 2 && Validate::isInt($args[0]) && $args[1] = 'confirm-payment')
 		{//Three step payment confirmation
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Process payment', PowaTagLogs::IN_PROGRESS, 'Order ID : '.$args[0]);
@@ -219,7 +219,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 					'message' => 'Authorization success order '.$id_order.' created',
 				);
 
-				if($payment->checkOrderState($id_order, $data) == 'error')
+				if ($payment->checkOrderState($id_order, $data) == 'error')
 					$this->setResponse($data['response']);
 
 				return $data;
@@ -287,10 +287,10 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				
 				$cart = new Cart($id_cart);
 				$data = array(
-					"orderResults" => array(
-						"orderId" => $id_order ? $id_order : $id_cart, 
-						"message" => $message, 
-						"redirectUrl" => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart, 'id_customer' => (int)$cart->id_customer)
+					'orderResults' => array(
+						'orderId' => $id_order ? $id_order : $id_cart, 
+						'message' => $message, 
+						'redirectUrl' => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart, 'id_customer' => (int)$cart->id_customer)
 						)
 					)
 				);
@@ -298,7 +298,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if ($error = $order->getError())
 					$data['message'] = $error['message'];
 
-				if($order->checkOrderState($id_order, $data))
+				if ($order->checkOrderState($id_order, $data))
 					$this->setResponse($data['response']);
 				
 				return $data;

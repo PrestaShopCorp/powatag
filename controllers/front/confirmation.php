@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -28,7 +28,7 @@
 /**
  * Link to access the controller : $link->getModuleLink('powatag', 'confirmation')
  */
-class powatagconfirmationModuleFrontController extends ModuleFrontController
+class PowatagConfirmationModuleFrontController extends ModuleFrontController
 {
 	public function __construct()
 	{
@@ -55,7 +55,7 @@ class powatagconfirmationModuleFrontController extends ModuleFrontController
 
 		// Init smarty content and set template to display
 		$order = new Order(Order::getOrderByCartId(Tools::getValue('id_cart')));
-		if($order->id_customer == Tools::getValue('id_customer'))
+		if ($order->id_customer == Tools::getValue('id_customer'))
 		{
 			$this->context->smarty->assign(array(
 				'order' => $order,

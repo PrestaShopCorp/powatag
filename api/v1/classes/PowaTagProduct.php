@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -60,7 +60,7 @@ class PowaTagProduct extends PowaTagAbstract
 		}
 		else
 		{
-			$this->addError($this->module->l("Product not found"), PowaTagAbstract::$SKU_NOT_FOUND);
+			$this->addError($this->module->l('Product not found'), PowaTagAbstract::$SKU_NOT_FOUND);
 			return false;
 		}
 	}
@@ -74,7 +74,7 @@ class PowaTagProduct extends PowaTagAbstract
 			'type'                => 'PRODUCT',
 			'availableCurrencies' => $this->getCurrencies(),
 			'code'                => PowaTagProductHelper::getProductSKU($this->product),
-			'description'         => preg_replace("#\r\n#isD", " ", strip_tags($this->product->description)),
+			'description'         => preg_replace("#\r\n#isD", ' ', strip_tags($this->product->description)),
 			'currency'            => $this->context->currency->iso_code,
 			'language'            => $this->context->language->iso_code,
 			'productImages'       => $this->getImages(),

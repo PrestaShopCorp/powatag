@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -210,7 +210,7 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
 
 	public static function install($menu_id, $module_name)
 	{
-		powatagTotAdminTabHelper::addAdminTab(array(
+		PowatagTotAdminTabHelper::addAdminTab(array(
 			'id_parent'    => $menu_id,
 			'className'    => 'AdminPowaTagConfiguration',
 			'default_name' => 'Configuration',

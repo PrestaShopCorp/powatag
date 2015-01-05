@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -48,10 +48,10 @@ class PowaTagTransaction extends ObjectModel
 
 	public static function getTransactions($idCart = null, $idDevice = null, $ipAddress = null)
 	{
-		$sql = "
-			SELECT `".self::$definition['primary']."` 
-			FROM `"._DB_PREFIX_.self::$definition['table']."` 
-			WHERE 1 ";
+		$sql = '
+			SELECT `'.self::$definition['primary'].'` 
+			FROM `'._DB_PREFIX_.self::$definition['table'].'` 
+			WHERE 1 ';
 
 		if ($idCart && Validate::isInt($idCart))
 			$sql .= ' AND `id_cart` = "'.$idCart.'" ';

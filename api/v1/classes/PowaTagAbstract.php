@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -117,8 +117,8 @@ abstract class PowaTagAbstract
 			return;
 
 		$this->error = array(
-			"error"   => $error,
-			"message" => $message
+			'error'   => $error,
+			'message' => $message
 		);
 	}
 
@@ -469,7 +469,7 @@ abstract class PowaTagAbstract
 
 			if (!$customer->save())
 			{
-				$this->addError($this->module->l("Impossible to save customer"));
+				$this->addError($this->module->l('Impossible to save customer'));
 
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Create customer', PowaTagLogs::ERROR, $this->error['message']);
@@ -489,7 +489,7 @@ abstract class PowaTagAbstract
 	{
 		$number = Tools::ps_round($number, $precision);
 
-		return number_format($number, 2, ".", "");
+		return number_format($number, 2, '.', '');
 	}
 
 	
@@ -501,14 +501,14 @@ abstract class PowaTagAbstract
 				$carrier = new Carrier((int)$carrier);
 			else
 			{
-				$this->addError($this->module->l("Error since load carrier"));
+				$this->addError($this->module->l('Error since load carrier'));
 				return false;
 			}
 		}
 
 		if (!$id_zone && !$country)
 		{
-			$this->addError($this->module->l("Thanks to fill country or id zone"));
+			$this->addError($this->module->l('Thanks to fill country or id zone'));
 			return false;
 		}
 		else if (!$id_zone && $country)
@@ -523,7 +523,7 @@ abstract class PowaTagAbstract
 
 			if (!PowaTagValidate::countryEnable($country))
 			{
-				$this->addError($this->module->l("Country does not exists or not active"));
+				$this->addError($this->module->l('Country does not exists or not active'));
 				return false;
 			}
 
@@ -601,7 +601,7 @@ abstract class PowaTagAbstract
 
 		if (!$address->save())
 		{
-			$this->addError($this->module->l("Impossible to save address"));
+			$this->addError($this->module->l('Impossible to save address'));
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error['message']);
@@ -617,8 +617,8 @@ abstract class PowaTagAbstract
 
 	public function checkProductsAreShippable($products)
 	{
-		 foreach ($products as $p) 
-		 {
+		foreach ($products as $p) 
+		{
 			$carrier_ok = false;
 			$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
 			$carriers = $product->getCarriers();
@@ -634,15 +634,15 @@ abstract class PowaTagAbstract
 					}
 				}
 				if (!$carrier_ok)
-					$this->addError($this->module->l("Product with id").' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier );
+					$this->addError($this->module->l('Product with id').' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier );
 			}
-		 }
+		}
 	}
 
 	public function checkOrderState($id_order, &$data)
 	{
 		$order = new Order($id_order);
-		if($order->current_state == Configuration::get('PS_OS_ERROR'))
+		if ($order->current_state == Configuration::get('PS_OS_ERROR'))
 		{
 			$data = array(
 				'code'             => self::$BAD_REQUEST['code'],

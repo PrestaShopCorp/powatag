@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -60,7 +60,7 @@ class PowaTagPayment extends PowaTagAbstract
 	public function validateOrder($orderState, $id_cart, $amountPaid, $message = null)
 	{
 		if (PowaTagAPI::apiLog())
-			PowaTagLogs::initAPILog('Create order', PowaTagLogs::IN_PROGRESS, "Cart ID : ".$id_cart);
+			PowaTagLogs::initAPILog('Create order', PowaTagLogs::IN_PROGRESS, 'Cart ID : '.$id_cart);
 
 		$module = Module::getInstanceByName('powatag');
 
@@ -70,14 +70,14 @@ class PowaTagPayment extends PowaTagAbstract
 		if ($module->validateOrder((int)$id_cart, (int)$orderState, $amountPaid, $module->name, $message.$this->error['message'], array('transaction_id' => $this->bankAuthorizationCode), null, false, $customer->secure_key))
 		{
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Create order', PowaTagLogs::SUCCESS, "Order ID : ".$module->currentOrder);
+				PowaTagLogs::initAPILog('Create order', PowaTagLogs::SUCCESS, 'Order ID : '.$module->currentOrder);
 
 			return $module->currentOrder;
 		}
 		else
 		{
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Create order', PowaTagLogs::ERROR, "FAIL");
+				PowaTagLogs::initAPILog('Create order', PowaTagLogs::ERROR, 'FAIL');
 
 			return false;
 		}
@@ -105,9 +105,7 @@ class PowaTagPayment extends PowaTagAbstract
 		if (!$twoSteps)
 		{
 			if (!$idTransaction = $this->transactionExists())
-			{
 				$orderState = Configuration::get('PS_OS_ERROR');
-			}
 		}
 
 		$amountPaid = $this->datas->paymentResult->amountTotal->amount;
@@ -226,7 +224,7 @@ class PowaTagPayment extends PowaTagAbstract
 		
 		if ($this->cart->getOrderTotal(true, Cart::BOTH, null, Configuration::get('POWATAG_SHIPPING')) != $amountPaid)
 		{
-			$this->addError($this->module->l("Amount paid is not same as the cart"), PowaTagAbstract::$INVALID_PAYMENT);
+			$this->addError($this->module->l('Amount paid is not same as the cart'), PowaTagAbstract::$INVALID_PAYMENT);
 			return false;
 		}
 

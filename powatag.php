@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -47,7 +47,7 @@ class PowaTag extends PaymentModule {
 	{
 		$this->name = 'powatag';
 		$this->tab = 'payments_gateways';
-		$this->version = '0.1.6.';
+		$this->version = '1.0.0';
 		$this->author = '202-ecommerce';
 
 
@@ -210,7 +210,7 @@ class PowaTag extends PaymentModule {
 	 */
 	public function uninstallTabs()
 	{
-		powatagTotAdminTabHelper::deleteAdminTabs($this->name);
+		PowatagTotAdminTabHelper::deleteAdminTabs($this->name);
 		return true;
 	}
 
@@ -284,10 +284,10 @@ class PowaTag extends PaymentModule {
 	 */
 	private function registrationHook()
 	{
-		if (!$this->registerHook('displayHeader') 
-			|| !$this->registerHook('displayRightColumnProduct') 
-			|| !$this->registerHook('displayLeftColumnProduct') 
-			|| !$this->registerHook('displayFooterProduct') 
+		if (!$this->registerHook('displayHeader')
+			|| !$this->registerHook('displayRightColumnProduct')
+			|| !$this->registerHook('displayLeftColumnProduct')
+			|| !$this->registerHook('displayFooterProduct')
 			|| !$this->registerHook('displayProductButtons')
 			|| !$this->registerHook('actionCarrierUpdate')
 			|| !$this->registerHook('displayMobileAddToCartTop')

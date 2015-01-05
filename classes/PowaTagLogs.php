@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -50,7 +50,7 @@ class PowaTagLogs extends ObjectModel
 
 	public static function getIds()
 	{
-		$sql = "SELECT `".self::$definition['primary']."` FROM "._DB_PREFIX_.self::$definition['table']."";
+		$sql = 'SELECT `'.self::$definition['primary'].'` FROM '._DB_PREFIX_.self::$definition['table'].'';
 		$objsIDs = Db::getInstance()->ExecuteS($sql);
 		return $objsIDs;
 	}

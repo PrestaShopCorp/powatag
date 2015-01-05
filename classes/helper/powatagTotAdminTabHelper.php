@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -25,7 +25,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class powatagTotAdminTabHelper
+class PowatagTotAdminTabHelper
 {
 	/**
 	 * Function to delete admin tabs from a menu with the module name
@@ -57,31 +57,31 @@ class powatagTotAdminTabHelper
 
 		/* define data array for the tab  */
 		$data = array(
-					  'id_tab' => '', 
-					  'id_parent' => $id_parent, 
-					  'class_name' => $tab['className'], 
-					  'module' => $tab['module'], 
-					  'position' => $tab['position'],  
-					  'active' => 1 
-					 );
+					'id_tab' => '', 
+					'id_parent' => $id_parent, 
+					'class_name' => $tab['className'], 
+					'module' => $tab['module'], 
+					'position' => $tab['position'],  
+					'active' => 1 
+					);
 
 		/* Insert the data to the tab table*/
 		$res = Db::getInstance()->insert('tab', $data);
 		//Get last insert id from db which will be the new tab id
 		$id_tab = Db::getInstance()->Insert_ID();
 
-	   //Define tab multi language data
-	   foreach (Language::getLanguages(false) as $language)
-	   {
+		//Define tab multi language data
+		foreach (Language::getLanguages(false) as $language)
+		{
 			$data_lang = array(
-							 'id_tab' => $id_tab, 
-							 'id_lang' => $language['id_lang'],
-							 'name' => $tab['name'], 
-							 );
+							'id_tab' => $id_tab, 
+							'id_lang' => $language['id_lang'],
+							'name' => $tab['name'], 
+							);
 
 			// Now insert the tab lang data
 			$res = Db::getInstance()->insert('tab_lang', $data_lang);
-	   }
+		}
 
 		return $id_tab;		
 	}

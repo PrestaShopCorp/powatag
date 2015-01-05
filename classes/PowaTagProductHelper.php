@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -97,7 +97,7 @@ class PowaTagProductHelper {
 
 	private static function getProductIdByIdProduct($code)
 	{
-		if((string)(int)$code !== $code)
+		if ((string)(int)$code !== $code)
 			return false;
 		return $code;
 	}

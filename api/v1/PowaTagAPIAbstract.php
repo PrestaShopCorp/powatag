@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -31,77 +31,77 @@ abstract class PowaTagAPIAbstract
 {
 
 	/**
-	 * Property: method
-	 * The HTTP method this request was made in, either GET, POST, PUT or DELETE
-	 */
+	* Property: method
+	* The HTTP method this request was made in, either GET, POST, PUT or DELETE
+	*/
 	protected $method = '';
 
 	/**
-	 * Property: endpoint
-	 * The Model requested in the URI. eg: /files
-	 */
+	* Property: endpoint
+	* The Model requested in the URI. eg: /files
+	*/
 	protected $endpoint = '';
 
 	/**
-	 * Property: verb
-	 * An optional additional descriptor about the endpoint, used for things that can
-	 * not be handled by the basic methods. eg: /files/process
-	 */
+	* Property: verb
+	* An optional additional descriptor about the endpoint, used for things that can
+	* not be handled by the basic methods. eg: /files/process
+	*/
 	protected $verb = '';
 
 	/**
-	 * Property: args
-	 * Any additional URI components after the endpoint and verb have been removed, in our
-	 * case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
-	 * or /<endpoint>/<arg0>
-	 */
+	* Property: args
+	* Any additional URI components after the endpoint and verb have been removed, in our
+	* case, an integer ID for the resource. eg: /<endpoint>/<verb>/<arg0>/<arg1>
+	* or /<endpoint>/<arg0>
+	*/
 	protected $args = array();
 
 	/**
-	 * Property: file
-	 * Stores the input of the PUT request
-	 */
-	 protected $file = null;
-
-	 /**
-	  * Property: Enable applicative log
-	  * @var boolean
-	  */
-	 protected static $api_log;
-
-	 /**
-	  * Property: Enable request log
-	  * @var boolean
-	  */
-	 protected static $request_log;
-
-	 /**
-	  * Instance of module
-	  * @var \Module
-	  */
-	 protected $module;
-
-	 /**
-	  * Data in content call
-	  * @var string
-	  */
-	 protected $data;
-
-	 /**
-	  * Response header
-	  * @var int
-	  */
-	 protected $response = 200;
+	* Property: file
+	* Stores the input of the PUT request
+	*/
+	protected $file = null;
 
 	/**
-	 * Constructor: __construct
-	 * Allow for CORS, assemble and pre-process the data
-	 */
+	* Property: Enable applicative log
+	* @var boolean
+	*/
+	protected static $api_log;
+
+	/**
+	* Property: Enable request log
+	* @var boolean
+	*/
+	protected static $request_log;
+
+	/**
+	* Instance of module
+	* @var \Module
+	*/
+	protected $module;
+
+	/**
+	* Data in content call
+	* @var string
+	*/
+	protected $data;
+
+	/**
+	* Response header
+	* @var int
+	*/
+	protected $response = 200;
+
+	/**
+	* Constructor: __construct
+	* Allow for CORS, assemble and pre-process the data
+	*/
 	public function __construct($request)
 	{
-		header("Access-Control-Allow-Orgin: *");
-		header("Access-Control-Allow-Methods: *");
-		header("Content-Type: application/json; charset=utf-8");
+		header('Access-Control-Allow-Orgin: *');
+		header('Access-Control-Allow-Methods: *');
+		header('Content-Type: application/json; charset=utf-8');
 
 		$this->args = explode('/', rtrim($request, '/'));
 		$this->endpoint = array_shift($this->args);
@@ -117,10 +117,10 @@ abstract class PowaTagAPIAbstract
 			else if ($_SERVER['HTTP_X_HTTP_METHOD'] == 'PUT')
 				$this->method = 'PUT';
 			else
-				throw new Exception("Unexpected Header");
+				throw new Exception('Unexpected Header');
 		}
 		
-		$this->data = Tools::file_get_contents("php://input");
+		$this->data = Tools::file_get_contents('php://input');
 
 		self::$api_log = Configuration::get('POWATAG_API_LOG');
 		self::$request_log = Configuration::get('POWATAG_REQUEST_LOG');
@@ -154,14 +154,14 @@ abstract class PowaTagAPIAbstract
 
 		$this->setResponse(404);
 
-		return $this->_response("No Endpoint: $this->endpoint");
+		return $this->_response('No Endpoint: $this->endpoint');
 	}
 
 	protected function _response($data)
 	{
 		$status = $this->getResponse();
 
-		header("HTTP/1.1 ".$status." ".$this->_requestStatus($status));
+		header('HTTP/1.1 '.$status.' '.$this->_requestStatus($status));
 		PowaTagRequestLogs::add(array(
 			'response' => Tools::jsonEncode($data)
 		));

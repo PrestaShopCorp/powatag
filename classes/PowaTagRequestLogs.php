@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2014 PrestaShop 
+* 2007-2015 PrestaShop 
 *
 * NOTICE OF LICENSE
 *
@@ -28,9 +28,9 @@
 class PowaTagRequestLogs {
 
 
-	static public function add($datas)
+	public static function add($datas)
 	{
-		if(Configuration::get('POWATAG_REQUEST_LOG'))
+		if (Configuration::get('POWATAG_REQUEST_LOG'))
 		{
 			$handle = fopen(dirname(__FILE__).'/../logs_requests.txt', 'a+');
 			fwrite($handle, print_r($datas, true));
