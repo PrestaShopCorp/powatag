@@ -24,5 +24,5 @@
 *}
 
 <!-- PowaTag -->
-<div class="powatag" data-endpoint="{$powatagGeneratorURL|escape:'htmlall':'UTF-8'}" data-key="{$powatagApi|escape:'htmall':'UTF-8'}" data-sku="{$productSku|escape:'htmall':'UTF-8'}"></div>
+<div class="powatag" data-endpoint="{$powatagGeneratorURL|escape:'htmlall':'UTF-8'}" data-key="{$powatagApi|escape:'htmlall':'UTF-8'}" data-sku="{$productSku|escape:'htmlall':'UTF-8'}"></div>
 <!-- /PowaTag -->
