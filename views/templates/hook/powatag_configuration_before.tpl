@@ -133,13 +133,16 @@
 <script>
 	$(document).ready(function(){
 		$('#powatag_form').hide();
+		$('#powatag_form_please_use').hide();
 		$('.powa_register_rb').change(function () {
         if ($("#powa_register_rb1").attr("checked")) {
             $('#powatag_form').hide();
+			$('#powatag_form_please_use').hide();
             $('#powatag_container').show();
         }
         else {
             $('#powatag_form').show();
+			$('#powatag_form_please_use').show();
             $('#powatag_container').hide();
         }
     });
@@ -150,13 +153,19 @@
 
 {else}
 
+<!--
 <fieldset> 
 <img src="../modules/powatag/img/logo_transparent.png" alt="">
 	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}" target="_blank"> {l s='contacting us' mod='powatag'}</a>
 </fieldset>
 
 <br/>
+-->
 {/if}
+<fieldset id="powatag_form_please_use">
+        {l s='Please use the information provided during the PowaTag registration process to complete the fields below' mod='powatag'}<br>
+        {l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}" target="_blank"> {l s='contacting us' mod='powatag'}</a>
+</fieldset>
 </div>
 <script>
 	$(document).ready(function(){
