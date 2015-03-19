@@ -77,7 +77,7 @@
                 {l s='PowaTag acts as a mobile payment enabler, integrating directly with PrestaShop\'s platform and existing payment infrastructures. ​' mod='powatag'}
             </p>
 
-            <h4>{l s='The advantages of PowaTag' mod='powatag'}:</h4>
+            <p class="the-advantages">{l s='The advantages of PowaTag' mod='powatag'}:</p>
 
             <ul id="adventages">
                 <li>
