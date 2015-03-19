@@ -108,6 +108,7 @@ $_MODULE['<{powatag}prestashop>powatag_configuration_before_e2477c3fa77712a6afd7
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_66ed003633283ca1b951be9e452b6cb9'] = 'Interagir avec les consommateurs : impliquer, stimuler, récompenser la fidélité et pousser à l’action';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_241373fa154f2de622a7da1a4d039e53'] = 'Encourager et favoriser les achats impulsifs, en simplifiant l’expérience d’achat au sein des infrastructures d’e-commerce qui existent déjà';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_31c7b87204d32cfd398ad981c1239d41'] = 'http://www.powatag.com/page/prestashop_fr';
+$_MODULE['<{powatag}prestashop>powatag_configuration_before_ea57e8af0c6f5bc38e2b544d8294dbb6'] = 'http://www.powatag.com/page/prestashop_fr#selectedText';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_c00fde11f32c833a28ae11fc2946effe'] = 'Enregistrez vous maintenant';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_0ec0305a18fce08b3072b1b46798ff6f'] = 'Questions?';
 $_MODULE['<{powatag}prestashop>powatag_configuration_before_f77ac1dfc7cf26a6b01b360d2a1107a1'] = 'Visitez notre site internet';

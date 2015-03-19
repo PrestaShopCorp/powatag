@@ -105,7 +105,7 @@
 
             <div id="register-wrapper">
                 <div class="register">
-                    <a class="button_powa" href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}">
+                    <a class="button_powa" target="_blank" href="{l s='http://www.powatag.com/page/prestashop#selectedText' mod='powatag'}">
                         {l s='Register now' mod='powatag'}
                     </a>
                 </div>
