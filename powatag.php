@@ -46,7 +46,7 @@ class PowaTag extends PaymentModule {
 	public function __construct()
 	{
 		$this->name = 'powatag';
-		$this->tab = 'payments_gateways';
+		$this->tab = 'mobile';
 		$this->version = '1.0.0';
 		$this->author = '202-ecommerce';
 

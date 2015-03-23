@@ -34,12 +34,14 @@ class PowaTagProductHelper {
 		switch ($powatag_sku) 
 		{
 			case Powatag::EAN :
-				$product_sku = $product->ean13;	
+				$product_sku = $product->ean13;
 				break;
 			case Powatag::UPC :
 				$product_sku = $product->upc;	
+				break;
 			case Powatag::REFERENCE :
 				$product_sku = $product->reference;	
+				break;
 			default:
 				$product_sku = $product->id;
 				break;
@@ -64,8 +66,10 @@ class PowaTagProductHelper {
 				break;
 			case Powatag::UPC :
 				$id_product = (int)self::getProductIdByUPC($code);
+				break;
 			case Powatag::REFERENCE :
 				$id_product = (int)self::getProductIdByReference($code);
+				break;
 			default:
 				$id_product = (int)self::getProductIdByIdProduct($code);
 				break;
