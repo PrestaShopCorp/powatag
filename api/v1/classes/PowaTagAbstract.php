@@ -542,8 +542,9 @@ abstract class PowaTagAbstract
 			return false;
 		}
 
-		if ($carrier->is_free == 1)
-			return 0;
+		if ($carrier->is_free == 1) {
+			return true;
+		}
 
 		$shippingMethod = $carrier->getShippingMethod();
 
