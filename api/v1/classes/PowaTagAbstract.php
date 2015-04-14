@@ -372,7 +372,7 @@ abstract class PowaTagAbstract
 		foreach ($productLists as $p)
 		{
 			$product = new Product($p->product->code);
-			$shippingCost += $product->additional_shipping_cost;
+			$shippingCost += ($product->additional_shipping_cost * $p->quantity);
 		}
 
 		// Apply tax
