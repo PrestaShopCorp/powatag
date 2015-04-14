@@ -160,6 +160,7 @@ abstract class PowaTagAPIAbstract
 	protected function _response($data)
 	{
 		$status = $this->getResponse();
+		unset($data["response"]);
 
 		header('HTTP/1.1 '.$status.' '.$this->_requestStatus($status));
 		PowaTagRequestLogs::add(array(
