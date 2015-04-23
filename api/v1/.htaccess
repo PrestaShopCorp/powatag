@@ -1,5 +1,6 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
+	RewriteRule ^confirm/([0-9]+)$ /index.php?id_cart=$1&fc=module&module=powatag&controller=confirmation2 [L]
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule (.*)$ PowaTagAPIHandle.php?request=$1 [QSA,NC,L]
