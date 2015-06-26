@@ -47,7 +47,7 @@ class PowaTag extends PaymentModule {
 	{
 		$this->name = 'powatag';
 		$this->tab = 'mobile';
-		$this->version = '1.0.4';
+		$this->version = '1.0.5';
 		$this->author = '202-ecommerce';
 
 
@@ -73,7 +73,7 @@ class PowaTag extends PaymentModule {
 			{
 				$class_name = Tools::substr($class, 0, -4);
 				//Check if class_name is an existing Class or not
-				if (!class_exists($class_name) && $class_name != 'index')
+				if (!class_exists($class_name, false) && $class_name != 'index')
 					require_once($path.$class_name.'.php');
 			}
 		}
@@ -86,7 +86,7 @@ class PowaTag extends PaymentModule {
 			{
 				$class_name = Tools::substr($class, 0, -4);
 				//Check if class_name is an existing Class or not
-				if (!class_exists($class_name) && $class_name != 'index')
+				if (!class_exists($class_name, false) && $class_name != 'index')
 					require_once($path.$class_name.'.php');
 			}
 		}
