@@ -160,7 +160,9 @@ abstract class PowaTagAPIAbstract
 	protected function _response($data)
 	{
 		$status = $this->getResponse();
-		unset($data["response"]);
+		if (isset($data["response"])) {
+			unset($data["response"]);
+		}
 
 		header('HTTP/1.1 '.$status.' '.$this->_requestStatus($status));
 		PowaTagRequestLogs::add(array(
@@ -205,6 +207,25 @@ abstract class PowaTagAPIAbstract
 	{
 		return self::$api_log;
 	}
+	
+	public function powaError($error)
+	{
+		if (Configuration::get('POWATAG_LEGACY_ERRORS')) {
+			$array = array(
+				'code'             => $error['error']['legCode'],
+				'message'          => $error['message']
+			);
+			$this->setResponse($error['error']['legResponse']);
+		} else {
+			$array = array(
+				'code'             => $error['error']['code'],
+				'errorMessage'     => $error['message']
+			);
+			$this->setResponse($error['error']['response']);
+		}
+		return $array;
+	}
+	
 }
 
 ?> 

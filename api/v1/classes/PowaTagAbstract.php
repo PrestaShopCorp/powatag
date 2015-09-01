@@ -27,12 +27,14 @@
 
 abstract class PowaTagAbstract
 {
-	public static $BAD_REQUEST      = array('code' => 'BAD_REQUEST',      'response' => 400);
+/*
+	public static $BAD_REQUEST      = array('code' => '400101',           'response' => 400);
 	public static $SHOP_NOT_FOUND   = array('code' => 'SHOP_NOT_FOUND',   'response' => 404);
-	public static $SKU_NOT_FOUND    = array('code' => 'SKU_NOT_FOUND',    'response' => 404);
+	public static $SKU_NOT_FOUND    = array('code' => '200210',           'response' => 200);
 	public static $NOT_IN_STOCK     = array('code' => 'NOT_IN_STOCK',     'response' => 400);
 	public static $INVALID_PAYMENT  = array('code' => 'INVALID_PAYMENT',  'response' => 400);
 	public static $UNEXPECTED_ERROR = array('code' => 'UNEXPECTED_ERROR', 'response' => 500);
+*/
 
 	/**
 	 * Request datas
@@ -110,8 +112,12 @@ abstract class PowaTagAbstract
 
 	public function addError($message, $error = null)
 	{
+		if (PowaTagAPI::apiLog()) {
+			PowaTagLogs::initAPILog('Error', PowaTagLogs::ERROR, $message);
+		}	
+	
 		if (is_null($error))
-			$error = PowaTagAbstract::$UNEXPECTED_ERROR;
+			$error = PowaTagErrorType::$UNEXPECTED_ERROR;
 
 		if (count($this->error))
 			return;
@@ -145,7 +151,7 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::currencyEnable($currency))
 		{
-			$this->addError(sprintf($this->module->l('Currency not found : %s'), $iso_code));
+			$this->addError(sprintf($this->module->l('Currency not found : %s'), $iso_code), PowaTagErrorType::$CURRENCY_NOT_SUPPORTED);
 			return false;
 		}
 
@@ -187,7 +193,7 @@ abstract class PowaTagAbstract
 
 				if (!Validate::isLoadedObject($product))
 				{
-					$this->addError(sprintf($this->module->l('This product does not exists : %s'), $p->product->code), PowaTagAbstract::$SKU_NOT_FOUND);
+					$this->addError(sprintf($this->module->l('This product does not exists : %s'), $p->product->code), PowaTagErrorType::$SKU_NOT_FOUND);
 					return false;
 				}
 
@@ -203,7 +209,7 @@ abstract class PowaTagAbstract
 
 					if (!PowaTagValidate::currencyEnable($variantCurrency))
 					{
-						$this->addError(sprintf($this->module->l('Currency not found : %s'), $variantCurrency));
+						$this->addError(sprintf($this->module->l('Currency not found : %s'), $variantCurrency), PowaTagErrorType::$CURRENCY_NOT_SUPPORTED);
 						return false;
 					}
 
@@ -221,37 +227,38 @@ abstract class PowaTagAbstract
 					}
 					else
 					{
-						$this->addError(sprintf($this->module->l('This variant does not exist : %s'), $variant->code), PowaTagAbstract::$SKU_NOT_FOUND);
+						$this->addError(sprintf($this->module->l('This variant does not exist : %s'), $variant->code), PowaTagErrorType::$SKU_NOT_FOUND);
 						return false;
 					}
 
 					$priceAttributeWt = $priceAttribute * $product_rate;
 
-					$priceAttribute   = Tools::ps_round($priceAttribute, 2);
-					$variantAmount    = Tools::ps_round($variantAmount, 2);
-
 					$this->convertToCurrency($variantAmount, $variantCurrency, false);
 
-					$priceAttribute   = Tools::ps_round($priceAttribute, 2);
-					$variantAmount    = Tools::ps_round($variantAmount, 2);
-					$priceAttributeWt = Tools::ps_round($priceAttributeWt, 2);
+					if (version_compare(_PS_VERSION_, 1.6, '<')) {
+						$priceAttribute   = Tools::ps_round($priceAttribute, 2);
+						$variantAmount    = Tools::ps_round($variantAmount, 2);
+						$priceAttributeWt = Tools::ps_round($priceAttributeWt, 2);
+					}
+
+
 
 					if ($check && $priceAttribute != $variantAmount)
 					{
-						$this->addError(sprintf($this->module->l('Price variant is different with the price shop : %s %s != %s'), $variant->code, $priceAttribute, $variantAmount));
+						$this->addError(sprintf($this->module->l('Price variant is different with the price shop : %s %s != %s'), $variant->code, $priceAttribute, $variantAmount), PowaTagErrorType::$OTHER_PRODUCT_ERROR);
 						return false;
 					}
 
 
 					if ($qtyInStock == 0)
 					{
-						$this->addError(sprintf($this->module->l('No Stock Available'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
+						$this->addError(sprintf($this->module->l('No Stock Available'), $variant->code), PowaTagErrorType::$SKU_OUT_OF_STOCK);
 						return false;
 					}
 
 					if ($qtyInStock < $p->quantity)
 					{
-						$this->addError(sprintf($this->module->l('Quantity > Stock Count'), $variant->code), PowaTagAbstract::$NOT_IN_STOCK);
+						$this->addError(sprintf($this->module->l('Quantity > Stock Count'), $variant->code), PowaTagErrorType::$INSUFFICIENT_STOCK);
 						return false;
 					}
 
@@ -265,6 +272,8 @@ abstract class PowaTagAbstract
 				}
 
 			}
+			$this->subTax     = $this->subTotalWt - $this->subTotal;
+			
 			return true;
 		}
 		else
@@ -278,6 +287,7 @@ abstract class PowaTagAbstract
 	 */
 	protected function getShippingCost($products, Currency $currency, $country, $useTax = true)
 	{
+		$c = $country;
 		$id_carrier = (int)Configuration::get('POWATAG_SHIPPING');
 
 		if (!$country instanceof Country)
@@ -290,7 +300,7 @@ abstract class PowaTagAbstract
 
 		if (!PowaTagValidate::countryEnable($country))
 		{
-			$this->addError(sprintf($this->module->l('Country is does not exists or does not enable for this shop : %s'), $country->iso_code));
+			$this->addError(sprintf($this->module->l('Country does not exists or is not enabled for this shop : %s'), $country->iso_code), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			return false;
 		}
 
@@ -383,16 +393,20 @@ abstract class PowaTagAbstract
 
 		return $shippingCost;
 	}
-	
+
 	private function isCarrierInRange($carrier, $id_zone)
 	{
-		if (!$carrier->range_behavior)
+		if (!$carrier->range_behavior) {
+			PowaTagLogs::initAPILog('isCarrierInRange', PowaTagLogs::SUCCESS, '! carrier->range_behavior');
 			return true;
+		}
 
 		$shipping_method = $carrier->getShippingMethod();
 
-		if ($shipping_method == Carrier::SHIPPING_METHOD_FREE)
+		if ($shipping_method == Carrier::SHIPPING_METHOD_FREE) {
+			PowaTagLogs::initAPILog('isCarrierInRange', PowaTagLogs::SUCCESS, 'shipping_method == Carrier::SHIPPING_METHOD_FREE');
 			return true;
+		}
 
 		$check_delivery_price_by_weight = Carrier::checkDeliveryPriceByWeight(
 			(int)$carrier->id,
@@ -400,8 +414,10 @@ abstract class PowaTagAbstract
 			$id_zone
 		);
 
-		if ($shipping_method == Carrier::SHIPPING_METHOD_WEIGHT && $check_delivery_price_by_weight)
+		if ($shipping_method == Carrier::SHIPPING_METHOD_WEIGHT && $check_delivery_price_by_weight) {
+			PowaTagLogs::initAPILog('isCarrierInRange', PowaTagLogs::SUCCESS, 'shipping_method == Carrier::SHIPPING_METHOD_WEIGHT ...');
 			return true;
+		}
 
 		$check_delivery_price_by_price = Carrier::checkDeliveryPriceByPrice(
 			(int)$carrier->id,
@@ -410,9 +426,12 @@ abstract class PowaTagAbstract
 			(int)$this->id_currency
 		);
 
-		if ($shipping_method == Carrier::SHIPPING_METHOD_PRICE && $check_delivery_price_by_price)
+		if ($shipping_method == Carrier::SHIPPING_METHOD_PRICE && $check_delivery_price_by_price) {
+			PowaTagLogs::initAPILog('isCarrierInRange', PowaTagLogs::SUCCESS, 'shipping_method == Carrier::SHIPPING_METHOD_PRICE ...');
 			return true;
+		}
 
+		PowaTagLogs::initAPILog('isCarrierInRange', PowaTagLogs::ERROR, 'No suitable shipping method found');
 		return false;
 	}
 
@@ -469,7 +488,7 @@ abstract class PowaTagAbstract
 
 			if (!$customer->save())
 			{
-				$this->addError($this->module->l('Impossible to save customer'));
+				$this->addError($this->module->l('Impossible to save customer'), PowaTagErrorType::$INTERNAL_ERROR);
 
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Create customer', PowaTagLogs::ERROR, $this->error['message']);
@@ -501,14 +520,14 @@ abstract class PowaTagAbstract
 				$carrier = new Carrier((int)$carrier);
 			else
 			{
-				$this->addError($this->module->l('Error since load carrier'));
+				$this->addError($this->module->l('Error since load carrier'), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 				return false;
 			}
 		}
 
 		if (!$id_zone && !$country)
 		{
-			$this->addError($this->module->l('Thanks to fill country or id zone'));
+			$this->addError($this->module->l('Thanks to fill country or id zone'), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			return false;
 		}
 		else if (!$id_zone && $country)
@@ -523,7 +542,7 @@ abstract class PowaTagAbstract
 
 			if (!PowaTagValidate::countryEnable($country))
 			{
-				$this->addError($this->module->l('Country does not exists or not active'));
+				$this->addError($this->module->l('Country does not exists or not active'), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 				return false;
 			}
 
@@ -532,13 +551,13 @@ abstract class PowaTagAbstract
 
 		if (!$this->isCarrierInRange($carrier, $id_zone))
 		{
-			$this->addError(sprintf($this->module->l('Carrier not delivery in : %s'), $country->name));
+			$this->addError(sprintf($this->module->l('Carrier not delivery in : %s'), $country->name), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			return false;
 		}
 
 		if (!$carrier->active)
 		{
-			$this->addError(sprintf($this->module->l('Carrier is not active : %s'), $carrier->name));
+			$this->addError(sprintf($this->module->l('Carrier is not active : %s'), $carrier->name), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			return false;
 		}
 
@@ -552,7 +571,7 @@ abstract class PowaTagAbstract
 		if (($shippingMethod == Carrier::SHIPPING_METHOD_WEIGHT && $carrier->getMaxDeliveryPriceByWeight($id_zone) === false)
 			|| ($shippingMethod == Carrier::SHIPPING_METHOD_PRICE && $carrier->getMaxDeliveryPriceByPrice($id_zone) === false))
 		{
-			$this->addError(sprintf($this->module->l('Carrier not delivery for this shipping method in ID Zone : %s'), $id_zone));
+			$this->addError(sprintf($this->module->l('Carrier not delivery for this shipping method in ID Zone : %s'), $id_zone), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			return false;
 		}
 
@@ -575,7 +594,7 @@ abstract class PowaTagAbstract
 
 		if (!$country->active)
 		{
-			$this->addError(sprintf($this->module->l('This country is not active : %s'), $addressInformations->country->alpha2Code));
+			$this->addError(sprintf($this->module->l('This country is not active : %s'), $addressInformations->country->alpha2Code), PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			return false;
 		}
 		
@@ -602,7 +621,7 @@ abstract class PowaTagAbstract
 
 		if (!$address->save())
 		{
-			$this->addError($this->module->l('Impossible to save address'));
+			$this->addError($this->module->l('Impossible to save address'), PowaTagErrorType::$INTERNAL_ERROR);
 
 			if (PowaTagAPI::apiLog())
 				PowaTagLogs::initAPILog('Create address', PowaTagLogs::ERROR, $this->error['message']);
@@ -622,6 +641,11 @@ abstract class PowaTagAbstract
 		{
 			$carrier_ok = false;
 			$product = PowaTagProductHelper::getProductByCode($p->product->code, $this->context->language->id);
+			if (!$product) {
+				// product not found
+				$this->addError($this->module->l('This product does not exists : ') . $p->product->code, PowaTagErrorType::$SKU_NOT_FOUND);
+				return;
+			}
 			$carriers = $product->getCarriers();
 			if (count($carriers))
 			{
@@ -635,7 +659,7 @@ abstract class PowaTagAbstract
 					}
 				}
 				if (!$carrier_ok)
-					$this->addError($this->module->l('Product with id').' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier );
+					$this->addError($this->module->l('Product with id').' '.$product->id.' '.$this->module->l('cannot be shipped with the carrier ').' '.$powatag_carrier, PowaTagErrorType::$MERCHANT_WRONG_COUNTRY);
 			}
 		}
 	}
@@ -646,10 +670,9 @@ abstract class PowaTagAbstract
 		if ($order->current_state == Configuration::get('PS_OS_ERROR'))
 		{
 			$data = array(
-				'code'             => self::$BAD_REQUEST['code'],
-				'response' 		   => self::$BAD_REQUEST['response'],
-				'validationErrors' => null,
-				'message'          => $this->module->l('Error while creating the order. Payment error')
+				'code'             => PowaTagErrorType::$BAD_REQUEST['code'],
+				'response' 		   => PowaTagErrorType::$BAD_REQUEST['response'],
+				'errorMessage'     => $this->module->l('Error while creating the order. Payment error')
 			);
 			return 'error';
 		}

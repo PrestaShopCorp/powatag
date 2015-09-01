@@ -26,6 +26,7 @@
 */
 
 require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.inc.php';
+//require_once '/home/jara/ejp/80-powa/15-presta/prestashop/config/config.inc.php';
 require_once _PS_ROOT_DIR_.DIRECTORY_SEPARATOR.'init.php';
 require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'PowaTagAPI.php';
 

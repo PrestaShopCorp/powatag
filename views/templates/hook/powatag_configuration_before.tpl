@@ -114,7 +114,7 @@
                     {l s='Got questions?' mod='powatag'} <br/>
                     {l s='Visit our website' mod='powatag'}
                     <a href="{l s='http://powatag.com' mod='powatag'}" target="_blank">{l s='powatag.com' mod='powatag'}</a>
-                    or email
+                    {l s='or email' mod='powatag'}
                     <a href="mailto:{l s='powatagmerchantsupport@powa.com' mod='powatag'}">{l s='PrestaShop Enquiry' mod='powatag'}</a>
                 </div>
             </div>
@@ -126,8 +126,8 @@
 <div class="register-question">
     <img src="../modules/powatag/img/logo_transparent.png" alt="">
     {l s='Have you registered and accepted our T&Cs ?' mod='powatag'}
-    <input type="radio" name="powa_registered" class="powa_register_rb" id="powa_register_rb1" value="no" checked > No &nbsp;&nbsp;
-    <input type="radio" name="powa_registered" class="powa_register_rb" value="yes"> Yes
+    <input type="radio" name="powa_registered" class="powa_register_rb" id="powa_register_rb1" value="no" checked > {l s='No' mod='powatag'} &nbsp;&nbsp;
+    <input type="radio" name="powa_registered" class="powa_register_rb" value="yes"> {l s='Yes' mod='powatag'}
 </div>
 
 <script>
