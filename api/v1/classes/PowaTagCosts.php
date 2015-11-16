@@ -25,7 +25,9 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PowaTagCosts extends PowaTagAbstract
+require_once("PowaTagOrdersCosts.php");
+
+class PowaTagCosts extends PowaTagOrdersCosts
 {
 
 	/**
@@ -51,9 +53,7 @@ class PowaTagCosts extends PowaTagAbstract
 	 */
 	private function getCurrency()
 	{
-		$variants = current(current($this->products)->product->productVariants);
-		
-		$this->currency = $this->getCurrencyByIsoCode($variants->finalPrice->currency);
+		$this->currency = $this->getCurrencyByIsoCode($this->context->currency->iso_code);
 	}
 
 	/**
@@ -63,58 +63,95 @@ class PowaTagCosts extends PowaTagAbstract
 	public function getSummary()
 	{
 		$this->getCurrency();
-
-		if (!$this->currency)
+		list($id_cart, $id_order, $message) = $this->validateOrder();
+		if (!$id_cart) {
 			return false;
-
-		$country = PowaTagCosts::getCountryByCode($this->datas->order->customer->shippingAddress->country->alpha2Code);
-
-		$this->getSubTotal($this->products, (int)$country->id, false);
-		$this->checkProductsAreShippable($this->products);
+		}
 		
+				
+		$det=$this->cart->getSummaryDetails();
 
-		if ($this->error)
-			return false;
+		$detail = array();
+		$total_discount = 0;
+		foreach ($det['products'] as $key => &$product) {
 
-		$this->shippingCost = (float)$this->getShippingCost($this->products, $this->currency, $country, false);
+			$product['price_without_quantity_discount'] = Product::getPriceStatic(
+				$product['id_product'],
+				false,
+//				!Product::getTaxCalculationMethod(),
+				$product['id_product_attribute'],
+				6,
+				null,
+				false,
+				false
+			);
+			
+			// product price without tax
+                                
+			$discount = $product['price_without_quantity_discount'] - $product["price"];
+			$total_discount += $discount * $product["quantity"];
+		
+			$detail[] = array(
+				'code' => $product["id_product"],
+				'unitPrice' => array(
+					'amount'   => $this->formatNumber($product["price_without_quantity_discount"], 2),
+					'currency' => $this->currency->iso_code
+				),
+				'unitDiscount' => array(
+					'amount'   => $this->formatNumber($discount, 2),
+					'currency' => $this->currency->iso_code
+				),
+				'unitTax' => array(
+					'amount'   => $this->formatNumber($product["price_wt"] - $product["price"], 2),
+					'currency' => $this->currency->iso_code
+				),
+				'quantity' => $product["quantity"],
+				'total' => array(
+					'amount'   => $this->formatNumber($product["total_wt"], 2),
+					'currency' => $this->currency->iso_code
+				)
+			);
+		}
 
-		if ($this->error)
-			return false;
+		$shipping_tax = $det["total_shipping"] - $det["total_shipping_tax_exc"];
 
-		$tax = (float)$this->getTax($this->products, $this->currency, $country);
-
-		if ($this->error)
-			return false;
-
-		$this->convertToCurrency($this->subTotal, $this->currency, true);
-		$this->convertToCurrency($this->shippingCost, $this->currency, true);
-		$this->convertToCurrency($tax, $this->currency, true);
-
-		$datas = array(
+		$response = array(
 			'orderCostSummary' => array(
 				'subTotal' => array(
-					'amount'   => $this->formatNumber($this->subTotal, 2),
+					'amount'   => $this->formatNumber($det["total_products"], 2),
+					'currency' => $this->currency->iso_code
+				),
+				'discount' => array(
+					'amount'   => $this->formatNumber($total_discount + $det["total_discounts"], 2),
 					'currency' => $this->currency->iso_code
 				),
 				'shippingCost' => array(
-					'amount'   => $this->formatNumber($this->shippingCost, 2),
+					'amount'   => $this->formatNumber($det["total_shipping_tax_exc"], 2),
+					'currency' => $this->currency->iso_code
+				),
+				'shippingDiscount' => array(
+					'amount'   => $this->formatNumber(0, 2),
+					'currency' => $this->currency->iso_code
+				),
+				'shippingTax' => array(
+					'amount'   => $this->formatNumber($shipping_tax, 2),
 					'currency' => $this->currency->iso_code
 				),
 				'tax' => array(
-					'amount'   => $this->formatNumber($tax, 2),
+					'amount'   => $this->formatNumber($det["total_tax"], 2),
 					'currency' => $this->currency->iso_code
 				),
 				'total' => array(
-					'amount'   => $this->formatNumber($this->subTotal + $this->shippingCost + $tax, 2),
+					'amount'   => $this->formatNumber($det["total_price"], 2),
 					'currency' => $this->currency->iso_code
 				)
-			)
+			),
+			'orderCostDetails' => $detail
 		);
 
-		return $datas;
+		return $response;
+
 	}
-
-
 }
 
 ?>

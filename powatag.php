@@ -47,7 +47,7 @@ class PowaTag extends PaymentModule {
 	{
 		$this->name = 'powatag';
 		$this->tab = 'mobile';
-		$this->version = '1.0.5';
+		$this->version = '1.0.6';
 		$this->author = '202-ecommerce';
 
 
@@ -166,6 +166,15 @@ class PowaTag extends PaymentModule {
 			'POWATAG_GENERATOR_URL',
 			'POWATAG_HMAC_KEY',
 			'POWATAG_API_KEY',
+			'POWATAG_REDIRECT',
+			'POWATAG_OFFER',
+			'POWATAG_LANG',
+			'POWATAG_TYPE',
+			'POWATAG_STYLE',
+			'POWATAG_COLORSCHEME',
+			'POWATAG_DISPLAY',
+			'POWATAG_VIDEO',
+			'POWATAG_DEBUG',
 		);
 		foreach ($configs as $config)
 			Configuration::deleteByName($config);
@@ -379,10 +388,30 @@ class PowaTag extends PaymentModule {
 
 		if ($product_sku = PowaTagProductHelper::getProductSKU($product))
 		{
+			$lang = Configuration::get('POWATAG_LANG');
+			if ($lang == "site") {
+				// convert "en-us" to "en_US"
+				$lang = $this->context->language->language_code;
+				$lang = str_replace("-", "_", $lang);
+				$alang = explode("_", $lang);
+				if (count($alang)==2) {
+					$lang = strtolower($alang[0]) . "_" . strtoupper($alang[1]);
+				}
+			}
+
 			$datas = array(
 				'powatagApi'     => Configuration::get('POWATAG_API_KEY'),
 				'productSku'     => PowaTagProductHelper::getProductSKU($product),
 				'powatagGeneratorURL' => Configuration::get('POWATAG_GENERATOR_URL'),
+				'powatagRedirect'    => Configuration::get('POWATAG_REDIRECT'),
+				'powatagOffer'    => Configuration::get('POWATAG_OFFER'),
+				'powatagLang'    => $lang,
+				'powatagType'    => Configuration::get('POWATAG_TYPE'),
+				'powatagStyle'    => Configuration::get('POWATAG_STYLE'),
+				'powatagColorscheme'    => Configuration::get('POWATAG_COLORSCHEME'),
+				'powatagDisplay'    => Configuration::get('POWATAG_DISPLAY'),
+				'powatagVideo'    => Configuration::get('POWATAG_VIDEO')?"true":"false",
+				'powatagDebug'    => Configuration::get('POWATAG_DEBUG')?"true":"false",
 			);
 
 			$this->context->smarty->assign($datas);

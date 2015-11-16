@@ -40,12 +40,12 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 		if (!Module::isInstalled('powatag') || !Module::isEnabled('powatag'))
 			throw new Exception('Module not enable');
-
+/*
 		if (!array_key_exists('HTTP_HMAC', $_SERVER))
 			throw new Exception('No API Key provided');
 		else if (!$APIKey->verifyKey($_SERVER['HTTP_HMAC'], $this->data))
 			throw new Exception('Invalid API Key');
-		
+*/		
 		$this->data = Tools::jsonDecode($this->data);
 	}
 
@@ -99,7 +99,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if (PowaTagAPI::requestLog())
 					PowaTagLogs::initRequestLog('Process get products', PowaTagLogs::SUCCESS, $value);
 
-				return $value;
+				return array("products" => array($value));
 			}
 			else
 			{
@@ -107,16 +107,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process get products', PowaTagLogs::ERROR, $error['message']);
-
-				$this->setResponse($error['error']['response']);
-
-				$array = array(
-					'code'             => $error['error']['code'],
-					'validationErrors' => null,
-					'message'          => $error['message']
-				);
-
-				return $array;
+				return PowaTagAPI::powaError($error);
 			}
 		}
 		else 
@@ -140,17 +131,8 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 		if (is_null($datas))
 		{
-			$error = PowaTagAbstract::$BAD_REQUEST;
-
-			$this->setResponse($error['response']);
-
-			$data = array(
-				'code'              => $error['code'],
-				'validationErrors' => '',
-				'message'           => 'No body of request',
-			);
-
-			return $data;
+			$error = PowaTagErrorType::$BAD_REQUEST;
+			return PowaTagAPI::powaError($error);
 		}
 		
 		if ($this->verb == 'costs')
@@ -167,7 +149,16 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				PowaTagLogs::initRequestLog('Process calculate Costs', PowaTagLogs::IN_PROGRESS, $datas);
 
 			$powatagcosts = new PowaTagCosts($datas);
+			if ($error = $powatagcosts->getError())
+			{
+				$message = $error['message'];
 
+				if (PowaTagAPI::apiLog())
+					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $message);
+
+				return PowaTagAPI::powaError($error);
+			}
+			
 			if ($value = $powatagcosts->getSummary())
 			{
 				if (PowaTagAPI::apiLog())
@@ -185,15 +176,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process calculate Costs', PowaTagLogs::ERROR, $error['message']);
 
-				$this->setResponse($error['error']['response']);
-
-				$array = array(
-					'code'             => $error['error']['code'],
-					'validationErrors' => null,
-					'message'          => $error['message']
-				);
-
-				return $array;
+				return PowaTagAPI::powaError($error);
 			}
 		}
 		else if (count($args) == 2 && Validate::isInt($args[0]) && $args[1] = 'confirm-payment')
@@ -203,7 +186,6 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 			if (PowaTagAPI::requestLog())
 				PowaTagLogs::initRequestLog('Create payment', PowaTagLogs::IN_PROGRESS, $datas);
-
 			$payment = new PowaTagPayment($datas, (int)$args[0]);
 			
 			if ($id_order = $payment->confirmPayment())
@@ -232,15 +214,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process payment', PowaTagLogs::ERROR, $error['message']);
 
-				$this->setResponse($error['error']['response']);
-
-				$array = array(
-					'code'             => $error['error']['code'],
-					'validationErrors' => null,
-					'message'          => $error['message']
-				);
-
-				return $array;
+				return PowaTagAPI::powaError($error);
 			}
 
 		}
@@ -252,7 +226,7 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				$customer = current($datas->orders)->customer;
 
 			if (PowaTagAPI::apiLog())
-				PowaTagLogs::initAPILog('Process order', PowaTagLogs::IN_PROGRESS, 'Customer : '.$customer->firstName.' '.$customer->lastName);
+				PowaTagLogs::initAPILog('Process order 123', PowaTagLogs::IN_PROGRESS, 'Customer : '.$customer->firstName.' '.$customer->lastName);
 
 			if (PowaTagAPI::requestLog())
 				PowaTagLogs::initRequestLog('Create order', PowaTagLogs::IN_PROGRESS, $datas);
@@ -261,20 +235,12 @@ class PowaTagAPI extends PowaTagAPIAbstract
 
 			if ($error = $order->getError())
 			{
-				$this->setResponse($error['error']['response']);
-				$errorCode = $error['error']['code'];
 				$message = $error['message'];
 
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $message);
 
-				$array = array(
-					'code'             => $errorCode,
-					'validationErrors' => null,
-					'message'          => $message
-				);
-
-				return $array;
+				return PowaTagAPI::powaError($error);
 			}
 
 			list($id_cart, $id_order, $message) = $order->validateOrder();
@@ -288,15 +254,17 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				$cart = new Cart($id_cart);
 				$data = array(
 					'orderResults' => array(
-						'orderId' => $id_order ? $id_order : $id_cart, 
-						'message' => $message, 
-						'redirectUrl' => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart, 'id_customer' => (int)$cart->id_customer)
+						array(
+							'orderId' => $id_order ? $id_order : $id_cart, 
+							'message' => $message, 
+							'redirectUrl' => $link->getModuleLink('powatag', 'confirmation', array('id_cart' => (int)$id_cart, 'id_customer' => (int)$cart->id_customer))
 						)
 					)
 				);
-					
-				if ($error = $order->getError())
-					$data['message'] = $error['message'];
+
+				if ($error = $order->getError()) {
+					return PowaTagAPI::powaError($error);
+				}
 
 				if ($order->checkOrderState($id_order, $data))
 					$this->setResponse($data['response']);
@@ -310,23 +278,55 @@ class PowaTagAPI extends PowaTagAPIAbstract
 				$errorCode = '';
 				if ($error = $order->getError())
 				{
-					$this->setResponse($error['error']['response']);
-					$errorCode = $error['error']['code'];
 					$message = $error['message'];
 				}
 
 				if (PowaTagAPI::apiLog())
 					PowaTagLogs::initAPILog('Process order', PowaTagLogs::ERROR, $message);
 
-				$array = array(
-					'code'             => $errorCode,
-					'validationErrors' => null,
-					'message'          => $message
-				);
 
-				return $array;
+
+				return PowaTagAPI::powaError($error);
 			}
 		}
+	}
+
+	/**
+	 * getproducts endpoint - multiple SKU getProduct
+	 */
+	protected function getproducts($args)
+	{
+		$sku = $_GET["sku"];
+	
+		if (PowaTagAPI::requestLog())
+			PowaTagLogs::initRequestLog('Process get multiple products', PowaTagLogs::SUCCESS, $sku);
+		if ($sku == '') {
+			return PowaTagAPI::powaError(array(
+				'error' => PowaTagErrorType::$SKU_NOT_FOUND,
+				'message' =>"Missing SKU value"
+			));
+		}
+		
+		$asku = explode(",",$sku);
+		$reply = array();
+		foreach ($asku as $idProduct) {
+
+			$stdClass = new stdClass();
+			$stdClass->id_product = $idProduct;
+
+			$powatagProduct = new PowaTagProduct($stdClass);
+			$detail = $powatagProduct->setJSONRequest();
+			if ($detail === false) {
+				$detail = array(
+					"code" => $idProduct,
+					"availability" => "false"
+				);
+			} else {
+				$detail["availability"] = "true";
+			}
+			$reply[] = $detail;
+		}
+		return array("products" => $reply);
 	}
 
 }

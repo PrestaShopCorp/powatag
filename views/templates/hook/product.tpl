@@ -24,5 +24,26 @@
 *}
 
 <!-- PowaTag -->
-<div class="powatag" data-endpoint="{$powatagGeneratorURL|escape:'htmlall':'UTF-8'}" data-key="{$powatagApi|escape:'htmlall':'UTF-8'}" data-sku="{$productSku|escape:'htmlall':'UTF-8'}"></div>
+<div class="powatag"
+	data-endpoint="{$powatagGeneratorURL|escape:'htmlall':'UTF-8'}"
+	data-key="{$powatagApi|escape:'htmlall':'UTF-8'}"
+	data-sku="{$productSku|escape:'htmlall':'UTF-8'}"
+{if isset($powatagRedirect) }
+	data-redirect="{$powatagRedirect|escape:'htmlall':'UTF-8'}"
+{/if}{if isset($powatagOffer) }
+	data-offer="{$powatagOffer|escape:'htmlall':'UTF-8'}"
+{/if}{if isset($powatagLang) }
+	data-lang="{$powatagLang|escape:'htmlall':'UTF-8'}"
+{/if}{if isset($powatagType) }
+	data-type="{$powatagType|escape:'htmlall':'UTF-8'}"
+{/if}{if isset($powatagStyle) }
+	data-style="{$powatagStyle|escape:'htmlall':'UTF-8'}"
+{/if}{if isset($powatagColorscheme) }
+	data-colorscheme="{$powatagColorscheme|escape:'htmlall':'UTF-8'}"
+{/if}{if isset($powatagDisplay) }
+	data-display="{$powatagDisplay|escape:'htmlall':'UTF-8'}"
+{/if}
+	data-video="{$powatagVideo|escape:'htmlall':'UTF-8'}"
+	data-debug="{$powatagDebug|escape:'htmlall':'UTF-8'}"
+></div>
 <!-- /PowaTag -->

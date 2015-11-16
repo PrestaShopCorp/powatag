@@ -60,7 +60,7 @@ class PowaTagProduct extends PowaTagAbstract
 		}
 		else
 		{
-			$this->addError($this->module->l('Product not found'), PowaTagAbstract::$SKU_NOT_FOUND);
+			$this->addError($this->module->l('Product not found'), PowaTagErrorType::$SKU_NOT_FOUND);
 			return false;
 		}
 	}
@@ -74,7 +74,7 @@ class PowaTagProduct extends PowaTagAbstract
 			'type'                => 'PRODUCT',
 			'availableCurrencies' => $this->getCurrencies(),
 			'code'                => PowaTagProductHelper::getProductSKU($this->product),
-			'description'         => preg_replace("#\r\n#isD", ' ', strip_tags($this->product->description)),
+			'description'         => html_entity_decode(preg_replace("#\r\n#isD", ' ', strip_tags($this->product->description))),
 			'currency'            => $this->context->currency->iso_code,
 			'language'            => $this->context->language->iso_code,
 			'productImages'       => $this->getImages(),
@@ -91,7 +91,7 @@ class PowaTagProduct extends PowaTagAbstract
 		if ($has_options)
 			$array['productOptions'] = $this->getOptions();
 
-		return array($array);
+		return $array;
 	}
 
 	private function getCurrencies()
@@ -117,6 +117,25 @@ class PowaTagProduct extends PowaTagAbstract
 
 		$jsonImages = array();
 
+		if ($images && count($images))
+		{
+			foreach ($images as $image)
+				$jsonImages[] = array('name' => $image['legend'], 'url' => $link->getImageLink($this->product->link_rewrite, $this->product->id.'-'.$image['id_image']));
+		}
+
+		return $jsonImages;
+	}
+
+
+	private function getCombinationImages($attribute_id)
+	{
+		$images = $this->product->getCombinationImages((int)$this->context->language->id);
+		$images = $images[$attribute_id];
+
+		$link = $this->context->link;
+
+		$jsonImages = array();
+		
 		if ($images && count($images))
 		{
 			foreach ($images as $image)
@@ -190,6 +209,7 @@ class PowaTagProduct extends PowaTagAbstract
 
 						'code'          =>  PowatagProductAttributeHelper::getVariantCode($combination),
 						'numberInStock' => PowaTagProductQuantityHelper::getCombinationQuantity($combination),
+						'productImages' => $this->getCombinationImages($combination['id_product_attribute']),
 						'originalPrice' => array(
 							'amount'   => $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
 							'currency' => $this->context->currency->iso_code
