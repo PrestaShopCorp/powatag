@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,46 +20,52 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
 class PowaTagLogs extends ObjectModel
 {
+    const IN_PROGRESS = 'in progress';
+    const SUCCESS = 'success';
+    const WARNING = 'warning';
+    const ERROR = 'error';
 
-	const IN_PROGRESS = 'in progress';
-	const SUCCESS = 'success';
-	const WARNING = 'warning';
-	const ERROR = 'error';
+    public $subject;
+    public $status;
+    public $message;
+    public $date_add;
+    public $date_upd;
 
-	public $subject, $status, $message, $date_add, $date_upd;
+    public static $definition = array(
+        'table' => 'powatag_logs',
+        'primary' => 'id_powatag_logs',
+        'multilang' => false,
+        'fields' => array(
+            'subject' => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
+            'status' => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
+            'message' => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
+            'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
+            'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
+        ),
+    );
 
-	public static $definition = array(
-		'table' => 'powatag_logs',
-		'primary' => 'id_powatag_logs', 
-		'multilang' => false,
-		'fields' => array(
-			'subject'  => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
-			'status'   => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
-			'message'  => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
-			'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
-			'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
-		),
-	);
+    public static function getIds()
+    {
+        $sql = 'SELECT `'.self::$definition['primary'].'` FROM '._DB_PREFIX_.self::$definition['table'].'';
+        $objsIDs = Db::getInstance()->ExecuteS($sql);
 
-	public static function getIds()
-	{
-		$sql = 'SELECT `'.self::$definition['primary'].'` FROM '._DB_PREFIX_.self::$definition['table'].'';
-		$objsIDs = Db::getInstance()->ExecuteS($sql);
-		return $objsIDs;
-	}
+        return $objsIDs;
+    }
 
-	public static function install()
-	{
-		// Create Category Table in Database
-		$sql = array();
-		$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.self::$definition['table'].'` (
+    public static function install()
+    {
+        // Create Category Table in Database
+        $sql = array();
+        $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.self::$definition['table'].'` (
 					`'.self::$definition['primary'].'` int(16) NOT NULL AUTO_INCREMENT,
 					`subject` VARCHAR(255) NOT NULL,
 					`status` VARCHAR(255) NOT NULL,
@@ -69,51 +75,48 @@ class PowaTagLogs extends ObjectModel
 					UNIQUE(`'.self::$definition['primary'].'`),
 					PRIMARY KEY  ('.self::$definition['primary'].')
 			) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
-		
 
-		foreach ($sql as $q) 
-			Db::getInstance()->Execute($q);	
-	}
+        foreach ($sql as $q) {
+            Db::getInstance()->Execute($q);
+        }
+    }
 
-	public static function uninstall()
-	{
-		// Create Category Table in Database
-		$sql = array();
-		$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.self::$definition['table'].'`';
-		
+    public static function uninstall()
+    {
+        // Create Category Table in Database
+        $sql = array();
+        $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.self::$definition['table'].'`';
 
-		foreach ($sql as $q) 
-			Db::getInstance()->Execute($q);
-	}
+        foreach ($sql as $q) {
+            Db::getInstance()->Execute($q);
+        }
+    }
 
-	public static function initLog($subject, $message, $api = false, $status = false)
-	{
-		if ($api && Configuration::get('POWATAG_API_LOG'))
-		{
-			$log = new PowaTagLogs();
-			$log->subject = $subject;
-			$log->message = $message;
-			$log->status = $status;
-			return $log->save();
-		}
-		else if (Configuration::get('POWATAG_REQUEST_LOG'))
-		{
-			$module = Module::getInstanceByName('powatag');
+    public static function initLog($subject, $message, $api = false, $status = false)
+    {
+        if ($api && Configuration::get('POWATAG_API_LOG')) {
+            $log = new self();
+            $log->subject = $subject;
+            $log->message = $message;
+            $log->status = $status;
 
-			$handle = fopen($module->getLocalPath().'error.txt', 'a+');
-			fwrite($handle, '['.strftime('%Y-%m-%d %H:%M:%S').'] '.$subject.' : '.print_r($message, true));
-			fclose($handle);
-		}
-	}
+            return $log->save();
+        } elseif (Configuration::get('POWATAG_REQUEST_LOG')) {
+            $module = Module::getInstanceByName('powatag');
 
-	public static function initAPILog($subject, $status, $message)
-	{
-		return self::initLog($subject, $message, true, $status);
-	}
+            $handle = fopen($module->getLocalPath().'error.txt', 'a+');
+            fwrite($handle, '['.strftime('%Y-%m-%d %H:%M:%S').'] '.$subject.' : '.print_r($message, true));
+            fclose($handle);
+        }
+    }
 
-	public static function initRequestLog($subject, $message)
-	{
-		return self::initLog($subject, $message);
-	}
+    public static function initAPILog($subject, $status, $message)
+    {
+        return self::initLog($subject, $message, true, $status);
+    }
 
+    public static function initRequestLog($subject, $message)
+    {
+        return self::initLog($subject, $message);
+    }
 }

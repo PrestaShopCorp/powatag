@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,26 +20,25 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PowaTagAPIKey {
+class PowaTagAPIKey
+{
+    public function verifyKey($key, $data)
+    {
+        return $this->buildHmac($data) == $key;
+    }
 
-	public function verifyKey($key, $data)
-	{
-		return $this->buildHmac($data) == $key;
-	}
+    public function buildHmac($data)
+    {
+        $hmac_key = Configuration::get(Tools::strtoupper('powatag_hmac_key'));
+        $calculateHmac = base64_encode(hash('sha256', $hmac_key.$data, true));
 
-	public function buildHmac($data)
-	{
-		$hmac_key = Configuration::get(Tools::strtoupper('powatag_hmac_key'));
-		$calculateHmac = base64_encode(hash('sha256', $hmac_key.$data, true));
-
-		return $calculateHmac;
-	}
-
+        return $calculateHmac;
+    }
 }
-
-?>

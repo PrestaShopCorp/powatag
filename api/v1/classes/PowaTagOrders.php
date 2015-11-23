@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,22 +20,19 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-require_once("PowaTagOrdersCosts.php");
+require_once 'PowaTagOrdersCosts.php';
 
 class PowaTagOrders extends PowaTagOrdersCosts
 {
-
-	public function __construct(stdClass $datas)
-	{
-		parent::__construct($datas);
-	}
-
-
+    public function __construct(stdClass $datas)
+    {
+        parent::__construct($datas);
+    }
 }
-
-?>

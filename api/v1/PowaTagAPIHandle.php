@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,7 +20,9 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
@@ -32,33 +34,30 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'PowaTagAPI.php';
 
 class PowaTagAPIHandle
 {
+    public static function init()
+    {
+        if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
+            $_SERVER['HTTP_ORIGIN'] = $_SERVER['SERVER_NAME'];
+        }
 
-	public static function init()
-	{
-		if (!array_key_exists('HTTP_ORIGIN', $_SERVER))
-			$_SERVER['HTTP_ORIGIN'] = $_SERVER['SERVER_NAME'];
-		
-		try
-		{
+        try {
+            $request = null;
 
-			$request = null;
+            if (array_key_exists('request', $_GET) && !empty($_GET['request'])) {
+                $request = Tools::getValue('request');
+            }
 
-			if (array_key_exists('request', $_GET) && !empty($_GET['request']))
-				$request = Tools::getValue('request');
+            $api = new PowaTagAPI($request, $_SERVER['HTTP_ORIGIN']);
+            $content = $api->processAPI();
+        } catch (Exception $e) {
+            $content = Tools::jsonEncode(array(
+                'code' => '500101',
+                'errorMessage' => $e->getMessage(),
+            ));
+        }
 
-			$api = new PowaTagAPI($request, $_SERVER['HTTP_ORIGIN']);
-			$content = $api->processAPI();
-		}
-		catch (Exception $e)
-		{
-			$content = Tools::jsonEncode(array('error' => $e->getMessage()));
-		}
-
-		return $content;
-	}
-
+        return $content;
+    }
 }
 
 echo PowaTagAPIHandle::init();
-
-?>

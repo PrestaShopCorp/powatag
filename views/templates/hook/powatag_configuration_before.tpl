@@ -124,7 +124,7 @@
     </div>
 </div>
 <div class="register-question">
-    <img src="../modules/powatag/img/logo_transparent.png" alt="">
+    <img src="../modules/powatag/views/img/logo_transparent.png" alt="">
     {l s='Have you registered and accepted our T&Cs ?' mod='powatag'}
     <input type="radio" name="powa_registered" class="powa_register_rb" id="powa_register_rb1" value="no" checked > {l s='No' mod='powatag'} &nbsp;&nbsp;
     <input type="radio" name="powa_registered" class="powa_register_rb" value="yes"> {l s='Yes' mod='powatag'}
@@ -155,7 +155,7 @@
 
 <!--
 <fieldset> 
-<img src="../modules/powatag/img/logo_transparent.png" alt="">
+<img src="../modules/powatag/views/img/logo_transparent.png" alt="">
 	{l s='To start transacting with your customers, switch to a live PowaTag account by' mod='powatag'}<a href="{l s='http://www.powatag.com/page/prestashop' mod='powatag'}" target="_blank"> {l s='contacting us' mod='powatag'}</a>
 </fieldset>
 

@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,58 +20,69 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
 class PowaTagTransaction extends ObjectModel
 {
+    public $id_cart;
+    public $id_order;
+    public $id_customer;
+    public $ip_address;
+    public $id_device;
+    public $order_state;
+    public $date_add;
+    public $date_upd;
 
-	public $id_cart, $id_order, $id_customer, $ip_address, $id_device, $order_state, $date_add, $date_upd;
+    public static $definition = array(
+        'table' => 'powatag_transaction',
+        'primary' => 'id_powatag_transaction',
+        'multilang' => false,
+        'fields' => array(
+            'id_cart' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
+            'id_order' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
+            'id_customer' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
+            'ip_address' => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
+            'id_device' => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
+            'order_state' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
+            'date_add' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
+            'date_upd' => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
+        ),
+    );
 
-	public static $definition = array(
-		'table' => 'powatag_transaction',
-		'primary' => 'id_powatag_transaction', 
-		'multilang' => false,
-		'fields' => array(
-			'id_cart'     => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-			'id_order'    => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-			'id_customer' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-			'ip_address'  => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
-			'id_device'   => array('type' => self::TYPE_STRING, 'validate' => 'isString'),
-			'order_state' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
-			'date_add'    => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
-			'date_upd'    => array('type' => self::TYPE_DATE, 'validate' => 'isDateFormat'),
-		),
-	);
-
-	public static function getTransactions($idCart = null, $idDevice = null, $ipAddress = null)
-	{
-		$sql = '
+    public static function getTransactions($idCart = null, $idDevice = null, $ipAddress = null)
+    {
+        $sql = '
 			SELECT `'.self::$definition['primary'].'` 
 			FROM `'._DB_PREFIX_.self::$definition['table'].'` 
 			WHERE 1 ';
 
-		if ($idCart && Validate::isInt($idCart))
-			$sql .= ' AND `id_cart` = "'.$idCart.'" ';
+        if ($idCart && Validate::isInt($idCart)) {
+            $sql .= ' AND `id_cart` = "'.$idCart.'" ';
+        }
 
-		if ($idDevice && Validate::isInt($idDevice))
-			$sql .= ' AND `id_device` = "'.$idDevice.'" ';
+        if ($idDevice && Validate::isInt($idDevice)) {
+            $sql .= ' AND `id_device` = "'.$idDevice.'" ';
+        }
 
-		if ($ipAddress && Validate::isInt($ipAddress))
-			$sql .= ' AND `ip_address` = "'.$ipAddress.'" ';
+        if ($ipAddress && Validate::isInt($ipAddress)) {
+            $sql .= ' AND `ip_address` = "'.$ipAddress.'" ';
+        }
 
-		$results = Db::getInstance()->ExecuteS($sql);
-		
-		return $results;
-	}
+        $results = Db::getInstance()->ExecuteS($sql);
 
-	public static function install()
-	{
-		// Create Category Table in Database
-		$sql = array();
-		$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.self::$definition['table'].'` (
+        return $results;
+    }
+
+    public static function install()
+    {
+        // Create Category Table in Database
+        $sql = array();
+        $sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.self::$definition['table'].'` (
 					`'.self::$definition['primary'].'` INT(11) NOT NULL AUTO_INCREMENT,
 					`id_cart` INT(11) unsigned NOT NULL,
 					`id_order` INT(11) unsigned NOT NULL,
@@ -84,26 +95,25 @@ class PowaTagTransaction extends ObjectModel
 					UNIQUE(`'.self::$definition['primary'].'`),
 					PRIMARY KEY  ('.self::$definition['primary'].')
 			) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
-		
 
-		foreach ($sql as $q) 
-			Db::getInstance()->Execute($q);	
-	}
+        foreach ($sql as $q) {
+            Db::getInstance()->Execute($q);
+        }
+    }
 
-	public static function uninstall()
-	{
-		// Create Category Table in Database
-		$sql = array();
-		$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.self::$definition['table'].'`';
-		
+    public static function uninstall()
+    {
+        // Create Category Table in Database
+        $sql = array();
+        $sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.self::$definition['table'].'`';
 
-		foreach ($sql as $q) 
-			Db::getInstance()->Execute($q);
-	}
+        foreach ($sql as $q) {
+            Db::getInstance()->Execute($q);
+        }
+    }
 
-	public function getCart()
-	{
-		return new Cart((int)$this->id_cart);
-	}
-
+    public function getCart()
+    {
+        return new Cart((int) $this->id_cart);
+    }
 }

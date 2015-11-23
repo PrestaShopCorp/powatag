@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,234 +20,228 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
 class PowaTagProduct extends PowaTagAbstract
 {
+    /**
+     * Product Model.
+     *
+     * @var \Product
+     */
+    private $product;
 
-	/**
-	 * Product Model
-	 * @var \Product
-	 */
-	private $product;
+    /**
+     * List of combinations.
+     *
+     * @var array
+     */
+    private $combinations;
 
-	
+    public function __construct(stdClass $datas)
+    {
+        parent::__construct($datas);
 
-	/**
-	 * List of combinations
-	 * @var array
-	 */
-	private $combinations;
+        $product = PowaTagProductHelper::getProductByCode($datas->id_product, $this->context->language->id);
+        $this->product = $product;
+    }
 
-	public function __construct(stdClass $datas)
-	{
-		parent::__construct($datas);
+    public function setJSONRequest()
+    {
+        if (Validate::isLoadedObject($this->product)) {
+            $product = $this->getProductWithoutOptions();
 
-		$product = PowaTagProductHelper::getProductByCode($datas->id_product, $this->context->language->id);
-		$this->product = $product;
-	}
+            return $product;
+        } else {
+            $this->addError($this->module->l('Product not found'), PowaTagErrorType::$SKU_NOT_FOUND);
 
-	public function setJSONRequest()
-	{
-		if (Validate::isLoadedObject($this->product)) 
-		{
-			$product = $this->getProductWithoutOptions();
+            return false;
+        }
+    }
 
-			return $product;
-		}
-		else
-		{
-			$this->addError($this->module->l('Product not found'), PowaTagErrorType::$SKU_NOT_FOUND);
-			return false;
-		}
-	}
+    private function getProductWithoutOptions()
+    {
+        $has_options = $this->hasOptions();
 
-	private function getProductWithoutOptions()
-	{
-		$has_options = $this->hasOptions();
+        $array = array(
+            'name' => $this->product->name,
+            'type' => 'PRODUCT',
+            'availableCurrencies' => $this->getCurrencies(),
+            'code' => PowaTagProductHelper::getProductSKU($this->product),
+            'description' => html_entity_decode(preg_replace("#\r\n#isD", ' ', strip_tags($this->product->description))),
+            'currency' => $this->context->currency->iso_code,
+            'language' => $this->context->language->iso_code,
+            'productImages' => $this->getImages(),
+            'productVariants' => $this->getVariants(),
+        );
 
-		$array = array(
-			'name'                => $this->product->name,
-			'type'                => 'PRODUCT',
-			'availableCurrencies' => $this->getCurrencies(),
-			'code'                => PowaTagProductHelper::getProductSKU($this->product),
-			'description'         => html_entity_decode(preg_replace("#\r\n#isD", ' ', strip_tags($this->product->description))),
-			'currency'            => $this->context->currency->iso_code,
-			'language'            => $this->context->language->iso_code,
-			'productImages'       => $this->getImages(),
-			'productVariants'     => $this->getVariants(),
-		);
+        if ($attributes = $this->getAttributes()) {
+            $array['productAttributes'] = $attributes;
+        }
 
+        if ($fields = $this->getCustomFields()) {
+            $array['customFields'] = $fields;
+        }
 
-		if ($attributes = $this->getAttributes())
-			$array['productAttributes'] = $attributes;
+        if ($has_options) {
+            $array['productOptions'] = $this->getOptions();
+        }
 
-		if ($fields = $this->getCustomFields())
-			$array['customFields'] = $fields;
-		
-		if ($has_options)
-			$array['productOptions'] = $this->getOptions();
+        return $array;
+    }
 
-		return $array;
-	}
+    private function getCurrencies()
+    {
+        $currencies = array();
 
-	private function getCurrencies()
-	{
-		$currencies = array();
+        $shopCurrencies = Currency::getCurrencies();
 
-		$shopCurrencies = Currency::getCurrencies();
+        if ($shopCurrencies && count($shopCurrencies)) {
+            foreach ($shopCurrencies as $currency) {
+                $currencies[] = $currency['iso_code'];
+            }
+        }
 
-		if ($shopCurrencies && count($shopCurrencies))
-		{
-			foreach ($shopCurrencies as $currency)
-				$currencies[] = $currency['iso_code'];
-		}
+        return $currencies;
+    }
 
-		return $currencies;
-	}
+    private function getImages()
+    {
+        $images = $this->product->getImages((int) $this->context->language->id);
 
-	private function getImages()
-	{
-		$images = $this->product->getImages((int)$this->context->language->id);
+        $link = $this->context->link;
 
-		$link = $this->context->link;
+        $jsonImages = array();
 
-		$jsonImages = array();
+        if ($images && count($images)) {
+            foreach ($images as $image) {
+                $jsonImages[] = array(
+                    'name' => $image['legend'],
+                    'url' => $link->getImageLink(
+                        $this->product->link_rewrite,
+                        $this->product->id.'-'.$image['id_image']
+                    )
+                );
+            }
+        }
 
-		if ($images && count($images))
-		{
-			foreach ($images as $image)
-				$jsonImages[] = array('name' => $image['legend'], 'url' => $link->getImageLink($this->product->link_rewrite, $this->product->id.'-'.$image['id_image']));
-		}
+        return $jsonImages;
+    }
 
-		return $jsonImages;
-	}
+    private function getCombinationImages($attribute_id)
+    {
+        $images = $this->product->getCombinationImages((int) $this->context->language->id);
+        $images = $images[$attribute_id];
 
+        $link = $this->context->link;
 
-	private function getCombinationImages($attribute_id)
-	{
-		$images = $this->product->getCombinationImages((int)$this->context->language->id);
-		$images = $images[$attribute_id];
+        $jsonImages = array();
 
-		$link = $this->context->link;
+        if ($images && count($images)) {
+            foreach ($images as $image) {
+                $jsonImages[] = array('name' => $image['legend'], 'url' => $link->getImageLink($this->product->link_rewrite, $this->product->id.'-'.$image['id_image']));
+            }
+        }
 
-		$jsonImages = array();
-		
-		if ($images && count($images))
-		{
-			foreach ($images as $image)
-				$jsonImages[] = array('name' => $image['legend'], 'url' => $link->getImageLink($this->product->link_rewrite, $this->product->id.'-'.$image['id_image']));
-		}
+        return $jsonImages;
+    }
 
-		return $jsonImages;
-	}
+    private function getAttributes()
+    {
+        $productAttributes = array();
 
-	private function getAttributes()
-	{
-		$productAttributes = array();
+        $attributes = $this->product->getFeatures();
+        $id_lang = (int) $this->context->language->id;
 
-		$attributes = $this->product->getFeatures();
-		$id_lang = (int)$this->context->language->id;
+        if ($attributes && count($attributes)) {
+            foreach ($attributes as $attribute) {
+                $feature = new Feature($attribute['id_feature'], $id_lang);
+                $featureValue = new FeatureValue($attribute['id_feature_value'], $id_lang);
+                $productAttributes[$feature->name] = $featureValue->value;
+            }
+        }
 
-		if ($attributes && count($attributes))
-		{
-			foreach ($attributes as $attribute)
-			{
-				$feature = new Feature($attribute['id_feature'], $id_lang);
-				$featureValue = new FeatureValue($attribute['id_feature_value'], $id_lang);
-				$productAttributes[$feature->name] = $featureValue->value;
-			}
-		}
+        return $productAttributes;
+    }
 
-		return $productAttributes;
-	}
+    private function hasOptions()
+    {
+        $this->combinations = $this->product->getAttributeCombinations($this->context->language->id);
 
-	private function hasOptions()
-	{
-		$this->combinations = $this->product->getAttributeCombinations($this->context->language->id);
-		return (bool)$this->combinations;
-	}
+        return (bool) $this->combinations;
+    }
 
-	private function getOptions()
-	{
-		$combinations = array();
-		if ($this->combinations && count($this->combinations))
-		{
-			foreach ($this->combinations as $combination)
-			{
-				if (!array_key_exists($combination['group_name'], $combinations)) 
-				{
-					$combinations[$combination['group_name']] = array(
-						'id' => $combination['id_attribute_group'],
-						'values' => array()
-					);
-				}
+    private function getOptions()
+    {
+        $combinations = array();
+        if ($this->combinations && count($this->combinations)) {
+            foreach ($this->combinations as $combination) {
+                if (!array_key_exists($combination['group_name'], $combinations)) {
+                    $combinations[$combination['group_name']] = array(
+                        'id' => $combination['id_attribute_group'],
+                        'values' => array(),
+                    );
+                }
 
-				if (!in_array($combination['attribute_name'], $combinations[$combination['group_name']]['values']))
-					$combinations[$combination['group_name']]['values'][] = $combination['attribute_name'];
-			}
-		}
+                if (!in_array($combination['attribute_name'], $combinations[$combination['group_name']]['values'])) {
+                    $combinations[$combination['group_name']]['values'][] = $combination['attribute_name'];
+                }
+            }
+        }
 
-		return $combinations;
-	}
+        return $combinations;
+    }
 
-	private function getVariants()
-	{
-		$groups = array();
+    private function getVariants()
+    {
+        $groups = array();
 
-		if ($this->combinations && count($this->combinations))
-		{
+        if ($this->combinations && count($this->combinations)) {
+            foreach ($this->combinations as $combination) {
+                if (!array_key_exists($combination['id_product_attribute'], $groups)) {
+                    $groups[$combination['id_product_attribute']] = array(
 
-			foreach ($this->combinations as $combination)
-			{
-				if (!array_key_exists($combination['id_product_attribute'], $groups))
-				{
-					$groups[$combination['id_product_attribute']] = array(
+                        'code' => PowatagProductAttributeHelper::getVariantCode($combination),
+                        'numberInStock' => PowaTagProductQuantityHelper::getCombinationQuantity($combination),
+                        'productImages' => $this->getCombinationImages($combination['id_product_attribute']),
+                        'originalPrice' => array(
+                            'amount' => $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
+                            'currency' => $this->context->currency->iso_code,
+                        ),
+                        'finalPrice' => array(
+                            'amount' => $this->formatNumber($this->product->getPrice($this->display_taxes, $combination['id_product_attribute']), 2),
+                            'currency' => $this->context->currency->iso_code,
+                        ),
+                    );
+                }
 
-						'code'          =>  PowatagProductAttributeHelper::getVariantCode($combination),
-						'numberInStock' => PowaTagProductQuantityHelper::getCombinationQuantity($combination),
-						'productImages' => $this->getCombinationImages($combination['id_product_attribute']),
-						'originalPrice' => array(
-							'amount'   => $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
-							'currency' => $this->context->currency->iso_code
-						),
-						'finalPrice'    => array(
-							'amount'   =>  $this->formatNumber($this->product->getPrice($this->display_taxes, $combination['id_product_attribute']), 2),
-							'currency' => $this->context->currency->iso_code
-						)
-					);
-				}
+                $groups[$combination['id_product_attribute']]['options'][$combination['group_name']] = $combination['attribute_name'];
+            }
 
-				$groups[$combination['id_product_attribute']]['options'][$combination['group_name']] = $combination['attribute_name'];
-			}
+            sort($groups);
+        } else {
+            $variant = array(
+                'code' => PowaTagProductHelper::getProductSKU($this->product),
+                'numberInStock' => PowaTagProductQuantityHelper::getProductQuantity($this->product),
+                'finalPrice' => array(
+                    'amount' => $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
+                    'currency' => $this->context->currency->iso_code,
+                ),
+            );
 
-			sort($groups);
-		}
-		else
-		{
-			$variant = array(
-				'code'          => PowaTagProductHelper::getProductSKU($this->product),
-				'numberInStock' => PowaTagProductQuantityHelper::getProductQuantity($this->product),
-				'finalPrice'    => array(
-					'amount'   =>  $this->formatNumber($this->product->getPrice($this->display_taxes, null), 2),
-					'currency' => $this->context->currency->iso_code
-				)
-			);
+            $groups = array($variant);
+        }
 
-			$groups = array($variant);
-		}
+        return $groups;
+    }
 
-		return $groups;
-	}
-
-	private function getCustomFields()
-	{
-		return array();
-	}
-
+    private function getCustomFields()
+    {
+        return array();
+    }
 }
-
-?>

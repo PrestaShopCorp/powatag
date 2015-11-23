@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,42 +20,47 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PowaTagProductQuantityHelper {
+class PowaTagProductQuantityHelper
+{
+    public static function getProductQuantity($product, $id_product_attribute = false)
+    {
+        $allow_oosp = self::isAllowOOSP($product);
+        $qty = Product::getQuantity($product->id, $id_product_attribute);
+        if ($qty > 0) {
+            return $qty;
+        }
+        if ($allow_oosp) {
+            return 1000;
+        }
 
-	public static function getProductQuantity($product, $id_product_attribute = false)
-	{
-		$allow_oosp = self::isAllowOOSP($product);
-		$qty = Product::getQuantity($product->id, $id_product_attribute);
-		if ($qty > 0)
-			return $qty;
-		if ($allow_oosp)
-			return 1000;
-		return $qty;
-	}
+        return $qty;
+    }
 
-	public static function getCombinationQuantity($combination)
-	{
-		$product = new Product($combination['id_product']);
-		$allow_oosp = self::isAllowOOSP($product);
-		$qty = $combination['quantity'];
+    public static function getCombinationQuantity($combination)
+    {
+        $product = new Product($combination['id_product']);
+        $allow_oosp = self::isAllowOOSP($product);
+        $qty = $combination['quantity'];
 
-		if ($qty > 0)
-			return $qty;
-		if ($allow_oosp)
-			return 1000;
-		return $qty;
-	}
+        if ($qty > 0) {
+            return $qty;
+        }
+        if ($allow_oosp) {
+            return 1000;
+        }
 
-	private static function isAllowOOSP($product)
-	{
-		return Product::isAvailableWhenOutOfStock($product->out_of_stock);
-	}
+        return $qty;
+    }
 
-
-
+    private static function isAllowOOSP($product)
+    {
+        return Product::isAvailableWhenOutOfStock($product->out_of_stock);
+    }
 }

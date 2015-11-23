@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,48 +20,48 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-class PowaTagProductAttributeHelper {
+class PowaTagProductAttributeHelper
+{
+    public static function getCombinationByCode($id_product, $code)
+    {
+        $id_pa = (int) self::getCombinationIdByIdCombination($id_product, $code);
 
-	public static function getCombinationByCode($id_product, $code)
-	{
-		$id_pa = (int)self::getCombinationIdByIdCombination($id_product, $code);
-		return $id_pa;
-	}
+        return $id_pa;
+    }
 
-	private static function getCombinationIdByIdCombination($id_product, $id_combination)
-	{
-		$datas = explode('-', $id_combination);
+    private static function getCombinationIdByIdCombination($id_product, $id_combination)
+    {
+        $datas = explode('-', $id_combination);
 
-		if (empty($datas[1]))
-			return 0;
+        if (empty($datas[1])) {
+            return 0;
+        }
 
-		$query = new DbQuery();
-		$query->select('pa.id_product_attribute');
-		$query->from('product_attribute', 'pa');
-		$query->where('pa.id_product_attribute = \''.pSQL($datas[1]).'\'');
-		$query->where('pa.id_product = '.(int)$id_product);
+        $query = new DbQuery();
+        $query->select('pa.id_product_attribute');
+        $query->from('product_attribute', 'pa');
+        $query->where('pa.id_product_attribute = \''.pSQL($datas[1]).'\'');
+        $query->where('pa.id_product = '.(int) $id_product);
 
-		return Db::getInstance()->getValue($query);
-	}
+        return Db::getInstance()->getValue($query);
+    }
 
+    public static function getVariantCode($combination)
+    {
+        $combination_sku = self::constructCombinationSKU($combination);
 
+        return $combination_sku;
+    }
 
-	public static function getVariantCode($combination)
-	{	
-		$combination_sku = self::constructCombinationSKU($combination);
-		return $combination_sku;
-		
-	}
-
-	private static function constructCombinationSKU($combination)
-	{
-		return $combination['id_product'].'-'.$combination['id_product_attribute'];
-	}
-
-
+    private static function constructCombinationSKU($combination)
+    {
+        return $combination['id_product'].'-'.$combination['id_product_attribute'];
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
-* 2007-2015 PrestaShop 
+* 2007-2015 PrestaShop.
 *
 * NOTICE OF LICENSE
 *
@@ -20,45 +20,46 @@
 *
 *  @author    PrestaShop SA <contact@prestashop.com>
 *  @copyright 2007-2014 PrestaShop SA
+*
 *  @version  Release: $Revision: 7776 $
+*
 *  @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
 /**
- * Link to access the controller : $link->getModuleLink('powatag', 'confirmation')
+ * Link to access the controller : $link->getModuleLink('powatag', 'confirmation').
  */
 class PowatagConfirmation2ModuleFrontController extends ModuleFrontController
 {
-	public function __construct()
-	{
-		$this->display_column_left = false;
-		$this->display_column_right = false;
-		parent::__construct();
-		$this->context = Context::getContext();
+    public function __construct()
+    {
+        $this->display_column_left = false;
+        $this->display_column_right = false;
+        parent::__construct();
+        $this->context = Context::getContext();
+    }
 
-	}
+    public function postProcess()
+    {
+        parent::postProcess();
+    }
 
-	public function postProcess()
-	{
-		parent::postProcess();
-	}
+    public function init()
+    {
+        parent::init();
+    }
 
-	public function init()
-	{
-		parent::init();
-	}
+    public function initContent()
+    {
+        parent::initContent();
 
-	public function initContent()
-	{
-		parent::initContent();
-		
-		$this->setTemplate('confirmation2.tpl');
-	}
+        $this->setTemplate('confirmation2.tpl');
+    }
 
-	public function setMedia()
-	{
-		parent::setMedia();
-		$this->addCSS(__PS_BASE_URI__.'modules/powatag/css/confirmation.css');
-	}
+    public function setMedia()
+    {
+        parent::setMedia();
+        $this->addCSS(__PS_BASE_URI__.'modules/powatag/views/css/confirmation.css');
+    }
 }

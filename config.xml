@@ -2,9 +2,9 @@
 <module>
 	<name>powatag</name>
 	<displayName><![CDATA[PowaTag]]></displayName>
-	<version><![CDATA[1.0.6]]></version>
+	<version><![CDATA[1.1.0]]></version>
 	<description><![CDATA[PowaTag, the one touch payment solution that increases your online &amp;amp; mobile conversions]]></description>
-	<author><![CDATA[202-ecommerce]]></author>
+	<author><![CDATA[POWA]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<is_configurable>1</is_configurable>
 	<need_instance>1</need_instance>
