@@ -73,17 +73,17 @@ class AdminPowaTagLogsController extends ModuleAdminController
         $this->list_no_link = true;
     }
 
-    public static function install($menu_id, $module_name)
+    public static function install($menu_id, $module_name, $lang_id, $module)
     {
-        PowatagTotAdminTabHelper::addAdminTab(array(
-            'id_parent' => $menu_id,
-            'className' => 'AdminPowaTagLogs',
-            'default_name' => 'Logs',
-            'name' => 'Logs',
-            'position' => 0,
-            'active' => true,
-            'module' => $module_name,
-        ));
+        $tab = new Tab();
+        $tab->name[$lang_id] = $module->l('Logs');
+        $tab->class_name = 'AdminPowaTagLogs';
+        $tab->module = $module_name;
+        $tab->id_parent = $menu_id;
+        if(!$tab->save()) {
+            return false;
+        }
+        return true;
     }
 
     public function renderList()

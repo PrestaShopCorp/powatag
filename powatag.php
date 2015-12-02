@@ -150,9 +150,12 @@ class Powatag extends PaymentModule
             return false;
         }
 
-        // Delete tabs
-        if (!$this->uninstallTabs()) {
-            return false;
+        // Uninstall Tabs
+        $moduleTabs = Tab::getCollectionFromModule($this->name);
+        if (!empty($moduleTabs)) {
+            foreach ($moduleTabs as $moduleTab) {
+                $moduleTab->delete();
+            }
         }
 
         //Delete configuration
@@ -205,23 +208,11 @@ class Powatag extends PaymentModule
                 $controller_name = Tools::substr($controller, 0, -4);
                 if (class_exists($controller_name)) {
                     if (method_exists($controller_name, 'install')) {
-                        call_user_func(array($controller_name, 'install'), $menu_id, $this->name);
+                        call_user_func(array($controller_name, 'install'), $menu_id, $this->name, $this->context->language->id,  $this);
                     }
                 }
             }
         }
-
-        return true;
-    }
-
-    /**
-     * Delete tab.
-     *
-     * @return bool if successfull
-     */
-    public function uninstallTabs()
-    {
-        PowatagTotAdminTabHelper::deleteAdminTabs($this->name);
 
         return true;
     }

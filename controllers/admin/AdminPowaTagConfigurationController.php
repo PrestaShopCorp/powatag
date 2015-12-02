@@ -311,16 +311,16 @@ class AdminPowaTagConfigurationController extends ModuleAdminController
         return $before.$form.$after;
     }
 
-    public static function install($menu_id, $module_name)
+    public static function install($menu_id, $module_name, $lang_id, $module)
     {
-        PowatagTotAdminTabHelper::addAdminTab(array(
-            'id_parent' => $menu_id,
-            'className' => 'AdminPowaTagConfiguration',
-            'default_name' => 'Configuration',
-            'name' => 'Configuration',
-            'position' => 0,
-            'active' => true,
-            'module' => $module_name,
-        ));
+        $tab = new Tab();
+        $tab->name[$lang_id] = $module->l('Configuration');
+        $tab->class_name = 'AdminPowaTagConfiguration';
+        $tab->module = $module_name;
+        $tab->id_parent = $menu_id;
+        if(!$tab->save()) {
+            return false;
+        }
+        return true;
     }
 }
