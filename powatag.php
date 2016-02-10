@@ -65,6 +65,9 @@ class Powatag extends PaymentModule
         $path = $this->getLocalPath().'classes/';
 
         foreach (scandir($path) as $class) {
+			if ($class == 'index.php')
+				continue;
+            
             if (is_file($path.$class)) {
                 $class_name = Tools::substr($class, 0, -4);
                 //Check if class_name is an existing Class or not
@@ -77,6 +80,9 @@ class Powatag extends PaymentModule
         $path .= 'helper/';
 
         foreach (scandir($path) as $class) {
+			if ($class == 'index.php')
+				continue;
+            
             if (is_file($path.$class)) {
                 $class_name = Tools::substr($class, 0, -4);
                 //Check if class_name is an existing Class or not
